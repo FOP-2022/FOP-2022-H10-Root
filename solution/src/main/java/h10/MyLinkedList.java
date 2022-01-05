@@ -1,5 +1,6 @@
 package h10;
 
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -156,6 +157,62 @@ public class MyLinkedList<T> {
         }
         //return current destination list
         return dest;
+    }
+
+    public <U> void mixinIteratively(MyLinkedList<U> otherList, BiPredicate<T, U> biPred, Function<U, T> fct, Predicate<U> predU) throws MyLinkedListException {
+        //return if the source list is empty
+        if (otherList.head == null) {
+            return;
+        }
+
+        //set up pointers
+        ListItem<T> pCurrent = this.head;
+        ListItem<T> pPrevious = null;
+        ListItem<U> pSource = otherList.head;
+
+        //create index variable for potentially throwing exceptions
+        int index = 0;
+
+        //iterate over the source list
+        while (pSource != null) {
+            //check if exception has to be thrown
+            if (predU.test(pSource.key) == false) {
+                throw new MyLinkedListException(index, pSource.key);
+            }
+
+            //create ListItem to be inserted into target list
+            ListItem<T> item = new ListItem<T>(fct.apply(pSource.key));
+
+            //handle case if target list is empty or end of target list is reached
+            if (pCurrent == null) {
+                //if target list is empty, make item the new head
+                if (pPrevious == null) {
+                    this.head = item;
+                    pCurrent = this.head;
+                } else { //if end of target list is reached, add item to the end
+                    pPrevious.next = item;
+                    pPrevious = pPrevious.next;
+                }
+                index++;
+            } else if (biPred.test(pCurrent.key, pSource.key)) { //if target list is not empty nor the end is reached, check if item has to be inserted at current position
+                //insert item at current position
+                item.next = pCurrent;
+                pPrevious.next = item;
+
+                //iterate to next item from source list;
+                pSource = pSource.next;
+                index++;
+            } else { //else iterate on target list without changing the list
+                pPrevious = pCurrent;
+                pCurrent = pCurrent.next;
+            }
+            //increase index variable
+        }
+    }
+
+    //TODO
+    public <U> void mixinRecursively(MyLinkedList<U> otherList, BiPredicate<T, U> biPred, Function<U, T> fct, Predicate<U> predU) throws MyLinkedListException {
+
     }
 
     public boolean add(T key) {

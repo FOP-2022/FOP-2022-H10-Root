@@ -1,20 +1,20 @@
 {
-    "name": "FOP-2022-H10",
-    "assignmentIds": [
-        "h10"
-    ],
-    "sourceSets": [
-        {
-            "name": "grader",
-            "files": [
-                "grader_files_here"
-            ]
-        },
-        {
-            "name": "solution",
-            "files": [
-                "solution_files_here"
-            ]
-        }
-    ]
+  "name": "FOP-2022-H10",
+  "assignmentIds": [
+    "h10"
+  ],
+  "sourceSets": [
+    {
+      "name": "grader",
+      "files": [
+        "grader_files_here"
+      ]
+    },
+    {
+      "name": "solution",
+      "files": [
+        "solution_files_here"
+      ]
+    }
+  ]
 }

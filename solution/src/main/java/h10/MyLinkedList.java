@@ -190,7 +190,7 @@ public class MyLinkedList<T> {
     }
 
     /**
-     * This method merges two MyLinkedLists by
+     * This method merges two MyLinkedLists by adding the result of fct applied to each item of otherList to the list the current objects represents
      * @param otherList Source list from which items are to be mixed into the target list
      * @param biPred Predicate to check if second parameter has to be inserted at position of first parameter
      * @param fct Function to convert item of type U to type T
@@ -268,6 +268,11 @@ public class MyLinkedList<T> {
 
     }
 
+    /**
+     * This method adds a new list item with parameter "key" as its key value to the list
+     * @param key key value of item to be added
+     * @return boolean stating if the item has been added to the list successfully
+     */
     public boolean add(T key) {
         if (head == null) {
             head = new ListItem<T>(key);

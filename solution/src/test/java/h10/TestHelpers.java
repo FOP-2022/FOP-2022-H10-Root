@@ -2,7 +2,7 @@ package h10;
 
 public class TestHelpers {
 
-    public static MyLinkedList<int[]> createList1() {
+    public static MyLinkedList<int[]> createExtractList1() {
         MyLinkedList<int[]> testList2 = new MyLinkedList<>();
 
         int[] arr1 = {1, 5, 10};
@@ -22,7 +22,7 @@ public class TestHelpers {
         return testList2;
     }
 
-    public static MyLinkedList<int[]> createList2() {
+    public static MyLinkedList<int[]> createExtractList2() {
         MyLinkedList<int[]> testList1 = new MyLinkedList<>();
 
         int[] arr1 = {1, 5, 10};
@@ -42,7 +42,7 @@ public class TestHelpers {
         return testList1;
     }
 
-    public static MyLinkedList<int[]> createList3() {
+    public static MyLinkedList<int[]> createExtractList3() {
         MyLinkedList<int[]> testList3 = new MyLinkedList<>();
 
         int[] arr1 = {1, 5, 10};
@@ -62,7 +62,7 @@ public class TestHelpers {
         return testList3;
     }
 
-    public static MyLinkedList<int[]> createSourceResult() {
+    public static MyLinkedList<int[]> createExtractSourceResult() {
         MyLinkedList<int[]> result = new MyLinkedList<>();
 
         int[] arr1 = {1, 5, 10};
@@ -79,7 +79,7 @@ public class TestHelpers {
         return result;
     }
 
-    public static MyLinkedList<Integer> createDestinationResult() {
+    public static MyLinkedList<Integer> createExtractDestinationResult() {
         MyLinkedList<Integer> result = new MyLinkedList<>();
 
         int i1 = 16;
@@ -93,5 +93,84 @@ public class TestHelpers {
         return result;
     }
 
+    public static MyLinkedList<Number> createMixinTargetList1() {
+        MyLinkedList<Number> lst = new MyLinkedList<Number>();
 
+        lst.add(1.0);
+        lst.add(3.0);
+        lst.add(5.0);
+        lst.add(7.0);
+
+        return lst;
+    }
+
+    public static MyLinkedList<Number> createMixinTargetList2() {
+        MyLinkedList<Number> lst = new MyLinkedList<Number>();
+
+        lst.add(0.0);
+        lst.add(2.0);
+        lst.add(4.0);
+        lst.add(6.0);
+
+        return lst;
+    }
+
+    public static MyLinkedList<Number> createMixinTargetList3() {
+        MyLinkedList<Number> lst = new MyLinkedList<Number>();
+
+        lst.add(1.0);
+        lst.add(3.0);
+        lst.add(5.0);
+        lst.add(7.0);
+
+        return lst;
+    }
+
+    public static MyLinkedList<String> createMixinSourceList1() {
+        MyLinkedList<String> lst = new MyLinkedList<String>();
+
+        lst.add("0");
+        lst.add("2");
+        lst.add("4");
+        lst.add("6");
+
+        return lst;
+    }
+
+    public static MyLinkedList<String> createMixinSourceList2() {
+        MyLinkedList<String> lst = new MyLinkedList<String>();
+
+        lst.add("1");
+        lst.add("3");
+        lst.add("5");
+        lst.add("7");
+
+        return lst;
+    }
+
+    public static MyLinkedList<String> createMixinSourceList3() {
+        MyLinkedList<String> lst = new MyLinkedList<String>();
+
+        lst.add("0");
+        lst.add("2");
+        lst.add("Exception");
+        lst.add("6");
+
+        return lst;
+    }
+
+    public static MyLinkedList<Number> createMixinResult() {
+        MyLinkedList<Number> lst = new MyLinkedList<Number>();
+
+        lst.add(0.0);
+        lst.add(1.0);
+        lst.add(2.0);
+        lst.add(3.0);
+        lst.add(4.0);
+        lst.add(5.0);
+        lst.add(6.0);
+        lst.add(7.0);
+
+        return lst;
+    }
 }

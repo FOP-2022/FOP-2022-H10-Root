@@ -7,6 +7,16 @@ import java.util.function.Predicate;
 public class MyLinkedList<T> {
     public h10.ListItem<T> head;
 
+    /**
+     * This method iteratively removes all items from the list where Predicate predT is true and returns a MyLinkedList<U> with the function result of each item in their original order
+     *
+     * @param predT predT Predicate which determines if item is to be removed
+     * @param fct Function which converts ListItem<T> to ListItem<U>
+     * @param predU Predicate which determines if an item is invalid and an Exception has to be thrown
+     * @param <U> Type of resulting list
+     * @return MyLinkedList<U>, containing the result of fct applied to each removed item in the order of all items in the original list
+     * @throws MyLinkedListException if the result of predU is false and an Exception has to be thrown
+     */
     public <U> MyLinkedList<U> extractIteratively(Predicate<T> predT, Function<T, U> fct, Predicate<U> predU) throws MyLinkedListException {
         //set up source and destination lists
         MyLinkedList<T> src = this;
@@ -84,11 +94,31 @@ public class MyLinkedList<T> {
         return dest;
     }
 
+    /**
+     * This method, by calling a helper function, recursively removes all items from the list where Predicate predT is true
+     * and returns a MyLinkedList<U> with the function result of each item in their original order
+     *
+     * @param predT predT Predicate which determines if item is to be removed
+     * @param fct Function which converts ListItem<T> to ListItem<U>
+     * @param predU Predicate which determines if an item is invalid and an Exception has to be thrown
+     * @param <U> Type of resulting list
+     * @return MyLinkedList<U>, containing the result of fct applied to each removed item in the order of all items in the original list
+     * @throws MyLinkedListException if the result of predU is false and an Exception has to be thrown
+     */
     public <U> MyLinkedList<U> extractRecursively(Predicate<T> predT, Function<T, U> fct, Predicate<U> predU) throws MyLinkedListException {
         //call recursive helper method
         return extractRecursivelyHelper(predT, fct, predU, 0);
     }
 
+    /**
+     * This method recursively removes all items from the list where Predicate predT is true and returns a MyLinkedList<U> with the function result of each item in their original order
+     * @param predT predT Predicate which determines if item is to be removed
+     * @param fct Function which converts ListItem<T> to ListItem<U>
+     * @param predU Predicate which determines if an item is invalid and an Exception has to be thrown
+     * @param <U> Type of resulting list
+     * @return MyLinkedList<U>, containing the current result of fct applied to each removed item in the order of all items in the original list
+     * @throws MyLinkedListException if the result of predU is false and an Exception has to be thrown
+     */
     private <U> MyLinkedList<U> extractRecursivelyHelper(Predicate<T> predT, Function<T, U> fct, Predicate<U> predU, int index) throws MyLinkedListException{
         //save current head for reconstruction after recursion
         ListItem<T> lstHead = head;
@@ -159,6 +189,15 @@ public class MyLinkedList<T> {
         return dest;
     }
 
+    /**
+     * This method merges two MyLinkedLists by
+     * @param otherList Source list from which items are to be mixed into the target list
+     * @param biPred Predicate to check if second parameter has to be inserted at position of first parameter
+     * @param fct Function to convert item of type U to type T
+     * @param predU Predicate to determine if item in source list is a valid item to be inserted into target list
+     * @param <U> Type of the source list
+     * @throws MyLinkedListException if the result of predU is false, and therefore its parameter is not a valid item to be inserted into target list
+     */
     public <U> void mixinIteratively(MyLinkedList<U> otherList, BiPredicate<T, U> biPred, Function<U, T> fct, Predicate<U> predU) throws MyLinkedListException {
         //return if the source list is empty
         if (otherList.head == null) {
@@ -183,30 +222,44 @@ public class MyLinkedList<T> {
             //create ListItem to be inserted into target list
             ListItem<T> item = new ListItem<T>(fct.apply(pSource.key));
 
+            //first handle case if position is currently at head of target list but nothing is to be inserted
+            if (pPrevious == null && pCurrent != null && !biPred.test(pCurrent.key, pSource.key)) {
+                pPrevious = pCurrent;
+                pCurrent = pCurrent.next;
+                continue;
+            }
             //handle case if target list is empty or end of target list is reached
-            if (pCurrent == null) {
+            if (pCurrent == null || pPrevious == null) {
                 //if target list is empty, make item the new head
-                if (pPrevious == null) {
-                    this.head = item;
+                if (pPrevious == null && pCurrent == null) {
+                    item.next = this.head;
                     pCurrent = this.head;
-                } else { //if end of target list is reached, add item to the end
+                    pPrevious = item;
+                    this.head = item;
+                }
+                else if (pPrevious == null && biPred.test(pCurrent.key, pSource.key)) {
+                    item.next = this.head;
+                    pCurrent = this.head;
+                    pPrevious = item;
+                    this.head = item;
+
+                } else if (pPrevious != null){ //if end of target list is reached, add item to the end
                     pPrevious.next = item;
                     pPrevious = pPrevious.next;
                 }
-                index++;
             } else if (biPred.test(pCurrent.key, pSource.key)) { //if target list is not empty nor the end is reached, check if item has to be inserted at current position
                 //insert item at current position
                 item.next = pCurrent;
                 pPrevious.next = item;
 
-                //iterate to next item from source list;
-                pSource = pSource.next;
-                index++;
             } else { //else iterate on target list without changing the list
                 pPrevious = pCurrent;
                 pCurrent = pCurrent.next;
+                continue;
             }
             //increase index variable
+            index++;
+            pSource = pSource.next;
         }
     }
 

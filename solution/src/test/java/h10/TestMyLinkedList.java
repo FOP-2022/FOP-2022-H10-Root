@@ -142,7 +142,6 @@ public class TestMyLinkedList {
         TestMixinFct fct = new TestMixinFct();
         TestMixinPredU predU = new TestMixinPredU();
 
-        //TODO: potentially clean up helper methods
         //set up necessary lists for the tests
         MyLinkedList<Number> targetList1Iterative = createMixinTargetList1();
         MyLinkedList<Number> targetList1Recursive = createMixinTargetList1();
@@ -158,6 +157,7 @@ public class TestMyLinkedList {
         //run mixin* on first lists
         try {
             targetList1Iterative.mixinIteratively(sourceList1, biPred, fct, predU);
+            targetList1Recursive.mixinRecursively(sourceList1, biPred, fct, predU);
         } catch (MyLinkedListException e) {
             //fail tests if exception is thrown unexpectedly
             fail();
@@ -165,6 +165,7 @@ public class TestMyLinkedList {
 
         try {
             targetList2Iterative.mixinIteratively(sourceList2, biPred, fct, predU);
+            targetList2Recursive.mixinRecursively(sourceList2, biPred, fct, predU);
         } catch (MyLinkedListException e) {
             //fail tests if exception is thrown unexpectedly
             fail();
@@ -177,19 +178,17 @@ public class TestMyLinkedList {
         ListItem<Number> pRecursive = targetList1Recursive.head;
         ListItem<Number> pResult = resultList.head;
 
-        //TODO: add recursive back to while condition
         //check if lists are equal at each position
-        while (pIterative != null || pResult != null) {
+        while (pIterative != null || pRecursive != null || pResult != null) {
             //test if iterative list matches the desired result
             assertEquals(pIterative.key, pResult.key);
 
-            //TODO: uncomment assert statement
             //test if recursive list matches the desired result
-            //assertEquals(pRecursive.key, pResult.key);
+            assertEquals(pRecursive.key, pResult.key);
 
             //iterate
             pIterative = pIterative.next;
-            //pRecursive = pRecursive.next;
+            pRecursive = pRecursive.next;
             pResult = pResult.next;
         }
 
@@ -199,19 +198,17 @@ public class TestMyLinkedList {
         pRecursive = targetList2Recursive.head;
         pResult = resultList.head;
 
-        //TODO: add recursive back to while condition
         //check if lists are equal at each position
-        while (pIterative != null || pResult != null) {
+        while (pIterative != null || pRecursive != null  || pResult != null) {
             //test if iterative list matches the desired result
             assertEquals(pIterative.key, pResult.key);
 
-            //TODO: uncomment assert statement
             //test if recursive list matches the desired result
-            //assertEquals(pRecursive.key, pResult.key);
+            assertEquals(pRecursive.key, pResult.key);
 
             //iterate
             pIterative = pIterative.next;
-            //pRecursive = pRecursive.next;
+            pRecursive = pRecursive.next;
             pResult = pResult.next;
         }
 
@@ -219,13 +216,14 @@ public class TestMyLinkedList {
         MyLinkedListException excIterative = assertThrows(MyLinkedListException.class, () -> targetList3Iterative.mixinIteratively(sourceList3, biPred, fct, predU), "no exception thrown");
 
         //test if exception is thrown correctly in third list by mixinRecursively
-        //MyLinkedListException excRecursive = assertThrows(MyLinkedListException.class, () -> testList3Recursive.extractRecursively(predT, fct, predU), "no exception thrown");
+        MyLinkedListException excRecursive = assertThrows(MyLinkedListException.class, () -> targetList3Recursive.mixinRecursively(sourceList3, biPred, fct, predU), "no exception thrown");
 
         //check if exception message is correct (correct index) by extractIteratively
         assertEquals('2', excIterative.getMessage().charAt(1));
 
         //check if exception message is correct (correct index) by extractRecursively
-        //assertEquals('4', excRecursive.getMessage().charAt(1));
+        assertEquals('2', excRecursive.getMessage().charAt(1));
 
     }
+
 }

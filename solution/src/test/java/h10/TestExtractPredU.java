@@ -4,6 +4,11 @@ import java.util.function.Predicate;
 
 public class TestExtractPredU implements Predicate<Integer> {
 
+    /**
+     * This method tests if an integer is non-negative
+     * @param integer Integer that is to be tested
+     * @return true, if integer is non-negative
+     */
     @Override
     public boolean test(Integer integer) {
         if (integer < 0) {

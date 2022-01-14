@@ -1,7 +1,7 @@
 package h10;
 
 /**
- * This class is used for creating Exceptions for Objects of type MyLinkedList.
+ * Exceptions used in {@link MyLinkedList}
  */
 public class MyLinkedListException extends Exception {
 

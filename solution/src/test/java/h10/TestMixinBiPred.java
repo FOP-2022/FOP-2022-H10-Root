@@ -15,6 +15,6 @@ public class TestMixinBiPred implements BiPredicate<Number, String> {
      */
     @Override
     public boolean test(Number number, String s) {
-        return Double.valueOf(s) < number.doubleValue();
+        return Double.parseDouble(s) < number.doubleValue();
     }
 }

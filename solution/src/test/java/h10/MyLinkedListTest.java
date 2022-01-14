@@ -249,7 +249,5 @@ public class MyLinkedListTest {
 
         //check if exception message is correct (correct index) by extractRecursively
         assertEquals('2', excRecursive.getMessage().charAt(1));
-
     }
-
 }

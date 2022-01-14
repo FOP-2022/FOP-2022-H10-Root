@@ -1,7 +1,7 @@
 package h10;
 
 /**
- * An Object of this class represents an item in a MyLinkedList.
+ * An instance of this class represents an item in a {@link MyLinkedList}.
  *
  * @param <T> type of key
  */
@@ -18,5 +18,3 @@ public class ListItem<T> {
         this.key = key;
     }
 }
-
-

@@ -15,10 +15,6 @@ public class TestExtractPredU implements Predicate<Integer> {
      */
     @Override
     public boolean test(Integer integer) {
-        if (integer < 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return integer >= 0;
     }
 }

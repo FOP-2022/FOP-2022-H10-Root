@@ -127,7 +127,7 @@ public class TestHelpers {
      * @return first target list
      */
     public static MyLinkedList<Number> createMixinTargetList1() {
-        MyLinkedList<Number> lst = new MyLinkedList<Number>();
+        MyLinkedList<Number> lst = new MyLinkedList<>();
 
         lst.add(1.0);
         lst.add(3.0);
@@ -143,7 +143,7 @@ public class TestHelpers {
      * @return second target list
      */
     public static MyLinkedList<Number> createMixinTargetList2() {
-        MyLinkedList<Number> lst = new MyLinkedList<Number>();
+        MyLinkedList<Number> lst = new MyLinkedList<>();
 
         lst.add(0.0);
         lst.add(2.0);
@@ -159,7 +159,7 @@ public class TestHelpers {
      * @return third target list
      */
     public static MyLinkedList<Number> createMixinTargetList3() {
-        MyLinkedList<Number> lst = new MyLinkedList<Number>();
+        MyLinkedList<Number> lst = new MyLinkedList<>();
 
         lst.add(1.0);
         lst.add(3.0);
@@ -175,7 +175,7 @@ public class TestHelpers {
      * @return first source list
      */
     public static MyLinkedList<String> createMixinSourceList1() {
-        MyLinkedList<String> lst = new MyLinkedList<String>();
+        MyLinkedList<String> lst = new MyLinkedList<>();
 
         lst.add("0");
         lst.add("2");
@@ -191,7 +191,7 @@ public class TestHelpers {
      * @return second source list
      */
     public static MyLinkedList<String> createMixinSourceList2() {
-        MyLinkedList<String> lst = new MyLinkedList<String>();
+        MyLinkedList<String> lst = new MyLinkedList<>();
 
         lst.add("1");
         lst.add("3");
@@ -207,7 +207,7 @@ public class TestHelpers {
      * @return third source list
      */
     public static MyLinkedList<String> createMixinSourceList3() {
-        MyLinkedList<String> lst = new MyLinkedList<String>();
+        MyLinkedList<String> lst = new MyLinkedList<>();
 
         lst.add("0");
         lst.add("2");
@@ -223,7 +223,7 @@ public class TestHelpers {
      * @return result list
      */
     public static MyLinkedList<Number> createMixinResult() {
-        MyLinkedList<Number> lst = new MyLinkedList<Number>();
+        MyLinkedList<Number> lst = new MyLinkedList<>();
 
         lst.add(0.0);
         lst.add(1.0);

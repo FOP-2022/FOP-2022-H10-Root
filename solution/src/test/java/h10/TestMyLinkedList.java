@@ -2,13 +2,27 @@ package h10;
 
 import org.junit.jupiter.api.Test;
 
-import static h10.TestHelpers.*;
+import static h10.TestHelpers.createExtractDestinationResult;
+import static h10.TestHelpers.createExtractList1;
+import static h10.TestHelpers.createExtractList2;
+import static h10.TestHelpers.createExtractList3;
+import static h10.TestHelpers.createExtractSourceResult;
+import static h10.TestHelpers.createMixinResult;
+import static h10.TestHelpers.createMixinSourceList1;
+import static h10.TestHelpers.createMixinSourceList2;
+import static h10.TestHelpers.createMixinSourceList3;
+import static h10.TestHelpers.createMixinTargetList1;
+import static h10.TestHelpers.createMixinTargetList2;
+import static h10.TestHelpers.createMixinTargetList3;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This class is for testing the MyLinkedList class.
+ */
 public class TestMyLinkedList {
 
     /**
-     * This method tests if extract* methods of MyLinkedList work properly
+     * This method tests if extract* methods of MyLinkedList work properly.
      */
     @Test
     public void testExtract() {
@@ -20,10 +34,8 @@ public class TestMyLinkedList {
         //create all lists used for the tests
         MyLinkedList<int[]> testList1Iterative = createExtractList1();
         MyLinkedList<int[]> testList2Iterative = createExtractList2();
-        MyLinkedList<int[]> testList3Iterative = createExtractList3();
         MyLinkedList<int[]> testList1Recursive = createExtractList1();
         MyLinkedList<int[]> testList2Recursive = createExtractList2();
-        MyLinkedList<int[]> testList3Recursive = createExtractList3();
         MyLinkedList<Integer> destinationList1Iterative = null;
         MyLinkedList<Integer> destinationList1Recursive = null;
         MyLinkedList<Integer> destinationList2Iterative = null;
@@ -41,9 +53,10 @@ public class TestMyLinkedList {
         }
 
         MyLinkedList<Integer> lst = null;
+
         try {
-           destinationList2Iterative = testList2Iterative.extractIteratively(predT, fct, predU);
-           destinationList2Recursive = testList2Recursive.extractRecursively(predT, fct, predU);
+            destinationList2Iterative = testList2Iterative.extractIteratively(predT, fct, predU);
+            destinationList2Recursive = testList2Recursive.extractRecursively(predT, fct, predU);
         } catch (MyLinkedListException e) {
             //fail test if exception is thrown
             fail();
@@ -72,7 +85,7 @@ public class TestMyLinkedList {
         }
 
         //test if destination list is created correctly
-        while (pDestination1Iterative != null || pDestination1Recursive != null|| pDestination2 != null) {
+        while (pDestination1Iterative != null || pDestination1Recursive != null || pDestination2 != null) {
             //check if extractIteratively produced the desired result at current position
             assertEquals(pDestination1Iterative.key, pDestination2.key);
             //check if extractRecursively produced the desired result at current position
@@ -107,7 +120,7 @@ public class TestMyLinkedList {
         }
 
         //test if destination list is created correctly
-        while (pDestination1Iterative != null || pDestination1Recursive != null|| pDestination2 != null) {
+        while (pDestination1Iterative != null || pDestination1Recursive != null || pDestination2 != null) {
             //check if extractIteratively produced the desired result at current position
             assertEquals(pDestination1Iterative.key, pDestination2.key);
             //check if extractRecursively produced the desired result at current position
@@ -119,11 +132,19 @@ public class TestMyLinkedList {
             pDestination2 = pDestination2.next;
         }
 
+        MyLinkedList<int[]> testList3Iterative = createExtractList3();
+        MyLinkedList<int[]> testList3Recursive = createExtractList3();
+
+
         //test if exception is thrown correctly in third list by extractIteratively
-        MyLinkedListException excIterative = assertThrows(MyLinkedListException.class, () -> testList3Iterative.extractIteratively(predT, fct, predU), "no exception thrown");
+        MyLinkedListException excIterative = assertThrows(MyLinkedListException.class,
+            () -> testList3Iterative.extractIteratively(predT, fct, predU),
+            "no exception thrown");
 
         //test if exception is thrown correctly in third list by extractRecursively
-        MyLinkedListException excRecursive = assertThrows(MyLinkedListException.class, () -> testList3Recursive.extractRecursively(predT, fct, predU), "no exception thrown");
+        MyLinkedListException excRecursive = assertThrows(MyLinkedListException.class,
+            () -> testList3Recursive.extractRecursively(predT, fct, predU),
+            "no exception thrown");
 
         //check if exception message is correct (correct index) by extractIteratively
         assertEquals('4', excIterative.getMessage().charAt(1));
@@ -133,7 +154,7 @@ public class TestMyLinkedList {
     }
 
     /**
-     * This method tests if mixin* methods of MyLinkedList work properly
+     * This method tests if mixin* methods of MyLinkedList work properly.
      */
     @Test
     public void testMixin() {
@@ -147,11 +168,8 @@ public class TestMyLinkedList {
         MyLinkedList<Number> targetList1Recursive = createMixinTargetList1();
         MyLinkedList<Number> targetList2Iterative = createMixinTargetList2();
         MyLinkedList<Number> targetList2Recursive = createMixinTargetList2();
-        MyLinkedList<Number> targetList3Iterative = createMixinTargetList3();
-        MyLinkedList<Number> targetList3Recursive = createMixinTargetList3();
         MyLinkedList<String> sourceList1 = createMixinSourceList1();
         MyLinkedList<String> sourceList2 = createMixinSourceList2();
-        MyLinkedList<String> sourceList3 = createMixinSourceList3();
         MyLinkedList<Number> resultList = createMixinResult();
 
         //run mixin* on first lists
@@ -212,11 +230,19 @@ public class TestMyLinkedList {
             pResult = pResult.next;
         }
 
+        MyLinkedList<Number> targetList3Iterative = createMixinTargetList3();
+        MyLinkedList<Number> targetList3Recursive = createMixinTargetList3();
+        MyLinkedList<String> sourceList3 = createMixinSourceList3();
+
         //test if exception is thrown correctly in third list by mixinIteratively
-        MyLinkedListException excIterative = assertThrows(MyLinkedListException.class, () -> targetList3Iterative.mixinIteratively(sourceList3, biPred, fct, predU), "no exception thrown");
+        MyLinkedListException excIterative = assertThrows(MyLinkedListException.class,
+            () -> targetList3Iterative.mixinIteratively(sourceList3, biPred, fct, predU),
+            "no exception thrown");
 
         //test if exception is thrown correctly in third list by mixinRecursively
-        MyLinkedListException excRecursive = assertThrows(MyLinkedListException.class, () -> targetList3Recursive.mixinRecursively(sourceList3, biPred, fct, predU), "no exception thrown");
+        MyLinkedListException excRecursive = assertThrows(MyLinkedListException.class,
+            () -> targetList3Recursive.mixinRecursively(sourceList3, biPred, fct, predU),
+            "no exception thrown");
 
         //check if exception message is correct (correct index) by extractIteratively
         assertEquals('2', excIterative.getMessage().charAt(1));

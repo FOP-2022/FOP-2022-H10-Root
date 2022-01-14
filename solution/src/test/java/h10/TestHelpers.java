@@ -1,7 +1,15 @@
 package h10;
 
+/**
+ * This class contains methods to generate test lists for testing a MyLinkedList.
+ */
 public class TestHelpers {
 
+    /**
+     * This method creates the first test list for testExtract.
+     *
+     * @return first test list
+     */
     public static MyLinkedList<int[]> createExtractList1() {
         MyLinkedList<int[]> testList2 = new MyLinkedList<>();
 
@@ -22,6 +30,11 @@ public class TestHelpers {
         return testList2;
     }
 
+    /**
+     * This method creates the second test list for testExtract.
+     *
+     * @return second test list
+     */
     public static MyLinkedList<int[]> createExtractList2() {
         MyLinkedList<int[]> testList1 = new MyLinkedList<>();
 
@@ -42,6 +55,11 @@ public class TestHelpers {
         return testList1;
     }
 
+    /**
+     * This method creates the third test list for testExtract.
+     *
+     * @return third test list
+     */
     public static MyLinkedList<int[]> createExtractList3() {
         MyLinkedList<int[]> testList3 = new MyLinkedList<>();
 
@@ -62,6 +80,11 @@ public class TestHelpers {
         return testList3;
     }
 
+    /**
+     * This method creates the resulting source test list for testExtract.
+     *
+     * @return source test list result
+     */
     public static MyLinkedList<int[]> createExtractSourceResult() {
         MyLinkedList<int[]> result = new MyLinkedList<>();
 
@@ -79,6 +102,11 @@ public class TestHelpers {
         return result;
     }
 
+    /**
+     * This method creates the resulting destination test list for testExtract.
+     *
+     * @return destination test list result
+     */
     public static MyLinkedList<Integer> createExtractDestinationResult() {
         MyLinkedList<Integer> result = new MyLinkedList<>();
 
@@ -93,6 +121,11 @@ public class TestHelpers {
         return result;
     }
 
+    /**
+     * This method creates the first target list for testMixin.
+     *
+     * @return first target list
+     */
     public static MyLinkedList<Number> createMixinTargetList1() {
         MyLinkedList<Number> lst = new MyLinkedList<Number>();
 
@@ -104,6 +137,11 @@ public class TestHelpers {
         return lst;
     }
 
+    /**
+     * This method creates the second target list for testMixin.
+     *
+     * @return second target list
+     */
     public static MyLinkedList<Number> createMixinTargetList2() {
         MyLinkedList<Number> lst = new MyLinkedList<Number>();
 
@@ -115,6 +153,11 @@ public class TestHelpers {
         return lst;
     }
 
+    /**
+     * This method creates the third target list for testMixin.
+     *
+     * @return third target list
+     */
     public static MyLinkedList<Number> createMixinTargetList3() {
         MyLinkedList<Number> lst = new MyLinkedList<Number>();
 
@@ -126,6 +169,11 @@ public class TestHelpers {
         return lst;
     }
 
+    /**
+     * This method creates the first source list for testMixin.
+     *
+     * @return first source list
+     */
     public static MyLinkedList<String> createMixinSourceList1() {
         MyLinkedList<String> lst = new MyLinkedList<String>();
 
@@ -137,6 +185,11 @@ public class TestHelpers {
         return lst;
     }
 
+    /**
+     * This method creates the second source list for testMixin.
+     *
+     * @return second source list
+     */
     public static MyLinkedList<String> createMixinSourceList2() {
         MyLinkedList<String> lst = new MyLinkedList<String>();
 
@@ -148,6 +201,11 @@ public class TestHelpers {
         return lst;
     }
 
+    /**
+     * This method creates the third source list for testMixin.
+     *
+     * @return third source list
+     */
     public static MyLinkedList<String> createMixinSourceList3() {
         MyLinkedList<String> lst = new MyLinkedList<String>();
 
@@ -159,6 +217,11 @@ public class TestHelpers {
         return lst;
     }
 
+    /**
+     * This method creates the result list for testMixin.
+     *
+     * @return result list
+     */
     public static MyLinkedList<Number> createMixinResult() {
         MyLinkedList<Number> lst = new MyLinkedList<Number>();
 

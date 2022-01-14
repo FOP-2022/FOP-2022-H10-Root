@@ -5,20 +5,27 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * An object of this class represents a Linked List.
+ *
+ * @param <T> Type ListItem Objects saved in the LinkedList
+ */
 public class MyLinkedList<T> {
     public h10.ListItem<T> head;
 
     /**
-     * This method iteratively removes all items from the list where Predicate predT is true and returns a MyLinkedList<U> with the function result of each item in their original order
+     * This method iteratively removes all items from the list where Predicate predT is true and returns a MyLinkedList.
      *
      * @param predT predT Predicate which determines if item is to be removed
-     * @param fct Function which converts ListItem<T> to ListItem<U>
+     * @param fct Function which converts ListItem with key of type T to List item with key of type U
      * @param predU Predicate which determines if an item is invalid and an Exception has to be thrown
      * @param <U> Type of resulting list
-     * @return MyLinkedList<U>, containing the result of fct applied to each removed item in the order of all items in the original list
+     * @return MyLinkedList, containing the result of fct applied to each removed item in original order
      * @throws MyLinkedListException if the result of predU is false and an Exception has to be thrown
      */
-    public <U> MyLinkedList<U> extractIteratively(Predicate<? super T> predT, Function<? super T, ? extends U> fct, Predicate<? super U> predU) throws MyLinkedListException {
+    public <U> MyLinkedList<U> extractIteratively(Predicate<? super T> predT,
+                                                  Function<? super T, ? extends U> fct,
+                                                  Predicate<? super U> predU) throws MyLinkedListException {
         //set up source and destination lists
         MyLinkedList<T> src = this;
         MyLinkedList<U> dest = new MyLinkedList<U>();
@@ -96,42 +103,47 @@ public class MyLinkedList<T> {
     }
 
     /**
-     * This method, by calling a helper function, recursively removes all items from the list where Predicate predT is true
-     * and returns a MyLinkedList<U> with the function result of each item in their original order
+     * This method, by calling a helper function, recursively removes all items from the list where Predicate predT is true.
      *
      * @param predT predT Predicate which determines if item is to be removed
-     * @param fct Function which converts ListItem<T> to ListItem<U>
+     * @param fct Function which converts ListItem with key of type T to ListItem with key of type U
      * @param predU Predicate which determines if an item is invalid and an Exception has to be thrown
      * @param <U> Type of resulting list
-     * @return MyLinkedList<U>, containing the result of fct applied to each removed item in the order of all items in the original list
+     * @return MyLinkedList, containing the result of fct applied to each removed item in original order
      * @throws MyLinkedListException if the result of predU is false and an Exception has to be thrown
      */
-    public <U> MyLinkedList<U> extractRecursively(Predicate<? super T> predT, Function<? super T, ? extends U> fct, Predicate<? super U> predU) throws MyLinkedListException {
+    public <U> MyLinkedList<U> extractRecursively(Predicate<? super T> predT,
+                                                  Function<? super T, ? extends U> fct,
+                                                  Predicate<? super U> predU) throws MyLinkedListException {
         //call recursive helper method
         return extractRecursivelyHelper(predT, fct, predU, this.head, 0);
     }
 
     /**
-     * This method recursively removes all items from the list where Predicate predT is true and returns a MyLinkedList<U> with the function result of each item in their original order
+     * Recursively removes items from the list where Predicate predT is true and returns list with the items in original order.
+     *
      * @param predT predT Predicate which determines if item is to be removed
-     * @param fct Function which converts ListItem<T> to ListItem<U>
+     * @param fct Function which converts ListItem with key type T to ListItem with key type U
      * @param predU Predicate which determines if an item is invalid and an Exception has to be thrown
      * @param pSrc pointer to current item in the source list
      * @param index current index in the list
      * @param <U> Type of resulting list
-     * @return MyLinkedList<U>, containing the current result of fct applied to each removed item in the order of all items in the original list
+     * @return MyLinkedList, containing the current result of fct applied to each removed item in original order
      * @throws MyLinkedListException if the result of predU is false and an Exception has to be thrown
      */
-    private <U> MyLinkedList<U> extractRecursivelyHelper(Predicate<? super T> predT, Function<? super T, ? extends U> fct, Predicate<? super U> predU, ListItem<T> pSrc, int index) throws MyLinkedListException{
+    private <U> MyLinkedList<U> extractRecursivelyHelper(Predicate<? super T> predT,
+                                                         Function<? super T, ? extends U> fct,
+                                                         Predicate<? super U> predU,
+                                                         ListItem<T> pSrc, int index) throws MyLinkedListException {
         //set up destination list
         MyLinkedList<U> destinationList = new MyLinkedList<U>();
 
         //go through the list recursively until end is reached
-        if(pSrc.next != null) {
-            destinationList = extractRecursivelyHelper(predT, fct, predU, pSrc.next, index+1);
+        if (pSrc.next != null) {
+            destinationList = extractRecursivelyHelper(predT, fct, predU, pSrc.next, index + 1);
         }
 
-        //if the end is reached, check if last item has to be added to destination list (and be removed from src list) and go one step back
+        //if the end is reached, check if last item has to be added to destination list (and be removed from src list)
         if (pSrc.next == null) {
             if (predT.test(pSrc.key)) {
                 U key = fct.apply(pSrc.key);
@@ -189,15 +201,19 @@ public class MyLinkedList<T> {
     }
 
     /**
-     * This method merges two MyLinkedLists by adding the result of fct applied to each item of otherList to the list the current objects represents
+     * This method merges two MyLinkedLists by adding the result of fct applied to each item of otherList to current list.
+     *
      * @param otherList Source list from which items are to be mixed into the target list
      * @param biPred Predicate to check if second parameter has to be inserted at position of first parameter
      * @param fct Function to convert item of type U to type T
      * @param predU Predicate to determine if item in source list is a valid item to be inserted into target list
      * @param <U> Type of the source list
-     * @throws MyLinkedListException if the result of predU is false, and therefore its parameter is not a valid item to be inserted into target list
+     * @throws MyLinkedListException if the result of predU is false, and parameter is not valid to be inserted into target list
      */
-    public <U> void mixinIteratively(MyLinkedList<U> otherList, BiPredicate<? super T, ? super U> biPred, Function<? super U,? extends T> fct, Predicate<? super U> predU) throws MyLinkedListException {
+    public <U> void mixinIteratively(MyLinkedList<U> otherList,
+                                     BiPredicate<? super T, ? super U> biPred,
+                                     Function<? super U, ? extends T> fct,
+                                     Predicate<? super U> predU) throws MyLinkedListException {
         //return if the source list is empty
         if (otherList.head == null) {
             return;
@@ -235,18 +251,18 @@ public class MyLinkedList<T> {
                     pCurrent = this.head;
                     pPrevious = item;
                     this.head = item;
-                }
-                else if (pPrevious == null && biPred.test(pCurrent.key, pSource.key)) {
+                } else if (pPrevious == null && biPred.test(pCurrent.key, pSource.key)) {
                     item.next = this.head;
                     pCurrent = this.head;
                     pPrevious = item;
                     this.head = item;
 
-                } else if (pPrevious != null){ //if end of target list is reached, add item to the end
+                } else if (pPrevious != null) { //if end of target list is reached, add item to the end
                     pPrevious.next = item;
                     pPrevious = pPrevious.next;
                 }
-            } else if (biPred.test(pCurrent.key, pSource.key)) { //if target list is not empty nor the end is reached, check if item has to be inserted at current position
+            } else if (biPred.test(pCurrent.key, pSource.key)) {
+                //if target list is not empty nor the end is reached, check if item has to be inserted at current position
                 //insert item at current position
                 item.next = pCurrent;
                 pPrevious.next = item;
@@ -263,15 +279,19 @@ public class MyLinkedList<T> {
     }
 
     /**
-     * This method merges two MyLinkedLists by calling a helper function
+     * This method merges two MyLinkedLists by calling a helper function.
+     *
      * @param otherList Source list from which items are to be mixed into the target list
      * @param biPred Predicate to check if second parameter has to be inserted at position of first parameter
      * @param fct Function to convert item of type U to type T
      * @param predU Predicate to determine if item in source list is a valid item to be inserted into target list
      * @param <U> Type of the source list
-     * @throws MyLinkedListException if the result of predU is false, and therefore its parameter is not a valid item to be inserted into target list
+     * @throws MyLinkedListException if result of predU is false and its parameter is valid to be inserted into target list
      */
-    public <U> void mixinRecursively(MyLinkedList<U> otherList, BiPredicate<? super T, ? super U> biPred, Function<? super U,? extends T> fct, Predicate<? super U> predU) throws MyLinkedListException {
+    public <U> void mixinRecursively(MyLinkedList<U> otherList,
+                                     BiPredicate<? super T, ? super U> biPred,
+                                     Function<? super U, ? extends T> fct,
+                                     Predicate<? super U> predU) throws MyLinkedListException {
         //if source list is empty, return without changing the target list
         if (otherList.head == null) {
             return;
@@ -281,7 +301,8 @@ public class MyLinkedList<T> {
     }
 
     /**
-     * This method merges two MyLinkedLists by adding the result of fct applied to each item of otherList to the list the current objects represents
+     * This method merges two MyLinkedLists by adding the result of fct applied to each item of otherList to current list.
+     *
      * @param otherList Source list from which items are to be mixed into the target list
      * @param biPred Predicate to check if second parameter has to be inserted at position of first parameter
      * @param fct Function to convert item of type U to type T
@@ -290,9 +311,15 @@ public class MyLinkedList<T> {
      * @param pDest pointer to current item at target list
      * @param index current index at source list
      * @param <U> Type of the source list
-     * @throws MyLinkedListException if the result of predU is false, and therefore its parameter is not a valid item to be inserted into target list
+     * @throws MyLinkedListException if result of predU is false and its parameter is not valid to be inserted into target list
      */
-    private <U> void mixinRecursivelyHelper(MyLinkedList<U> otherList, BiPredicate<? super T, ? super U> biPred, Function<? super U,? extends T> fct, Predicate<? super U> predU, ListItem<U> pSrc, ListItem<T> pDest, int index) throws MyLinkedListException {
+    private <U> void mixinRecursivelyHelper(MyLinkedList<U> otherList,
+                                            BiPredicate<? super T, ? super U> biPred,
+                                            Function<? super U, ? extends T> fct,
+                                            Predicate<? super U> predU,
+                                            ListItem<U> pSrc,
+                                            ListItem<T> pDest,
+                                            int index) throws MyLinkedListException {
         //if items from source list have been inserted, return
         if (pSrc == null) {
             return;
@@ -311,16 +338,18 @@ public class MyLinkedList<T> {
             item = new ListItem<>(fct.apply(pSrc.key));
             item.next = this.head;
             this.head = item;
-            mixinRecursivelyHelper(otherList, biPred, fct, predU, pSrc.next, pDest, index+1);
-        } else if (pDest.next != null && biPred.test(pDest.next.key, pSrc.key)) { //check if item at pSrc has to be inserted at position of pDest.next and potentially add it to the list if current item has to be inserted at next position in target list, add it to the list
+            mixinRecursivelyHelper(otherList, biPred, fct, predU, pSrc.next, pDest, index + 1);
+        } else if (pDest.next != null && biPred.test(pDest.next.key, pSrc.key)) {
+            //check if item at pSrc has to be inserted at position of pDest.next and potentially add it to the list
+            //if current item has to be inserted at next position in target list, add it to the list
             item = new ListItem<>(fct.apply(pSrc.key));
             item.next = pDest.next;
             pDest.next = item;
-            mixinRecursivelyHelper(otherList, biPred, fct, predU, pSrc.next, pDest.next, index+1);
+            mixinRecursivelyHelper(otherList, biPred, fct, predU, pSrc.next, pDest.next, index + 1);
         } else if (pDest.next == null) { //if end of the list is reached, insert item at pSrc at the end of pDest
             item = new ListItem<>(fct.apply(pSrc.key));
             pDest.next = item;
-            mixinRecursivelyHelper(otherList, biPred, fct, predU, pSrc.next, pDest.next, index+1);
+            mixinRecursivelyHelper(otherList, biPred, fct, predU, pSrc.next, pDest.next, index + 1);
         } else { //if position at pDest is not the correct position for pSrc, go to next item in target list
             mixinRecursivelyHelper(otherList, biPred, fct, predU, pSrc, pDest.next, index);
         }
@@ -328,7 +357,8 @@ public class MyLinkedList<T> {
     }
 
     /**
-     * This method adds a new list item with parameter "key" as its key value to the list
+     * This method adds a new list item with parameter "key" as its key value to the list.
+     *
      * @param key key value of item to be added
      * @return boolean stating if the item has been added to the list successfully
      */
@@ -340,7 +370,7 @@ public class MyLinkedList<T> {
 
         ListItem<T> p = head;
 
-        while(p.next != null) {
+        while (p.next != null) {
             p = p.next;
         }
 

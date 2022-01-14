@@ -2,10 +2,14 @@ package h10;
 
 import java.util.function.Function;
 
+/**
+ * This function is used to sum up all integers in an array.
+ */
 public class TestExtractFct implements Function<int[], Integer> {
 
     /**
-     * This method returns the sum of all integers in an array
+     * This method calculates the sum of all ints in an array.
+     *
      * @param ints array of which the sum is to be calculated
      * @return sum of all integers in array "ints"
      */
@@ -17,5 +21,6 @@ public class TestExtractFct implements Function<int[], Integer> {
             sum += i;
         }
 
-        return sum;    }
+        return sum;
+    }
 }

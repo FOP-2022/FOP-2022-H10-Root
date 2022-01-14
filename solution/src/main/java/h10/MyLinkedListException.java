@@ -12,6 +12,6 @@ public class MyLinkedListException extends Exception {
      * @param x object at index i in MyLinkedList
      */
     public MyLinkedListException(Integer i, Object x) {
-        super("(" + i.intValue() + "," + x.toString() + ")");
+        super("(" + i + "," + x.toString() + ")");
     }
 }

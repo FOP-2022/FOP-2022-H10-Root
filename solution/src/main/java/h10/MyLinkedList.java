@@ -18,7 +18,7 @@ public class MyLinkedList<T> {
      * @return MyLinkedList<U>, containing the result of fct applied to each removed item in the order of all items in the original list
      * @throws MyLinkedListException if the result of predU is false and an Exception has to be thrown
      */
-    public <U> MyLinkedList<U> extractIteratively(Predicate<T> predT, Function<T, U> fct, Predicate<U> predU) throws MyLinkedListException {
+    public <U> MyLinkedList<U> extractIteratively(Predicate<? super T> predT, Function<? super T, ? extends U> fct, Predicate<? super U> predU) throws MyLinkedListException {
         //set up source and destination lists
         MyLinkedList<T> src = this;
         MyLinkedList<U> dest = new MyLinkedList<U>();
@@ -106,7 +106,7 @@ public class MyLinkedList<T> {
      * @return MyLinkedList<U>, containing the result of fct applied to each removed item in the order of all items in the original list
      * @throws MyLinkedListException if the result of predU is false and an Exception has to be thrown
      */
-    public <U> MyLinkedList<U> extractRecursively(Predicate<T> predT, Function<T, U> fct, Predicate<U> predU) throws MyLinkedListException {
+    public <U> MyLinkedList<U> extractRecursively(Predicate<? super T> predT, Function<? super T, ? extends U> fct, Predicate<? super U> predU) throws MyLinkedListException {
         //call recursive helper method
         return extractRecursivelyHelper(predT, fct, predU, this.head, 0);
     }
@@ -122,7 +122,7 @@ public class MyLinkedList<T> {
      * @return MyLinkedList<U>, containing the current result of fct applied to each removed item in the order of all items in the original list
      * @throws MyLinkedListException if the result of predU is false and an Exception has to be thrown
      */
-    private <U> MyLinkedList<U> extractRecursivelyHelper(Predicate<T> predT, Function<T, U> fct, Predicate<U> predU, ListItem<T> pSrc, int index) throws MyLinkedListException{
+    private <U> MyLinkedList<U> extractRecursivelyHelper(Predicate<? super T> predT, Function<? super T, ? extends U> fct, Predicate<? super U> predU, ListItem<T> pSrc, int index) throws MyLinkedListException{
         //set up destination list
         MyLinkedList<U> destinationList = new MyLinkedList<U>();
 
@@ -197,7 +197,7 @@ public class MyLinkedList<T> {
      * @param <U> Type of the source list
      * @throws MyLinkedListException if the result of predU is false, and therefore its parameter is not a valid item to be inserted into target list
      */
-    public <U> void mixinIteratively(MyLinkedList<U> otherList, BiPredicate<T, U> biPred, Function<U, T> fct, Predicate<U> predU) throws MyLinkedListException {
+    public <U> void mixinIteratively(MyLinkedList<U> otherList, BiPredicate<? super T, ? super U> biPred, Function<? super U,? extends T> fct, Predicate<? super U> predU) throws MyLinkedListException {
         //return if the source list is empty
         if (otherList.head == null) {
             return;
@@ -271,7 +271,7 @@ public class MyLinkedList<T> {
      * @param <U> Type of the source list
      * @throws MyLinkedListException if the result of predU is false, and therefore its parameter is not a valid item to be inserted into target list
      */
-    public <U> void mixinRecursively(MyLinkedList<U> otherList, BiPredicate<T, U> biPred, Function<U, T> fct, Predicate<U> predU) throws MyLinkedListException {
+    public <U> void mixinRecursively(MyLinkedList<U> otherList, BiPredicate<? super T, ? super U> biPred, Function<? super U,? extends T> fct, Predicate<? super U> predU) throws MyLinkedListException {
         //if source list is empty, return without changing the target list
         if (otherList.head == null) {
             return;
@@ -292,7 +292,7 @@ public class MyLinkedList<T> {
      * @param <U> Type of the source list
      * @throws MyLinkedListException if the result of predU is false, and therefore its parameter is not a valid item to be inserted into target list
      */
-    private <U> void mixinRecursivelyHelper(MyLinkedList<U> otherList, BiPredicate<T, U> biPred, Function<U, T> fct, Predicate<U> predU, ListItem<U> pSrc, ListItem<T> pDest, int index) throws MyLinkedListException {
+    private <U> void mixinRecursivelyHelper(MyLinkedList<U> otherList, BiPredicate<? super T, ? super U> biPred, Function<? super U,? extends T> fct, Predicate<? super U> predU, ListItem<U> pSrc, ListItem<T> pDest, int index) throws MyLinkedListException {
         //if items from source list have been inserted, return
         if (pSrc == null) {
             return;

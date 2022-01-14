@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * This class is for testing the MyLinkedList class.
  */
-public class TestMyLinkedList {
+public class MyLinkedListTest {
 
     /**
      * This method tests if extract* methods of MyLinkedList work properly.

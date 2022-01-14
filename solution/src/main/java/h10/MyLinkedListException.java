@@ -1,7 +1,7 @@
 package h10;
 
 /**
- * Exceptions used in {@link MyLinkedList}
+ * Exceptions used in {@link MyLinkedList}.
  */
 public class MyLinkedListException extends Exception {
 

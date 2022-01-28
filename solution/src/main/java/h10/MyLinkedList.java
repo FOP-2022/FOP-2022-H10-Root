@@ -340,7 +340,7 @@ public class MyLinkedList<T> {
             // Case current == null only occurs if we reached the tail of the list
             T mapped = fct.apply(key);
             pDest.next = new ListItem<>(mapped);
-            pDest = pDest.next;
+            pSrc = pSrc.next;
         }
         // Iterate over the next elements
         mixinRecursivelyHelper(otherList, biPred, fct, predU, pSrc, pDest.next, index + 1);

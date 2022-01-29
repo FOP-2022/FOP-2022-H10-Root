@@ -4,6 +4,8 @@ package h10;
  * An instance of this class represents an item in a {@link MyLinkedList}.
  *
  * @param <T> type of key
+ *
+ * @author Nhan Huynh
  */
 public class ListItem<T> {
     /**

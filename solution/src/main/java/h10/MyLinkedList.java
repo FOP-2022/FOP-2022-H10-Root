@@ -9,6 +9,7 @@ import java.util.function.Predicate;
  *
  * @param <T> the type of the elements in this list
  *
+ * @author Nhan Huynh
  * @see ListItem
  */
 public class MyLinkedList<T> {

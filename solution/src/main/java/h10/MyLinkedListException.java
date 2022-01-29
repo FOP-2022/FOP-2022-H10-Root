@@ -3,6 +3,8 @@ package h10;
 
 /**
  * Thrown to indicate that an illegal operation with an element of the list.
+ *
+ * @author Nhan Huynh
  */
 public class MyLinkedListException extends Exception {
 

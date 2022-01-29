@@ -1,15 +1,17 @@
 package h10;
 
+
 /**
- * Exceptions used in {@link MyLinkedList}.
+ * Thrown to indicate that an illegal operation with an element of the list.
  */
 public class MyLinkedListException extends Exception {
 
     /**
-     * This method creates an object of type MyLinkedListException with the message (i, x).
+     * Constructs and initializes a {@code MyLinkedListException} with two argument indicating element and the index of
+     * it where the illegal operation occurred.
      *
-     * @param i index of element in MyLinkedList
-     * @param x object at index i in MyLinkedList
+     * @param i the index of the element
+     * @param x th element at the specified element
      */
     public MyLinkedListException(Integer i, Object x) {
         super("(" + i + "," + x.toString() + ")");

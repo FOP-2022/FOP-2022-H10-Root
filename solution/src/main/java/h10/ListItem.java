@@ -6,13 +6,25 @@ package h10;
  * @param <T> type of key
  */
 public class ListItem<T> {
+    /**
+     * The successor node of this list item.
+     */
     public ListItem<T> next;
+    /**
+     * The value of this list item.
+     */
     public T key;
 
     /**
-     * This method creates a new ListItem of type T with the given key.
+     * Constructs and initializes an empty list item.
+     */
+    public ListItem() {
+    }
+
+    /**
+     * Constructs and initializes an empty list item with a value.
      *
-     * @param key is the key of the ListItem to be created
+     * @param key the value of the list item
      */
     public ListItem(T key) {
         this.key = key;

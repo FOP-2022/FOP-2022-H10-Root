@@ -8,7 +8,6 @@ import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.Set;
 
 import static java.lang.reflect.Modifier.isPublic;
@@ -27,54 +26,7 @@ import java.util.stream.Collectors;
 @TestForSubmission("h10")
 @DisplayName("Criterion: Class Traits")
 public final class TutorTest_H3 {
-
-    /* *********************************************************************
-     *                         Some helper methods                         *
-     **********************************************************************/
-
-    private Number[] generateManyNumbers(int numElems) {
-        Number[] ints = new Number[numElems];
-        for (int i = 0; i < numElems; i++) ints[i] = new Random().nextInt();
-        return ints;
-    }
-
-    private Integer[][] generateManyIntegerArrays(int numElems, int numArrays) {
-        Integer[][] intArrays = new Integer[numArrays][numElems];
-        for (int i = 0; i < numArrays; i++) {
-            for (int j = 0; j < numElems; j++) {
-                intArrays[i][j] = new Random().nextInt();
-            }
-        }
-        return intArrays;
-    }
-
-    private String[] generateManyStrings(int numElems) {
-        String[] strings = new String[numElems];
-        for (int i = 0; i < numElems; i++) {
-            if (i % 2 == 0) strings[i] = String.valueOf(new Random().nextInt());
-            else strings[i] = "hello";
-        }
-        return strings;
-    }
-
-    private Integer expectedFct(Integer[] array) {
-        Integer result = 0;
-        for (Integer a : array) result += a;
-        return result;
-    }
-
-    private boolean expectedPredT(Integer[] array) {
-        for (int i = 0; i < array.length; i++) {
-            for (int j = 0; j < array.length; j++) {
-                if (i != j && array[i] % array[j] == 0) return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean expectedPredU(Integer integer) {
-        return integer >= 0;
-    }
+    TutorTest_H3_Helper helper = new TutorTest_H3_Helper();
 
     /* *********************************************************************
      *                               H3.1                                  *
@@ -148,11 +100,11 @@ public final class TutorTest_H3 {
                     if (m.getReturnType().equals(Integer.class)
                         && m.getParameterCount() == 1
                         && m.getParameters()[0].getType().equals(Integer[].class)) {
-                        Integer[][] intArrays = generateManyIntegerArrays(10, 50);
+                        Integer[][] intArrays = helper.generateManyIntegerArrays(10, 50);
 
                         // check the method in fct class with many Integers Arrays
                         for (var a : intArrays) {
-                            Integer expected = expectedFct(a);
+                            Integer expected = helper.expectedFct(a);
                             Integer actual = 0; // TODO : how to use this class' method to get actual result?
                             assertEquals(expected, actual, "fct Class is incorrect");
                         }
@@ -163,11 +115,11 @@ public final class TutorTest_H3 {
                     if (m.getReturnType().equals(boolean.class)
                         && m.getParameterCount() == 1
                         && m.getParameters()[0].getType().equals(Integer[].class)) {
-                        Integer[][] intArrays = generateManyIntegerArrays(10, 50);
+                        Integer[][] intArrays = helper.generateManyIntegerArrays(10, 50);
 
                         // check the method in predT class with many Integer Arrays
                         for (var a : intArrays) {
-                            boolean expected = expectedPredT(a);
+                            boolean expected = helper.expectedPredT(a);
                             boolean actual = false; // TODO : how to use this class' method to get actual result?
                             assertEquals(expected, actual, "predT Class is incorrect");
                         }
@@ -178,11 +130,11 @@ public final class TutorTest_H3 {
                     if (m.getReturnType().equals(boolean.class)
                         && m.getParameterCount() == 1
                         && m.getParameters()[0].getType().equals(Integer.class)) {
-                        Integer[] ints = (Integer[]) generateManyNumbers(50);
+                        Integer[] ints = (Integer[]) helper.generateManyNumbers(50);
 
                         // check the method in predU class with many Integers
                         for (var a : ints) {
-                            boolean expected = expectedPredU(a);
+                            boolean expected = helper.expectedPredU(a);
                             boolean actual = false; // TODO : how to use this class' method to get actual result?
                             assertEquals(expected, actual, "predU Class is incorrect");
                         }
@@ -265,8 +217,8 @@ public final class TutorTest_H3 {
 
             // TODO : how to check if lambdas are used?
             if (biPred) {
-                Number[] nums = generateManyNumbers(50);
-                String[] strings = Arrays.stream(generateManyNumbers(50))
+                Number[] nums = helper.generateManyNumbers(50);
+                String[] strings = Arrays.stream(helper.generateManyNumbers(50))
                     .map(Object::toString)
                     .toArray(String[]::new);
 
@@ -277,7 +229,7 @@ public final class TutorTest_H3 {
                     assertEquals(expected, actual, "biPred constant is incorrect");
                 }
             } else if (predU) {
-                String[] strings = generateManyStrings(50);
+                String[] strings = helper.generateManyStrings(50);
 
                 // check the predU constant with many inputs
                 for (int i = 0; i < 50; i++) {
@@ -293,7 +245,7 @@ public final class TutorTest_H3 {
                     assertEquals(expected, actual, "predU constant is incorrect");
                 }
             } else {
-                Number[] nums = generateManyNumbers(50);
+                Number[] nums = helper.generateManyNumbers(50);
 
                 // check the fct constant with many inputs
                 for (int i = 0; i < 50; i++) {

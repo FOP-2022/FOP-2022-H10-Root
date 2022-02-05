@@ -7,13 +7,22 @@
     {
       "name": "grader",
       "files": [
-        "grader_files_here"
+        "h10/H10_RubricProvider.java",
+        "h10/TutorTest_H1.java",
+        "h10/TutorTest_H2.java",
+        "h10/TutorTest_H3.java"
       ]
     },
     {
       "name": "solution",
       "files": [
-        "solution_files_here"
+        "h10/ListItem.java",
+        "h10/MyLinkedList.java",
+        "h10/MyLinkedListException.java",
+        "h10/TestMyLinkedList.java",
+        "h10/TestFctExtract.java",
+        "h10/TestPredTExtract.java",
+        "h10/TestPredUExtract.java"
       ]
     }
   ]

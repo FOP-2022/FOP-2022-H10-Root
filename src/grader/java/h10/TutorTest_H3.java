@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * @author Arianne Roselina Prananto
  */
 @TestForSubmission("h10")
-@DisplayName("Criterion: Class Traits")
+@DisplayName("Criterion: H3")
 public final class TutorTest_H3 {
     TutorTest_H3_Helper helper = new TutorTest_H3_Helper();
 

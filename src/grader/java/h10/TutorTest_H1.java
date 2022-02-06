@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Arianne Roselina Prananto
  */
 @TestForSubmission("h10")
-@DisplayName("Criterion: Class Traits")
+@DisplayName("Criterion: H1")
 public final class TutorTest_H1 {
 
     /* *********************************************************************

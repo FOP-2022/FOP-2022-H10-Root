@@ -1,10 +1,12 @@
 package h10;
 
+import java.lang.reflect.Array;
 import java.util.Random;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static java.lang.Math.max;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -18,30 +20,25 @@ public final class TutorTest_H2_Helper<T> {
      *                      Define some fct functions                      *
      **********************************************************************/
 
-    // array from 0 to the given Integer
-    protected Function<Integer, Integer[]> fct1 = i -> {
+    // listElem from 0 to the given Integer
+    protected Function<Integer, Integer[]> fctExtract1 = i -> {
         Integer[] ints = new Integer[i];
-        for (int j = 0; j <= i; j++) ints[j] = j;
+        for (int j = 0; j < i; j++) ints[j] = j;
         return ints;
     };
 
-    // array of each character in the String
-    protected Function<String, Integer[]> fct2 = s -> {
-        Integer[] ints = new Integer[s.length()];
-        for (int i = 0; i < s.length(); i++) {
-            ints[i] = (int) s.charAt(i);
-        }
-        return ints;
+    // string to double
+    protected Function<String, Double> fctExtract2 = s -> Double.valueOf(s);
+
+    // max number
+    protected Function<Integer[], Integer> fctMixin1 = ints -> {
+        Integer max = ints[0];
+        for (int i = 1; i < ints.length; i++) max = max(ints[i], max);
+        return max;
     };
 
-    // round down all elements to integer
-    protected Function<Object[], Double> fct3 = o -> {
-        Double sum = 0.0;
-        for (Object value : o) {
-            sum += ((Number) value).doubleValue();
-        }
-        return sum;
-    };
+    // listElem of each character in the String
+    protected Function<Double, String> fctMixin2 = d -> d.toString();
 
     /* *********************************************************************
      *                     Define some predT predicates                    *
@@ -52,14 +49,6 @@ public final class TutorTest_H2_Helper<T> {
 
     // first character is 1
     protected Predicate<String> predT2 = s -> s.charAt(0) == '1';
-
-    // all elements are instance of double
-    protected Predicate<Object[]> predT3 = o -> {
-        for (Object eachO : o) {
-            if (!(eachO instanceof Double)) return false;
-        }
-        return true;
-    };
 
     /* *********************************************************************
      *                     Define some predU predicates                    *
@@ -74,38 +63,31 @@ public final class TutorTest_H2_Helper<T> {
         return count >= 3;
     };
 
-    // has at least one element that shows up at least twice
-    protected Predicate<Integer[]> predU2 = i -> {
-        for (int k = 0; k < i.length; k++) {
-            for (int j = k + 1; j < i.length; j++) {
-                if (i[k].equals(i[j])) return true;
-            }
-        }
-        return false;
-    };
-
-    // has at least 4 digits (x.xxx)
-    protected Predicate<Double> predU3 = d -> d.toString().length() >= 5;
+    // is a multiple of 3
+    protected Predicate<Double> predU2 = d -> d % 3 == 0;
 
     /* *********************************************************************
      *                     Define some biPred predicates                   *
      **********************************************************************/
 
     // have the same values
-    protected BiPredicate<Number, String> biPred1 = (n, s) -> n.doubleValue() == Double.parseDouble(s);
+    protected BiPredicate<Integer, Integer[]> biPred1 = (i, a) -> i > a.length;
+
+    // have the same values
+    protected BiPredicate<String, Double> biPred2 = (s, d) -> Double.parseDouble(s) == d;
 
     /* *********************************************************************
-     *                        Define lists generator                       *
+     *                   Define lists generator for extract                *
      **********************************************************************/
 
-    protected MyLinkedList<Integer>[] generateMyLinkedList1WithoutExc(int numElems, int numArrays) {
+    protected MyLinkedList<Integer>[] generateThisListExtract1WithoutExc() {
         @SuppressWarnings("unchecked")
-        MyLinkedList<Integer>[] sourceLists = new MyLinkedList[numArrays];
+        MyLinkedList<Integer>[] sourceLists = new MyLinkedList[10];
         sourceLists[0] = new MyLinkedList<>(); // null list
 
-        for (int i = 1; i < numArrays; i++) {
+        for (int i = 1; i < 10; i++) {
             MyLinkedList<Integer> list = new MyLinkedList<>();
-            for (int j = 0; j < numElems; j++) {
+            for (int j = 0; j < 10; j++) {
                 // make sure there will be at least 3 elements greater than 10 after all operations despite the choice
                 // of numElems (12, 14, 16)
                 list.add(j + 16);
@@ -115,9 +97,9 @@ public final class TutorTest_H2_Helper<T> {
         return sourceLists;
     }
 
-    protected MyLinkedList<Integer>[] generateMyLinkedList1WithExc() {
+    protected MyLinkedList<Integer>[] generateThisListExtract1WithExc() {
         @SuppressWarnings("unchecked")
-        MyLinkedList<Integer>[] sourceLists = new MyLinkedList[2];
+        MyLinkedList<Integer>[] sourceLists = new MyLinkedList[3];
 
         // make sure there are no 3 elements greater than 10 after all operations
         MyLinkedList<Integer> list = new MyLinkedList<>();
@@ -125,31 +107,52 @@ public final class TutorTest_H2_Helper<T> {
         sourceLists[0] = list; // {0 -> null}
 
         list = new MyLinkedList<>();
+        for (int i = 0; i < 10; i++) list.add(0);
+        sourceLists[1] = list; // {0 -> 0 -> ... -> null}
+
+        list = new MyLinkedList<>();
         for (int j = 0; j < 10; j++) {
             list.add(j);
         }
-        sourceLists[1] = list;
+        sourceLists[2] = list;
         return sourceLists;
     }
 
-    protected MyLinkedList<String>[] generateMyLinkedList2WithoutExc(int numElems, int numArrays) {
+    protected MyLinkedList<String>[] generateThisListExtract2WithoutExc() {
         @SuppressWarnings("unchecked")
-        MyLinkedList<String>[] sourceLists = new MyLinkedList[numArrays];
+        MyLinkedList<String>[] sourceLists = new MyLinkedList[10];
 
-        for (int i = 0; i < numArrays; i++) {
+        for (int i = 0; i < 10; i++) {
             MyLinkedList<String> list = new MyLinkedList<>();
-            for (int j = 0; j < numElems; j++) {
+            for (int j = 0; j < 10; j++) {
+                // make sure there are some strings that start with 1
+                String str = "0";
+                if (j % 2 == 0) str = "1";
+                str += Integer.toString(new Random().nextInt(1000));
+
+                // make sure it is a multiple of 3
+                list.add((Double.parseDouble(str) % 3 != 0) ?
+                             String.valueOf(Double.parseDouble(str) * 3) : str);
+            }
+            sourceLists[i] = list;
+        }
+        return sourceLists;
+    }
+
+    protected MyLinkedList<String>[] generateThisListExtract2WithExc() {
+        @SuppressWarnings("unchecked")
+        MyLinkedList<String>[] sourceLists = new MyLinkedList[10];
+
+        for (int i = 0; i < 10; i++) {
+            MyLinkedList<String> list = new MyLinkedList<>();
+            for (int j = 0; j < 10; j++) {
                 // make sure there are some strings that start with 1
                 String str = "0";
                 if (j % 2 == 0) str = "1";
 
-                for (int k = 1; k < 9; k++) {
-                    str += Integer.toString(new Random().nextInt(10));
-                }
-                // make sure there will be at least one element that shows up at least twice
-                int rn = new Random().nextInt(9);
-                str += str.charAt(rn);
-
+                // make sure there are some elements that are not multiples of 3
+                var rn = new Random().nextInt(1000);
+                str += Integer.toString((j % 4 == 0 && rn % 3 == 0) ? ++rn : rn);
                 list.add(str);
             }
             sourceLists[i] = list;
@@ -157,23 +160,114 @@ public final class TutorTest_H2_Helper<T> {
         return sourceLists;
     }
 
-    protected MyLinkedList<String>[] generateMyLinkedList2WithExc() {
+    /* *********************************************************************
+     *                    Define lists generator for mixin                 *
+     **********************************************************************/
+
+    protected MyLinkedList<Integer>[] generateThisListMixin1() {
         @SuppressWarnings("unchecked")
-        MyLinkedList<String>[] sourceLists = new MyLinkedList[1];
-        MyLinkedList<String> list = new MyLinkedList<>();
+        MyLinkedList<Integer>[] targetLists = new MyLinkedList[10];
+        targetLists[0] = new MyLinkedList<>(); // null list
 
-        for (int j = 0; j < 5; j++) {
-            // make sure there are some strings that start with 1
-            String str = "0";
-            if (j % 2 == 0) str = "1";
-
-            // make sure there is no element that shows up at least twice
-            for (int k = 2; k < 5; k++) {
-                str += Integer.toString(k);
+        for (int i = 1; i < 10; i++) {
+            MyLinkedList<Integer> list = new MyLinkedList<>();
+            for (int j = 0; j < 10; j++) {
+                list.add(new Random().nextInt(100));
             }
-            list.add(str);
+            targetLists[i] = list;
         }
-        sourceLists[0] = list;
+        return targetLists;
+    }
+
+    protected MyLinkedList<String>[] generateThisListMixin2() {
+        @SuppressWarnings("unchecked")
+        MyLinkedList<String>[] targetLists = new MyLinkedList[10];
+        targetLists[0] = new MyLinkedList<>(); // null list
+
+        for (int i = 1; i < 10; i++) {
+            MyLinkedList<String> list = new MyLinkedList<>();
+            for (int j = 0; j < 10; j++) {
+                list.add(String.valueOf(new Random().nextDouble() * 1000));
+            }
+            targetLists[i] = list;
+        }
+        return targetLists;
+    }
+
+    protected MyLinkedList<Integer[]>[] generateOtherListMixin1WithoutExc() {
+        @SuppressWarnings("unchecked")
+        MyLinkedList<Integer[]>[] sourceLists = new MyLinkedList[10];
+        sourceLists[0] = new MyLinkedList<>(); // null list
+
+        for (int i = 1; i < 10; i++) {
+            MyLinkedList<Integer[]> list = new MyLinkedList<>();
+            for (int j = 0; j < 10; j++) {
+                Integer[] listElem = new Integer[10];
+                for (int k = 0; k < 10; k++) {
+                    // make sure there will be at least 3 elements greater than 10 after all operations
+                    listElem[k] = new Random().nextInt(100);
+                    if (k % 3 == 0) listElem[k] += 11;
+                }
+                list.add(listElem);
+            }
+            sourceLists[i] = list;
+        }
+        return sourceLists;
+    }
+
+    protected MyLinkedList<Integer[]>[] generateOtherListMixin1WithExc() {
+        @SuppressWarnings("unchecked")
+        MyLinkedList<Integer[]>[] sourceLists = new MyLinkedList[10];
+
+        // make sure there are no 3 elements greater than 10 after all operations
+        MyLinkedList<Integer[]> list = new MyLinkedList<>();
+        list.add(new Integer[]{0, 0, 0});
+        sourceLists[0] = list; // {{0,0,0} -> null}
+
+        list = new MyLinkedList<>();
+        for (int i = 0; i < 10; i++) list.add(new Integer[]{0, 0, 0});
+        sourceLists[1] = list; // {{0,0,0} -> {0,0,0} -> ... -> null}
+
+        for (int i = 2; i < 10; i++) {
+            list = new MyLinkedList<>();
+            for (int j = 0; j < 10; j++) {
+                Integer[] listElem = new Integer[10];
+                for (int k = 0; k < 10; k++) listElem[k] = new Random().nextInt(10);
+                list.add(listElem);
+            }
+            sourceLists[i] = list;
+        }
+        return sourceLists;
+    }
+
+    protected MyLinkedList<Double>[] generateOtherListMixin2WithoutExc() {
+        @SuppressWarnings("unchecked")
+        MyLinkedList<Double>[] sourceLists = new MyLinkedList[10];
+
+        for (int i = 0; i < 10; i++) {
+            MyLinkedList<Double> list = new MyLinkedList<>();
+            for (int j = 0; j < 10; j++) {
+                // make sure it is a multiple of 3
+                list.add((double) new Random().nextInt(1000) * 3);
+            }
+            sourceLists[i] = list;
+        }
+        return sourceLists;
+    }
+
+    protected MyLinkedList<Double>[] generateOtherListMixin2WithExc() {
+        @SuppressWarnings("unchecked")
+        MyLinkedList<Double>[] sourceLists = new MyLinkedList[10];
+
+        for (int i = 0; i < 10; i++) {
+            MyLinkedList<Double> list = new MyLinkedList<>();
+            for (int j = 0; j < 10; j++) {
+                // make sure there are some elements that are not multiples of 3
+                var rn = (double) new Random().nextInt(1000);
+                list.add((j % 4 == 0 && rn % 3 == 0) ? ++rn : rn);
+            }
+            sourceLists[i] = list;
+        }
         return sourceLists;
     }
 
@@ -217,20 +311,116 @@ public final class TutorTest_H2_Helper<T> {
         return removed;
     }
 
+    protected <U> void expectedMixin(MyLinkedList<T> sourceList, MyLinkedList<U> otherList,
+                                     BiPredicate<? super T, ? super U> biPred,
+                                     Function<? super U, ? extends T> fct,
+                                     Predicate<? super U> predU) throws MyLinkedListException {
+        if (otherList.head == null) return;
+
+        ListItem<U> others = otherList.head;
+        ListItem<T> current = new ListItem<>();
+        current.next = sourceList.head;
+        ListItem<T> result = current;
+        int index = 0;
+
+        while (others != null) {
+            U key = others.key;
+            System.out.println(others.key.getClass());
+            if (!predU.test((U) key)) {
+                throw new MyLinkedListException(index, key);
+            } else if (current.next != null) {
+                T element = current.next.key;
+                if (biPred.test(element, key)) {
+                    T mapped = fct.apply(key);
+                    ListItem<T> item = new ListItem<>(mapped);
+                    item.next = current.next;
+                    current.next = item;
+
+                    others = others.next;
+                    current = current.next;
+                }
+            } else {
+                T mapped = fct.apply(key);
+                current.next = new ListItem<>(mapped);
+                others = others.next;
+            }
+            index++;
+            current = current.next;
+        }
+        sourceList.head = result.next;
+    }
+
     protected <U> void assertLinkedList(MyLinkedList<U> expected, MyLinkedList<U> actual) {
+        // one of the list is null
+        if (expected.head == null || actual.head == null) {
+            assertEquals(expected.head, actual.head, "Assertion fails with an expected list: " + expected.head
+                                                     + ", but was: " + actual.head);
+            return;
+        }
+
         ListItem<U> actualCurrent = actual.head;
         for (ListItem<U> expectedCurrent = expected.head; expectedCurrent != null; expectedCurrent = expectedCurrent.next) {
+            // actual mustn't end before expected
+            assertNotNull(actualCurrent, "Assertion fails with an expected key: " + expectedCurrent.key
+                                         + ", but was: null");
+
+            // if it is an arraay, check each item
+            if (expectedCurrent.key.toString().startsWith("[")) {
+                // actual is also an array
+                assertTrue(actualCurrent.key.toString().startsWith("["), "Assertion fails with an expected key: "
+                                                                         + expectedCurrent.key + ", but was: "
+                                                                         + actualCurrent.key);
+
+                var expectedArray = (U[]) expectedCurrent.key;
+                var actualArray = (U[]) expectedCurrent.key;
+                // make sure both have the same lengths
+                assertEquals(expectedArray.length, actualArray.length, "Assertion fails with an expected arrax length: " +
+                                                                       +expectedArray.length + ", but was: "
+                                                                       + actualArray.length);
+                for (int i = 0; i < expectedArray.length; i++) {
+                    assertEquals(expectedArray[i], actualArray[i],
+                                 "Assertion fails with an expected listElem element: " + expectedArray[i] + ", but was: "
+                                 + actualArray[i]);
+                }
+                actualCurrent = actualCurrent.next;
+                continue;
+            }
+
+            // if it's not an array
             assertEquals(expectedCurrent.key, actualCurrent.key,
                          "Assertion fails with an expected key: " + expectedCurrent.key + ", but was: "
                          + actualCurrent.key);
             actualCurrent = actualCurrent.next;
         }
-        assertNull(actualCurrent, "Assertion fails with an expected key: null, but was: " + actualCurrent.key);
+        // actual must end when expected does
+        assertNull(actualCurrent, "Assertion fails with an expected key: null, but was: " + actualCurrent);
     }
 
     protected void assertExceptionMessage(MyLinkedListException expected, MyLinkedListException actual) {
-        assertEquals(expected.getMessage(), actual.getMessage(),
+        assertNotNull(actual, "Assertion fails with an expected message: " + expected.getMessage()
+                              + ", but was: " + actual);
+
+        // ignore the object's name
+        int indexObject = expected.getMessage().indexOf('@');
+        int maxIndex = (indexObject == -1) ? expected.getMessage().length() : indexObject;
+        assertEquals(expected.getMessage().substring(0, maxIndex), actual.getMessage().substring(0, maxIndex),
                      "Assertion fails with an expected message: " + expected.getMessage() + ", but was: "
-                     + actual);
+                     + actual.getMessage());
+    }
+
+    protected <T> MyLinkedList<T> copyList(MyLinkedList<T> list) {
+        MyLinkedList<T> copyList = new MyLinkedList<>();
+        if (list.head == null) {
+            copyList.head = null;
+            return copyList;
+        }
+
+        copyList.head = new ListItem<>(list.head.key);
+        ListItem<T> current, currentCopy = copyList.head;
+        for (current = list.head.next; current != null; current = current.next) {
+            currentCopy.next = new ListItem<>(current.key);
+            currentCopy = currentCopy.next;
+        }
+        return copyList;
     }
 }

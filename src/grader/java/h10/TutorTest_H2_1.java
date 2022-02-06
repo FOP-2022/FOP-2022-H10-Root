@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -19,8 +18,10 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Arianne Roselina Prananto
  */
 @TestForSubmission("h10")
-@DisplayName("Criterion: Class Traits")
+@DisplayName("Criterion: H2.1")
 public final class TutorTest_H2_1 {
+    TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
+    TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
 
     /* *********************************************************************
      *                               H2.1                                  *
@@ -43,7 +44,7 @@ public final class TutorTest_H2_1 {
             found++;
         }
         // methods are found
-        assertEquals(found, 3, "At least one extract*-method does not exist");
+        assertEquals(3, found, "At least one extract*-method does not exist");
     }
 
     @Test
@@ -66,27 +67,22 @@ public final class TutorTest_H2_1 {
 
             // all params are found
             var params = m.getParameters();
-            assertEquals(params.length, 3, "Parameters in extract*-methods are not complete");
+            assertEquals(3, params.length, "Parameters in extract*-methods are not complete");
 
             // param types are correct
-            var paramTypes = Arrays.stream(params).map(x -> x.getType().toGenericString()).collect(Collectors.toList());
-            assertTrue(paramTypes.contains("Predicate<? super T>") &&
-                       paramTypes.contains("Function<? super T,? extends U>") &&
-                       paramTypes.contains("Predicate<? super U>"),
+            var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName()).collect(Collectors.toList());
+            assertTrue(paramTypes.contains("java.util.function.Predicate<? super T>") &&
+                       (paramTypes.contains("java.util.function.Function<? super T, ? extends U>") ||
+                        paramTypes.contains("java.util.function.Function<? super T,? extends U>")) &&
+                       paramTypes.contains("java.util.function.Predicate<? super U>"),
                        "Parameters in extract*-methods are incorrect");
 
-            // param names are correct
-            var paramNames = Arrays.stream(params).map(Parameter::getName).collect(Collectors.toList());
-            assertTrue(paramNames.contains("predT") &&
-                       paramNames.contains("fct") &&
-                       paramNames.contains("predU"), "Parameters in extract*-methods are incorrect");
-
             // return type is correct
-            assertEquals(m.getGenericReturnType().toString(), "MyLinkedList<U>",
+            assertEquals(MyLinkedList.class, m.getReturnType(),
                          "Return type in extract*-methods is incorrect");
 
             // thrown exception type is correct
-            assertEquals(m.getExceptionTypes()[0], MyLinkedListException.class,
+            assertEquals(MyLinkedListException.class, m.getExceptionTypes()[0],
                          "Thrown exception in extract*-methods is incorrect");
         }
     }
@@ -110,66 +106,65 @@ public final class TutorTest_H2_1 {
 
             // all params are found
             var params = m.getParameters();
-            assertEquals(params.length, 5, "Parameters in extractRecursivelyHelper method are not complete");
+            assertEquals(5, params.length, "Parameters in extractRecursivelyHelper method are not complete");
 
             // param types are correct
-            var paramTypes = Arrays.stream(params).map(x -> x.getType().toGenericString()).collect(Collectors.toList());
-            assertTrue(paramTypes.contains("Predicate<? super T>") &&
-                       paramTypes.contains("Function<? super T,? extends U>") &&
-                       paramTypes.contains("Predicate<? super U>") &&
-                       paramTypes.contains("ListItem<T>") &&
+            var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName())
+                .collect(Collectors.toList());
+            assertTrue(paramTypes.contains("java.util.function.Predicate<? super T>") &&
+                       (paramTypes.contains("java.util.function.Function<? super T, ? extends U>") ||
+                        paramTypes.contains("java.util.function.Function<? super T,? extends U>")) &&
+                       paramTypes.contains("java.util.function.Predicate<? super U>") &&
+                       paramTypes.contains("h10.ListItem<T>") &&
                        paramTypes.contains("int"),
                        "Parameters in extractRecursivelyHelper method are incorrect");
 
-            // param names are correct
-            var paramNames = Arrays.stream(params).map(Parameter::getName).collect(Collectors.toList());
-            assertTrue(paramNames.contains("predT") &&
-                       paramNames.contains("fct") &&
-                       paramNames.contains("predU") &&
-                       paramNames.contains("pSrc") &&
-                       paramNames.contains("index"), "Parameters in extractRecursivelyHelper method are incorrect");
-
             // return type is correct
-            assertEquals(m.getReturnType().toGenericString(), "MyLinkedList<U>",
+            assertEquals(MyLinkedList.class, m.getReturnType(),
                          "Return type in extractRecursivelyHelper method is incorrect");
 
             // thrown exception type is correct
-            assertEquals(m.getExceptionTypes()[0], MyLinkedListException.class,
+            assertEquals(MyLinkedListException.class, m.getExceptionTypes()[0],
                          "Thrown exception in extractRecursivelyHelper method is incorrect");
         }
     }
 
     @Test
     public void testExtractIteratively() {
-        TutorTest_H2_Helper<Integer> t1 = new TutorTest_H2_Helper<>();
-        TutorTest_H2_Helper<String> t2 = new TutorTest_H2_Helper<>();
-        var list1WithoutExc = t1.generateMyLinkedList1WithoutExc(10, 10);
-        var list2WithoutExc = t2.generateMyLinkedList2WithoutExc(10, 10);
-        MyLinkedList<Integer[]> actualList = null;
+        var thisList1 = helper1.generateThisListExtract1WithoutExc();
+        var thisList2 = helper2.generateThisListExtract2WithoutExc();
+        MyLinkedList<Integer[]> actualList1 = new MyLinkedList<>();
+        MyLinkedList<Double> actualList2 = new MyLinkedList<>();
 
         // first list
-        for (MyLinkedList<Integer> i : list1WithoutExc) {
+        for (MyLinkedList<Integer> list : thisList1) {
+            var copy = helper1.copyList(list);
             try {
-                actualList = i.extractIteratively(t1.predT1, t1.fct1, t1.predU1);
+                actualList1 = list.extractIteratively(helper1.predT1, helper1.fctExtract1, helper1.predU1);
             } catch (MyLinkedListException e) {
                 fail("extractIteratively method fails with exception: " + e.getMessage());
             }
             try {
-                t1.assertLinkedList(t1.expectedExtract(i, t1.predT1, t1.fct1, t1.predU1), actualList);
+                helper1.assertLinkedList(helper1.expectedExtract(copy, helper1.predT1, helper1.fctExtract1, helper1.predU1),
+                                         actualList1);
+                helper1.assertLinkedList(list, copy);
             } catch (MyLinkedListException e) {
                 // never going to happen
             }
         }
 
         // second list
-        for (MyLinkedList<String> i : list2WithoutExc) {
+        for (MyLinkedList<String> list : thisList2) {
+            var copy = helper2.copyList(list);
             try {
-                actualList = i.extractIteratively(t2.predT2, t2.fct2, t2.predU2);
+                actualList2 = list.extractIteratively(helper2.predT2, helper2.fctExtract2, helper2.predU2);
             } catch (MyLinkedListException e) {
                 fail("extractIteratively method fails with exception: " + e.getMessage());
             }
             try {
-                t2.assertLinkedList(t2.expectedExtract(i, t2.predT2, t2.fct2, t2.predU2), actualList);
+                helper2.assertLinkedList(helper2.expectedExtract(copy, helper2.predT2, helper2.fctExtract2, helper2.predU2),
+                                         actualList2);
+                helper2.assertLinkedList(list, copy);
             } catch (MyLinkedListException e) {
                 // never going to happen
             }
@@ -178,73 +173,77 @@ public final class TutorTest_H2_1 {
 
     @Test
     public void testExtractIterativelyException() {
-        TutorTest_H2_Helper<Integer> t1 = new TutorTest_H2_Helper<>();
-        TutorTest_H2_Helper<String> t2 = new TutorTest_H2_Helper<>();
-        var list1WithExc = t1.generateMyLinkedList1WithExc();
-        var list2WithExc = t2.generateMyLinkedList2WithExc();
-        MyLinkedList<Integer[]> actualList = null;
+        var list1WithExc = helper1.generateThisListExtract1WithExc();
+        var list2WithExc = helper2.generateThisListExtract2WithExc();
         MyLinkedListException actualExc = null;
 
         // first list
-        for (MyLinkedList<Integer> i : list1WithExc) {
+        for (MyLinkedList<Integer> list : list1WithExc) {
+            var copy = helper1.copyList(list);
             try {
-                actualList = i.extractIteratively(t1.predT1, t1.fct1, t1.predU1);
+                list.extractIteratively(helper1.predT1, helper1.fctExtract1, helper1.predU1);
             } catch (MyLinkedListException e) {
                 actualExc = e;
             }
             try {
-                t1.assertLinkedList(t1.expectedExtract(i, t1.predT1, t1.fct1, t1.predU1), actualList);
+                helper1.expectedExtract(copy, helper1.predT1, helper1.fctExtract1, helper1.predU1);
             } catch (MyLinkedListException e) {
-                t1.assertExceptionMessage(e, actualExc);
+                helper1.assertExceptionMessage(e, actualExc);
             }
         }
 
         // second list
-        for (MyLinkedList<String> i : list2WithExc) {
+        for (MyLinkedList<String> list : list2WithExc) {
+            var copy = helper2.copyList(list);
             try {
-                actualList = i.extractIteratively(t2.predT2, t2.fct2, t2.predU2);
+                list.extractIteratively(helper2.predT2, helper2.fctExtract2, helper2.predU2);
             } catch (MyLinkedListException e) {
                 actualExc = e;
             }
             try {
-                t2.assertLinkedList(t2.expectedExtract(i, t2.predT2, t2.fct2, t2.predU2), actualList);
+                helper2.expectedExtract(copy, helper2.predT2, helper2.fctExtract2, helper2.predU2);
             } catch (MyLinkedListException e) {
-                t2.assertExceptionMessage(e, actualExc);
+                helper2.assertExceptionMessage(e, actualExc);
             }
         }
     }
 
     @Test
     public void testExtractRecursively() {
-        TutorTest_H2_Helper<Integer> t1 = new TutorTest_H2_Helper<>();
-        TutorTest_H2_Helper<String> t2 = new TutorTest_H2_Helper<>();
-        var list1WithoutExc = t1.generateMyLinkedList1WithoutExc(10, 10);
-        var list2WithoutExc = t2.generateMyLinkedList2WithoutExc(10, 10);
-        MyLinkedList<Integer[]> actualList = null;
+        var thisList1 = helper1.generateThisListExtract1WithoutExc();
+        var thisList2 = helper2.generateThisListExtract2WithoutExc();
+        MyLinkedList<Integer[]> actualList1 = new MyLinkedList<>();
+        MyLinkedList<Double> actualList2 = new MyLinkedList<>();
 
         // first list
-        for (MyLinkedList<Integer> i : list1WithoutExc) {
+        for (MyLinkedList<Integer> list : thisList1) {
+            var copy = helper1.copyList(list);
             try {
-                actualList = i.extractRecursively(t1.predT1, t1.fct1, t1.predU1);
+                actualList1 = list.extractRecursively(helper1.predT1, helper1.fctExtract1, helper1.predU1);
             } catch (MyLinkedListException e) {
                 fail("extractIteratively method fails with exception: " + e.getMessage());
             }
             try {
-                t1.assertLinkedList(t1.expectedExtract(i, t1.predT1, t1.fct1, t1.predU1), actualList);
+                helper1.assertLinkedList(helper1.expectedExtract(copy, helper1.predT1, helper1.fctExtract1, helper1.predU1),
+                                         actualList1);
+                helper1.assertLinkedList(list, copy);
             } catch (MyLinkedListException e) {
                 // never going to happen
             }
         }
 
         // second list
-        for (MyLinkedList<String> i : list2WithoutExc) {
+        for (MyLinkedList<String> list : thisList2) {
+            var copy = helper2.copyList(list);
             try {
-                actualList = i.extractRecursively(t2.predT2, t2.fct2, t2.predU2);
+                actualList2 = list.extractRecursively(helper2.predT2, helper2.fctExtract2, helper2.predU2);
             } catch (MyLinkedListException e) {
                 fail("extractIteratively method fails with exception: " + e.getMessage());
             }
             try {
-                t2.assertLinkedList(t2.expectedExtract(i, t2.predT2, t2.fct2, t2.predU2), actualList);
+                helper2.assertLinkedList(helper2.expectedExtract(copy, helper2.predT2, helper2.fctExtract2, helper2.predU2),
+                                         actualList2);
+                helper2.assertLinkedList(list, copy);
             } catch (MyLinkedListException e) {
                 // never going to happen
             }
@@ -253,38 +252,37 @@ public final class TutorTest_H2_1 {
 
     @Test
     public void testExtractRecursivelyException() {
-        TutorTest_H2_Helper<Integer> t1 = new TutorTest_H2_Helper<>();
-        TutorTest_H2_Helper<String> t2 = new TutorTest_H2_Helper<>();
-        var list1WithExc = t1.generateMyLinkedList1WithExc();
-        var list2WithExc = t2.generateMyLinkedList2WithExc();
-        MyLinkedList<Integer[]> actualList = null;
+        var list1WithExc = helper1.generateThisListExtract1WithExc();
+        var list2WithExc = helper2.generateThisListExtract2WithExc();
         MyLinkedListException actualExc = null;
 
         // first list
-        for (MyLinkedList<Integer> i : list1WithExc) {
+        for (MyLinkedList<Integer> list : list1WithExc) {
+            var copy = helper1.copyList(list);
             try {
-                actualList = i.extractRecursively(t1.predT1, t1.fct1, t1.predU1);
+                list.extractRecursively(helper1.predT1, helper1.fctExtract1, helper1.predU1);
             } catch (MyLinkedListException e) {
                 actualExc = e;
             }
             try {
-                t1.assertLinkedList(t1.expectedExtract(i, t1.predT1, t1.fct1, t1.predU1), actualList);
+                helper1.expectedExtract(copy, helper1.predT1, helper1.fctExtract1, helper1.predU1);
             } catch (MyLinkedListException e) {
-                t1.assertExceptionMessage(e, actualExc);
+                helper1.assertExceptionMessage(e, actualExc);
             }
         }
 
         // second list
-        for (MyLinkedList<String> i : list2WithExc) {
+        for (MyLinkedList<String> list : list2WithExc) {
+            var copy = helper2.copyList(list);
             try {
-                actualList = i.extractRecursively(t2.predT2, t2.fct2, t2.predU2);
+                list.extractRecursively(helper2.predT2, helper2.fctExtract2, helper2.predU2);
             } catch (MyLinkedListException e) {
                 actualExc = e;
             }
             try {
-                t2.assertLinkedList(t2.expectedExtract(i, t2.predT2, t2.fct2, t2.predU2), actualList);
+                helper2.expectedExtract(copy, helper2.predT2, helper2.fctExtract2, helper2.predU2);
             } catch (MyLinkedListException e) {
-                t2.assertExceptionMessage(e, actualExc);
+                helper2.assertExceptionMessage(e, actualExc);
             }
         }
     }

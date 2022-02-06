@@ -9,8 +9,11 @@
       "files": [
         "h10/H10_RubricProvider.java",
         "h10/TutorTest_H1.java",
-        "h10/TutorTest_H2.java",
-        "h10/TutorTest_H3.java"
+        "h10/TutorTest_H2_1.java",
+        "h10/TutorTest_H2_2.java",
+        "h10/TutorTest_H2_Helper.java",
+        "h10/TutorTest_H3.java",
+        "h10/TutorTest_H3_Helper.java"
       ]
     },
     {

@@ -50,20 +50,21 @@ public final class TutorTest_H3 {
 
             found = true;
 
-            // TODO : check method's generic type
+            // is not generic
+            assertEquals(0, m.getTypeParameters().length, "testExtract method is generic");
 
             // is public
             assertTrue(isPublic(m.getModifiers()), "testExtract method is not public");
 
             // has no parameter
-            assertEquals(m.getParameterCount(), 0, "textExtract method has parameter(s)");
+            assertEquals(0, m.getParameterCount(), "textExtract method has parameter(s)");
 
             // return type is correct
-            assertEquals(m.getReturnType(), void.class,
+            assertEquals(void.class, m.getReturnType(),
                          "Return type in textExtract method is incorrect");
 
             // thrown exception type is correct
-            assertEquals(m.getExceptionTypes().length, 0,
+            assertEquals(0, m.getExceptionTypes().length,
                          "textExtract method throws exception(s)");
         }
         // method is found
@@ -85,11 +86,11 @@ public final class TutorTest_H3 {
         assertTrue(allClasses.size() >= 3, "At least one class for the three parameters do not exist");
 
         int found = 0;
-        for (Class c : allClasses) {
+        for (Class<?> c : allClasses) {
             var interfaces = c.getInterfaces();
-            boolean fct = interfaces[0].getSimpleName().equals("Function"),
-                predT = interfaces[0].getTypeName().equals("Predicate<Integer[]>"),
-                predU = interfaces[0].getTypeName().equals("Predicate<Integer>");
+            boolean fct = interfaces[0].getSimpleName().equals("java.util.function.Function"),
+                predT = interfaces[0].getTypeName().equals("java.util.function.Predicate<Integer[]>"),
+                predU = interfaces[0].getTypeName().equals("java.util.function.Predicate<Integer>");
 
             if (!(fct || predT || predU)) continue;
             found++;
@@ -143,12 +144,14 @@ public final class TutorTest_H3 {
             }
         }
         // all three param classes are found
-        assertEquals(found, 3, "At least one class for the three parameters does not exist");
+        assertEquals(3, found, "At least one class for the three parameters does not exist");
     }
 
     @Test
     public void testExtractTest() {
-        // TODO : test implementation
+        // TODO : how to test what inputs are used and what is tested?
+        TestMyLinkedList test = new TestMyLinkedList();
+        test.testExtract();
     }
 
     /* *********************************************************************
@@ -173,20 +176,21 @@ public final class TutorTest_H3 {
 
             found = true;
 
-            // TODO : check method's generic type
+            // is not generic
+            assertEquals(0, m.getTypeParameters().length, "testMixin method is generic");
 
             // is public
             assertTrue(isPublic(m.getModifiers()), "testMixin method is not public");
 
             // has no parameter
-            assertEquals(m.getParameterCount(), 0, "textMixin method has parameter(s)");
+            assertEquals(0, m.getParameterCount(), "textMixin method has parameter(s)");
 
             // return type is correct
-            assertEquals(m.getReturnType(), void.class,
+            assertEquals(void.class, m.getReturnType(),
                          "Return type in textMixin method is incorrect");
 
             // thrown exception type is correct
-            assertEquals(m.getExceptionTypes().length, 0,
+            assertEquals(0, m.getExceptionTypes().length,
                          "textMixin method throws exception(s)");
         }
         // method is found
@@ -194,7 +198,7 @@ public final class TutorTest_H3 {
     }
 
     @Test
-    public void testParametersConstants() {
+    public void testParameterConstants() {
         Class<?> classH3 = null;
         try {
             classH3 = Class.forName("h10.TestMyLinkedList");
@@ -256,11 +260,13 @@ public final class TutorTest_H3 {
             }
         }
         // all three param constants are found
-        assertEquals(found, 3, "At least one constant for the three parameters does not exist");
+        assertEquals(3, found, "At least one constant for the three parameters does not exist");
     }
 
     @Test
     public void testMixinTest() {
-        // TODO : test implementation
+        // TODO : how to test what inputs are used and what is tested?
+        TestMyLinkedList test = new TestMyLinkedList();
+        test.testMixin();
     }
 }

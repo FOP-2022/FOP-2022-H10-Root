@@ -38,7 +38,7 @@ public final class TutorTest_H1 {
         // is public
         assertTrue(isPublic(classH1.getModifiers()), "Class MyLinkedListException is not public");
         // is a direct extension from Exception
-        assertEquals(classH1.getSuperclass(), Exception.class,
+        assertEquals(Exception.class, classH1.getSuperclass(),
                      "Class TimeStamp is not a direct extension from Exception");
     }
 
@@ -72,10 +72,15 @@ public final class TutorTest_H1 {
         var objs = createManyRandomObjects(numOfTests);
 
         for (int i = 0; i < numOfTests; i++) {
-            assertTrue(new MyLinkedListException(nums[i], objs[i]).getMessage().equals(createCorrectMessage(nums[i], objs[i])),
-                       "Constructor MyLinkedListException returns wrong message");
+            assertEquals(new MyLinkedListException(nums[i], objs[i]).getMessage(),
+                         createCorrectMessage(nums[i], objs[i]),
+                         "Constructor MyLinkedListException returns wrong message");
         }
     }
+
+    /* *********************************************************************
+     *                        Some random generators                       *
+     **********************************************************************/
 
     String createCorrectMessage(Integer num, Object obj) {
         return "(" + num + "," + obj.toString() + ")";

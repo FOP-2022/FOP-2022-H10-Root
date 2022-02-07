@@ -2,10 +2,12 @@ package h10;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static java.lang.reflect.Modifier.isPrivate;
@@ -60,14 +62,19 @@ public final class TutorTest_H2_2 {
             if (!m.getName().equals("mixinIteratively") && !m.getName().equals("mixinRecursively"))
                 continue;
 
-            // TODO : check method's generic type
+            // is generic with type U
+            assertEquals(1, m.getTypeParameters().length,
+                         "mixin*-method is not generic");
+            assertEquals("U", m.getTypeParameters()[0].getTypeName(),
+                         "mixin*-method is generic with an incorrect type");
+
 
             // is public
             assertTrue(isPublic(m.getModifiers()));
 
             // all params are found
             var params = m.getParameters();
-            assertEquals(4, params.length, "Parameters in mixin*-methods are not complete");
+            assertEquals(4, params.length, "Parameters in mixin*-method are not complete");
 
             // param types are correct
             var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName())
@@ -78,15 +85,15 @@ public final class TutorTest_H2_2 {
                        (paramTypes.contains("java.util.function.Function<? super U, ? extends T>") ||
                         paramTypes.contains("java.util.function.Function<? super U,? extends T>")) &&
                        paramTypes.contains("java.util.function.Predicate<? super U>"),
-                       "Parameters in mixin*-methods are incorrect");
+                       "Parameters in mixin*-method are incorrect");
 
             // return type is correct
             assertEquals(void.class, m.getReturnType(),
-                         "Return type in mixin*-methods is incorrect");
+                         "Return type in mixin*-method is incorrect");
 
             // thrown exception type is correct
             assertEquals(MyLinkedListException.class, m.getExceptionTypes()[0],
-                         "Thrown exception in mixin*-methods is incorrect");
+                         "Thrown exception in mixin*-method is incorrect");
         }
     }
 
@@ -102,7 +109,11 @@ public final class TutorTest_H2_2 {
         for (Method m : classH2.getDeclaredMethods()) {
             if (!m.getName().equals("mixinRecursivelyHelper")) continue;
 
-            // TODO : check method's generic type
+            // is generic with type U
+            assertEquals(1, m.getTypeParameters().length,
+                         "mixinRecursivelyHelper method is not generic");
+            assertEquals("U", m.getTypeParameters()[0].getTypeName(),
+                         "mixinRecursivelyHelper method is generic with an incorrect type");
 
             // is public
             assertTrue(isPrivate(m.getModifiers()));
@@ -136,168 +147,70 @@ public final class TutorTest_H2_2 {
 
     @Test
     public void testMixinIteratively() {
-        var thisList1 = helper1.generateThisListMixin1();
-        var otherList1 = helper1.generateOtherListMixin1WithoutExc();
-        var thisList2 = helper2.generateThisListMixin2();
-        var otherList2 = helper2.generateOtherListMixin2WithoutExc();
+        var thisLists1 = TutorTest_Generators.generateThisListMixin1();
+        var otherLists1 = TutorTest_Generators.generateOtherListMixin1WithoutExc();
+        var thisLists2 = TutorTest_Generators.generateThisListMixin2();
+        var otherLists2 = TutorTest_Generators.generateOtherListMixin2WithoutExc();
 
-        // first list
-        for (int i = 0; i < thisList1.length; i++) {
-            var thisListCopy = helper1.copyList(thisList1[i]);
-            var otherListCopy = helper1.copyList(otherList1[i]);
-            try {
-                thisList1[i].mixinIteratively(otherList1[i], helper1.biPred1, helper1.fctMixin1, helper1.predU1);
-            } catch (MyLinkedListException e) {
-                fail("extractIteratively method fails with exception: " + e.getMessage());
-            }
-            try {
-                helper1.expectedMixin(thisListCopy, otherListCopy, helper1.biPred1, helper1.fctMixin1, helper1.predU1);
-                helper1.assertLinkedList(otherListCopy, otherList1[i]);
-            } catch (MyLinkedListException e) {
-                // never going to happen
-            }
-        }
-
-        // second list
-        for (int i = 0; i < thisList2.length; i++) {
-            var thisListCopy = helper2.copyList(thisList2[i]);
-            var otherListCopy = helper2.copyList(otherList2[i]);
-            try {
-                thisList2[i].mixinIteratively(otherList2[i], helper2.biPred2, helper2.fctMixin2, helper2.predU2);
-            } catch (MyLinkedListException e) {
-                fail("extractIteratively method fails with exception: " + e.getMessage());
-            }
-            try {
-                helper2.expectedMixin(thisListCopy, otherListCopy, helper2.biPred2, helper2.fctMixin2, helper2.predU2);
-                helper2.assertLinkedList(otherListCopy, otherList2[i]);
-            } catch (MyLinkedListException e) {
-                // never going to happen
-            }
-        }
+        // call test for the first list type (Integer, Integer[])
+        helper1.testGeneralMixin(thisLists1, otherLists1, TutorTest_H2_1.ExtractType.ITERATIVE,
+                                 TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
+                                 TutorTest_Generators.predU1);
+        // call test for the second list type (String, Double)
+        helper2.testGeneralMixin(thisLists2, otherLists2, TutorTest_H2_1.ExtractType.ITERATIVE,
+                                 TutorTest_Generators.biPred2, TutorTest_Generators.fctMixin2,
+                                 TutorTest_Generators.predU2);
     }
 
     @Test
     public void testMixinIterativelyException() {
-        var thisList1 = helper1.generateThisListMixin1();
-        var otherList1 = helper1.generateOtherListMixin1WithExc();
-        var thisList2 = helper2.generateThisListMixin2();
-        var otherList2 = helper2.generateOtherListMixin2WithExc();
-        MyLinkedListException actualExc = null;
+        var thisLists1 = TutorTest_Generators.generateThisListMixin1();
+        var otherLists1 = TutorTest_Generators.generateOtherListMixin1WithExc();
+        var thisLists2 = TutorTest_Generators.generateThisListMixin2();
+        var otherLists2 = TutorTest_Generators.generateOtherListMixin2WithExc();
 
-        // first list
-        for (int i = 0; i < thisList1.length; i++) {
-            var thisListCopy = helper1.copyList(thisList1[i]);
-            var otherListCopy = helper1.copyList(otherList1[i]);
-            try {
-                thisList1[i].mixinIteratively(otherList1[i], helper1.biPred1, helper1.fctMixin1, helper1.predU1);
-            } catch (MyLinkedListException e) {
-                actualExc = e;
-            }
-            try {
-                helper1.expectedMixin(thisListCopy, otherListCopy, helper1.biPred1, helper1.fctMixin1, helper1.predU1);
-            } catch (MyLinkedListException e) {
-                helper1.assertExceptionMessage(e, actualExc);
-            }
-        }
-
-        // second list
-        for (int i = 0; i < thisList2.length; i++) {
-            var thisListCopy = helper2.copyList(thisList2[i]);
-            var otherListCopy = helper2.copyList(otherList2[i]);
-            try {
-                thisList2[i].mixinIteratively(otherList2[i], helper2.biPred2, helper2.fctMixin2, helper2.predU2);
-            } catch (MyLinkedListException e) {
-                actualExc = e;
-            }
-            try {
-                helper2.expectedMixin(thisListCopy, otherListCopy, helper2.biPred2, helper2.fctMixin2, helper2.predU2);
-            } catch (MyLinkedListException e) {
-                helper2.assertExceptionMessage(e, actualExc);
-            }
-        }
+        // call test for the first list type (Integer, Integer[])
+        helper1.testGeneralMixin(thisLists1, otherLists1, TutorTest_H2_1.ExtractType.ITERATIVE,
+                                 TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
+                                 TutorTest_Generators.predU1);
+        // call test for the second list type (String, Double)
+        helper2.testGeneralMixin(thisLists2, otherLists2, TutorTest_H2_1.ExtractType.ITERATIVE,
+                                 TutorTest_Generators.biPred2, TutorTest_Generators.fctMixin2,
+                                 TutorTest_Generators.predU2);
     }
 
     @Test
     public void testMixinRecursively() {
-        var thisList1 = helper1.generateThisListMixin1();
-        var otherList1 = helper1.generateOtherListMixin1WithoutExc();
-        var thisList2 = helper2.generateThisListMixin2();
-        var otherList2 = helper2.generateOtherListMixin2WithoutExc();
+        var thisLists1 = TutorTest_Generators.generateThisListMixin1();
+        var otherLists1 = TutorTest_Generators.generateOtherListMixin1WithoutExc();
+        var thisLists2 = TutorTest_Generators.generateThisListMixin2();
+        var otherLists2 = TutorTest_Generators.generateOtherListMixin2WithoutExc();
 
-        // first list
-        for (int i = 0; i < thisList1.length; i++) {
-            var thisListCopy = helper1.copyList(thisList1[i]);
-            var otherListCopy = helper1.copyList(otherList1[i]);
-            try {
-                thisList1[i].mixinIteratively(otherList1[i], helper1.biPred1, helper1.fctMixin1, helper1.predU1);
-            } catch (MyLinkedListException e) {
-                fail("extractIteratively method fails with exception: " + e.getMessage());
-            }
-            try {
-                helper1.expectedMixin(thisListCopy, otherListCopy, helper1.biPred1, helper1.fctMixin1, helper1.predU1);
-                helper1.assertLinkedList(otherListCopy, otherList1[i]);
-            } catch (MyLinkedListException e) {
-                // never going to happen
-            }
-        }
-
-        // second list
-        for (int i = 0; i < thisList2.length; i++) {
-            var thisListCopy = helper2.copyList(thisList2[i]);
-            var otherListCopy = helper2.copyList(otherList2[i]);
-            try {
-                thisList2[i].mixinRecursively(otherList2[i], helper2.biPred2, helper2.fctMixin2, helper2.predU2);
-            } catch (MyLinkedListException e) {
-                fail("extractIteratively method fails with exception: " + e.getMessage());
-            }
-            try {
-                helper2.expectedMixin(thisListCopy, otherListCopy, helper2.biPred2, helper2.fctMixin2, helper2.predU2);
-                helper2.assertLinkedList(otherListCopy, otherList2[i]);
-            } catch (MyLinkedListException e) {
-                // never going to happen
-            }
-        }
+        // call test for the first list type (Integer, Integer[])
+        helper1.testGeneralMixin(thisLists1, otherLists1, TutorTest_H2_1.ExtractType.RECURSIVE,
+                                 TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
+                                 TutorTest_Generators.predU1);
+        // call test for the second list type (String, Double)
+        helper2.testGeneralMixin(thisLists2, otherLists2, TutorTest_H2_1.ExtractType.RECURSIVE,
+                                 TutorTest_Generators.biPred2, TutorTest_Generators.fctMixin2,
+                                 TutorTest_Generators.predU2);
     }
 
     @Test
     public void testMixinRecursivelyException() {
-        var thisList1 = helper1.generateThisListMixin1();
-        var otherList1 = helper1.generateOtherListMixin1WithExc();
-        var thisList2 = helper2.generateThisListMixin2();
-        var otherList2 = helper2.generateOtherListMixin2WithExc();
-        MyLinkedListException actualExc = null;
+        var thisLists1 = TutorTest_Generators.generateThisListMixin1();
+        var otherLists1 = TutorTest_Generators.generateOtherListMixin1WithExc();
+        var thisLists2 = TutorTest_Generators.generateThisListMixin2();
+        var otherLists2 = TutorTest_Generators.generateOtherListMixin2WithExc();
 
-        // first list
-        for (int i = 0; i < thisList1.length; i++) {
-            var thisListCopy = helper1.copyList(thisList1[i]);
-            var otherListCopy = helper1.copyList(otherList1[i]);
-            try {
-                thisList1[i].mixinIteratively(otherList1[i], helper1.biPred1, helper1.fctMixin1, helper1.predU1);
-            } catch (MyLinkedListException e) {
-                actualExc = e;
-            }
-            try {
-                helper1.expectedMixin(thisListCopy, otherListCopy, helper1.biPred1, helper1.fctMixin1, helper1.predU1);
-            } catch (MyLinkedListException e) {
-                helper1.assertExceptionMessage(e, actualExc);
-            }
-        }
-
-        // second list
-        for (int i = 0; i < thisList2.length; i++) {
-            var thisListCopy = helper2.copyList(thisList2[i]);
-            var otherListCopy = helper2.copyList(otherList2[i]);
-            try {
-                thisList2[i].mixinRecursively(otherList2[i], helper2.biPred2, helper2.fctMixin2, helper2.predU2);
-            } catch (MyLinkedListException e) {
-                actualExc = e;
-            }
-            try {
-                helper2.expectedMixin(thisListCopy, otherListCopy, helper2.biPred2, helper2.fctMixin2, helper2.predU2);
-            } catch (MyLinkedListException e) {
-                helper2.assertExceptionMessage(e, actualExc);
-            }
-        }
+        // call test for the first list type (Integer, Integer[])
+        helper1.testGeneralMixin(thisLists1, otherLists1, TutorTest_H2_1.ExtractType.RECURSIVE,
+                                 TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
+                                 TutorTest_Generators.predU1);
+        // call test for the second list type (String, Double)
+        helper2.testGeneralMixin(thisLists2, otherLists2, TutorTest_H2_1.ExtractType.RECURSIVE,
+                                 TutorTest_Generators.biPred2, TutorTest_Generators.fctMixin2,
+                                 TutorTest_Generators.predU2);
     }
 
     @Test
@@ -312,7 +225,19 @@ public final class TutorTest_H2_2 {
 
     @Test
     public void testMixinReallyRecursively() {
-        // TODO : test really recursively
+        var thisList = TutorTest_Generators.generateThisListMixinMockito();
+        var otherList = TutorTest_Generators.generateOtherListMixinMockito();
+
+        try {
+            thisList.mixinRecursively(otherList, TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
+                                      TutorTest_Generators.predU1);
+            //Mockito.verify(thisList, Mockito.atLeast(2))
+                //.mixinRecursivelyHelper(otherList, TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
+                                        //TutorTest_Generators.predU1, otherList.head, new ListItem<>(), 0);
+        } catch (MyLinkedListException e) {
+            // will never happen
+            e.printStackTrace();
+        }
     }
 
 }

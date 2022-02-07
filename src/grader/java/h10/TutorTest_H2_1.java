@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class TutorTest_H2_1 {
     TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
     TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
+
+    protected enum ExtractType {
+        ITERATIVE,
+        RECURSIVE
+    }
 
     /* *********************************************************************
      *                               H2.1                                  *
@@ -60,14 +66,17 @@ public final class TutorTest_H2_1 {
             if (!m.getName().equals("extractIteratively") && !m.getName().equals("extractRecursively"))
                 continue;
 
-            // TODO : check method's generic type
+            // is generic with type U
+            assertEquals(1, m.getTypeParameters().length, "extract*-method is not generic");
+            assertEquals("U", m.getTypeParameters()[0].getTypeName(),
+                         "extractRecursivelyHelper method is generic with an incorrect type");
 
             // is public
             assertTrue(isPublic(m.getModifiers()));
 
             // all params are found
             var params = m.getParameters();
-            assertEquals(3, params.length, "Parameters in extract*-methods are not complete");
+            assertEquals(3, params.length, "Parameters in extract*-method is not complete");
 
             // param types are correct
             var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName()).collect(Collectors.toList());
@@ -75,15 +84,15 @@ public final class TutorTest_H2_1 {
                        (paramTypes.contains("java.util.function.Function<? super T, ? extends U>") ||
                         paramTypes.contains("java.util.function.Function<? super T,? extends U>")) &&
                        paramTypes.contains("java.util.function.Predicate<? super U>"),
-                       "Parameters in extract*-methods are incorrect");
+                       "Parameters in extract*-method are incorrect");
 
             // return type is correct
-            assertEquals(MyLinkedList.class, m.getReturnType(),
-                         "Return type in extract*-methods is incorrect");
+            assertEquals("h10.MyLinkedList<U>", m.getGenericReturnType().getTypeName(),
+                         "Return type in extract*-method is incorrect");
 
             // thrown exception type is correct
             assertEquals(MyLinkedListException.class, m.getExceptionTypes()[0],
-                         "Thrown exception in extract*-methods is incorrect");
+                         "Thrown exception in extract*-method is incorrect");
         }
     }
 
@@ -99,7 +108,11 @@ public final class TutorTest_H2_1 {
         for (Method m : classH2.getDeclaredMethods()) {
             if (!m.getName().equals("extractRecursivelyHelper")) continue;
 
-            // TODO : check method's generic type?
+            // is generic with type U
+            assertEquals(1, m.getTypeParameters().length,
+                         "extractRecursivelyHelper method is not generic");
+            assertEquals("U", m.getTypeParameters()[0].getTypeName(),
+                         "extractRecursivelyHelper method is generic with an incorrect type");
 
             // is public
             assertTrue(isPrivate(m.getModifiers()));
@@ -120,7 +133,7 @@ public final class TutorTest_H2_1 {
                        "Parameters in extractRecursivelyHelper method are incorrect");
 
             // return type is correct
-            assertEquals(MyLinkedList.class, m.getReturnType(),
+            assertEquals("h10.MyLinkedList<U>", m.getGenericReturnType().getTypeName(),
                          "Return type in extractRecursivelyHelper method is incorrect");
 
             // thrown exception type is correct
@@ -131,160 +144,54 @@ public final class TutorTest_H2_1 {
 
     @Test
     public void testExtractIteratively() {
-        var thisList1 = helper1.generateThisListExtract1WithoutExc();
-        var thisList2 = helper2.generateThisListExtract2WithoutExc();
-        MyLinkedList<Integer[]> actualList1 = new MyLinkedList<>();
-        MyLinkedList<Double> actualList2 = new MyLinkedList<>();
+        var thisLists1 = TutorTest_Generators.generateThisListExtract1WithoutExc();
+        var thisLists2 = TutorTest_Generators.generateThisListExtract2WithoutExc();
 
-        // first list
-        for (MyLinkedList<Integer> list : thisList1) {
-            var copy = helper1.copyList(list);
-            try {
-                actualList1 = list.extractIteratively(helper1.predT1, helper1.fctExtract1, helper1.predU1);
-            } catch (MyLinkedListException e) {
-                fail("extractIteratively method fails with exception: " + e.getMessage());
-            }
-            try {
-                helper1.assertLinkedList(helper1.expectedExtract(copy, helper1.predT1, helper1.fctExtract1, helper1.predU1),
-                                         actualList1);
-                helper1.assertLinkedList(list, copy);
-            } catch (MyLinkedListException e) {
-                // never going to happen
-            }
-        }
-
-        // second list
-        for (MyLinkedList<String> list : thisList2) {
-            var copy = helper2.copyList(list);
-            try {
-                actualList2 = list.extractIteratively(helper2.predT2, helper2.fctExtract2, helper2.predU2);
-            } catch (MyLinkedListException e) {
-                fail("extractIteratively method fails with exception: " + e.getMessage());
-            }
-            try {
-                helper2.assertLinkedList(helper2.expectedExtract(copy, helper2.predT2, helper2.fctExtract2, helper2.predU2),
-                                         actualList2);
-                helper2.assertLinkedList(list, copy);
-            } catch (MyLinkedListException e) {
-                // never going to happen
-            }
-        }
+        // call test for the first list type (Integer, Integer[])
+        helper1.testGeneralExtract(thisLists1, ExtractType.ITERATIVE, TutorTest_Generators.predT1,
+                                   TutorTest_Generators.fctExtract1, TutorTest_Generators.predU1);
+        // call test for the second list type (String, Double)
+        helper2.testGeneralExtract(thisLists2, ExtractType.ITERATIVE, TutorTest_Generators.predT2,
+                                   TutorTest_Generators.fctExtract2, TutorTest_Generators.predU2);
     }
 
     @Test
     public void testExtractIterativelyException() {
-        var list1WithExc = helper1.generateThisListExtract1WithExc();
-        var list2WithExc = helper2.generateThisListExtract2WithExc();
-        MyLinkedListException actualExc = null;
+        var thisLists1 = TutorTest_Generators.generateThisListExtract1WithExc();
+        var thisLists2 = TutorTest_Generators.generateThisListExtract2WithExc();
 
-        // first list
-        for (MyLinkedList<Integer> list : list1WithExc) {
-            var copy = helper1.copyList(list);
-            try {
-                list.extractIteratively(helper1.predT1, helper1.fctExtract1, helper1.predU1);
-            } catch (MyLinkedListException e) {
-                actualExc = e;
-            }
-            try {
-                helper1.expectedExtract(copy, helper1.predT1, helper1.fctExtract1, helper1.predU1);
-            } catch (MyLinkedListException e) {
-                helper1.assertExceptionMessage(e, actualExc);
-            }
-        }
-
-        // second list
-        for (MyLinkedList<String> list : list2WithExc) {
-            var copy = helper2.copyList(list);
-            try {
-                list.extractIteratively(helper2.predT2, helper2.fctExtract2, helper2.predU2);
-            } catch (MyLinkedListException e) {
-                actualExc = e;
-            }
-            try {
-                helper2.expectedExtract(copy, helper2.predT2, helper2.fctExtract2, helper2.predU2);
-            } catch (MyLinkedListException e) {
-                helper2.assertExceptionMessage(e, actualExc);
-            }
-        }
+        // call test for the first list type (Integer, Integer[])
+        helper1.testGeneralExtract(thisLists1, ExtractType.ITERATIVE, TutorTest_Generators.predT1,
+                                   TutorTest_Generators.fctExtract1, TutorTest_Generators.predU1);
+        // call test for the second list type (String, Double)
+        helper2.testGeneralExtract(thisLists2, ExtractType.ITERATIVE, TutorTest_Generators.predT2,
+                                   TutorTest_Generators.fctExtract2, TutorTest_Generators.predU2);
     }
 
     @Test
     public void testExtractRecursively() {
-        var thisList1 = helper1.generateThisListExtract1WithoutExc();
-        var thisList2 = helper2.generateThisListExtract2WithoutExc();
-        MyLinkedList<Integer[]> actualList1 = new MyLinkedList<>();
-        MyLinkedList<Double> actualList2 = new MyLinkedList<>();
+        var thisLists1 = TutorTest_Generators.generateThisListExtract1WithoutExc();
+        var thisLists2 = TutorTest_Generators.generateThisListExtract2WithoutExc();
 
-        // first list
-        for (MyLinkedList<Integer> list : thisList1) {
-            var copy = helper1.copyList(list);
-            try {
-                actualList1 = list.extractRecursively(helper1.predT1, helper1.fctExtract1, helper1.predU1);
-            } catch (MyLinkedListException e) {
-                fail("extractIteratively method fails with exception: " + e.getMessage());
-            }
-            try {
-                helper1.assertLinkedList(helper1.expectedExtract(copy, helper1.predT1, helper1.fctExtract1, helper1.predU1),
-                                         actualList1);
-                helper1.assertLinkedList(list, copy);
-            } catch (MyLinkedListException e) {
-                // never going to happen
-            }
-        }
-
-        // second list
-        for (MyLinkedList<String> list : thisList2) {
-            var copy = helper2.copyList(list);
-            try {
-                actualList2 = list.extractRecursively(helper2.predT2, helper2.fctExtract2, helper2.predU2);
-            } catch (MyLinkedListException e) {
-                fail("extractIteratively method fails with exception: " + e.getMessage());
-            }
-            try {
-                helper2.assertLinkedList(helper2.expectedExtract(copy, helper2.predT2, helper2.fctExtract2, helper2.predU2),
-                                         actualList2);
-                helper2.assertLinkedList(list, copy);
-            } catch (MyLinkedListException e) {
-                // never going to happen
-            }
-        }
+        // call test for the first list type (Integer, Integer[])
+        helper1.testGeneralExtract(thisLists1, ExtractType.RECURSIVE, TutorTest_Generators.predT1,
+                                   TutorTest_Generators.fctExtract1, TutorTest_Generators.predU1);
+        // call test for the second list type (String, Double)
+        helper2.testGeneralExtract(thisLists2, ExtractType.RECURSIVE, TutorTest_Generators.predT2,
+                                   TutorTest_Generators.fctExtract2, TutorTest_Generators.predU2);
     }
 
     @Test
     public void testExtractRecursivelyException() {
-        var list1WithExc = helper1.generateThisListExtract1WithExc();
-        var list2WithExc = helper2.generateThisListExtract2WithExc();
-        MyLinkedListException actualExc = null;
+        var thisLists1 = TutorTest_Generators.generateThisListExtract1WithExc();
+        var thisLists2 = TutorTest_Generators.generateThisListExtract2WithExc();
 
-        // first list
-        for (MyLinkedList<Integer> list : list1WithExc) {
-            var copy = helper1.copyList(list);
-            try {
-                list.extractRecursively(helper1.predT1, helper1.fctExtract1, helper1.predU1);
-            } catch (MyLinkedListException e) {
-                actualExc = e;
-            }
-            try {
-                helper1.expectedExtract(copy, helper1.predT1, helper1.fctExtract1, helper1.predU1);
-            } catch (MyLinkedListException e) {
-                helper1.assertExceptionMessage(e, actualExc);
-            }
-        }
-
-        // second list
-        for (MyLinkedList<String> list : list2WithExc) {
-            var copy = helper2.copyList(list);
-            try {
-                list.extractRecursively(helper2.predT2, helper2.fctExtract2, helper2.predU2);
-            } catch (MyLinkedListException e) {
-                actualExc = e;
-            }
-            try {
-                helper2.expectedExtract(copy, helper2.predT2, helper2.fctExtract2, helper2.predU2);
-            } catch (MyLinkedListException e) {
-                helper2.assertExceptionMessage(e, actualExc);
-            }
-        }
+        // call test for the first list type (Integer, Integer[])
+        helper1.testGeneralExtract(thisLists1, ExtractType.RECURSIVE, TutorTest_Generators.predT1,
+                                   TutorTest_Generators.fctExtract1, TutorTest_Generators.predU1);
+        // call test for the second list type (String, Double)
+        helper2.testGeneralExtract(thisLists2, ExtractType.RECURSIVE, TutorTest_Generators.predT2,
+                                   TutorTest_Generators.fctExtract2, TutorTest_Generators.predU2);
     }
 
     @Test

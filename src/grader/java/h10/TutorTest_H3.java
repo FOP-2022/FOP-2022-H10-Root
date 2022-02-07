@@ -75,8 +75,8 @@ public final class TutorTest_H3 {
     @Test
     public void testParameterClasses() {
         Reflections reflections = new Reflections("h10");
-        Set<Class<?>> allClasses =
-            reflections.getSubTypesOf(Object.class);
+        // TODO : this still doesn't work (allClasses is empty)
+        Set<Class<?>> allClasses = reflections.getSubTypesOf(Object.class);
 
         allClasses = allClasses.stream()
             .filter(x -> !x.getSimpleName().equals("ListItem")
@@ -98,7 +98,7 @@ public final class TutorTest_H3 {
             }
             found++;
 
-            // TODO : how to check if lambdas are used?
+            // TODO : how to check if lambdas are really used?
             if (fct) {
                 for (Method m : c.getDeclaredMethods()) {
                     if (m.getReturnType().equals(Integer.class)
@@ -109,7 +109,8 @@ public final class TutorTest_H3 {
                         // check the method in fct class with many Integers Arrays
                         for (var a : intArrays) {
                             Integer expected = helper.expectedFct(a);
-                            Integer actual = 0; // TODO : how to use this class' method to get actual result?
+                            // TODO : how to use this class' method to get actual result? something like actual = m(a);
+                            Integer actual = 0;
                             assertEquals(expected, actual, "fct Class is incorrect");
                         }
                     }
@@ -124,7 +125,8 @@ public final class TutorTest_H3 {
                         // check the method in predT class with many Integer Arrays
                         for (var a : intArrays) {
                             boolean expected = helper.expectedPredT(a);
-                            boolean actual = false; // TODO : how to use this class' method to get actual result?
+                            // TODO : ditto
+                            boolean actual = false;
                             assertEquals(expected, actual, "predT Class is incorrect");
                         }
                     }
@@ -139,7 +141,8 @@ public final class TutorTest_H3 {
                         // check the method in predU class with many Integers
                         for (var a : ints) {
                             boolean expected = helper.expectedPredU(a);
-                            boolean actual = false; // TODO : how to use this class' method to get actual result?
+                            // TODO : ditto
+                            boolean actual = false;
                             assertEquals(expected, actual, "predU Class is incorrect");
                         }
                     }
@@ -226,7 +229,7 @@ public final class TutorTest_H3 {
             }
             found++;
 
-            // TODO : how to check if lambdas are used?
+            // TODO : how to check if lambdas are NOT used?
             if (biPred) {
                 Number[] nums = helper.generateManyNumbers(50);
                 String[] strings = Arrays.stream(helper.generateManyNumbers(50))
@@ -236,7 +239,8 @@ public final class TutorTest_H3 {
                 // check the biPred constant with many inputs
                 for (int i = 0; i < 50; i++) {
                     boolean expected = nums[i].doubleValue() > Double.parseDouble(strings[i]);
-                    boolean actual = false; // TODO : how to use this constant to get actual result?
+                    // TODO : ditto
+                    boolean actual = false;
                     assertEquals(expected, actual, "biPred constant is incorrect");
                 }
             } else if (predU) {
@@ -252,7 +256,8 @@ public final class TutorTest_H3 {
                         expected = false;
                     }
 
-                    boolean actual = false; // TODO : how to use this constant to get actual result?
+                    // TODO : ditto
+                    boolean actual = false;
                     assertEquals(expected, actual, "predU constant is incorrect");
                 }
             } else {
@@ -261,7 +266,8 @@ public final class TutorTest_H3 {
                 // check the fct constant with many inputs
                 for (int i = 0; i < 50; i++) {
                     double expected = nums[i].doubleValue();
-                    double actual = 0; // TODO : how to use this constant to get actual result?
+                    // TODO : ditto
+                    double actual = 0;
                     assertEquals(expected, actual, "fct constant is incorrect");
                 }
             }

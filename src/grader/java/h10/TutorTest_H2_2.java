@@ -2,6 +2,7 @@ package h10;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.Method;
@@ -219,29 +220,28 @@ public final class TutorTest_H2_2 {
 
     @Test
     public void testMixinNoOtherMethods() {
-        // TODO : test no other methods
+        // TODO : test no other (unimplemented / new implemented) methods are used
     }
 
     @Test
     public void testMixinReallyIteratively() {
-        // TODO : test really iteratively
+        // TODO : test if mixinIteratively has one loop only
     }
 
     @Test
     public void testMixinReallyRecursively() {
         var thisList = TutorTest_Generators.generateThisListMixinMockito();
         var otherList = TutorTest_Generators.generateOtherListMixinMockito();
-
         try {
             thisList.mixinRecursively(otherList, TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
                                       TutorTest_Generators.predU1);
-            //Mockito.verify(thisList, Mockito.atLeast(2))
-            //.mixinRecursivelyHelper(otherList, TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
-            //TutorTest_Generators.predU1, otherList.head, new ListItem<>(), 0);
-        } catch (MyLinkedListException e) {
-            // will never happen
-            e.printStackTrace();
+            // TODO : ClassTransformer to change modifier method, then verify (but how?)
+            /*Mockito.verify(thisList, Mockito.atLeast(2))
+                .mixinRecursivelyHelper(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+                                        Mockito.any(), Mockito.any());*/
+        } catch (Exception e) {
+            // MyLinkedListException will never be thrown
+            fail("mixinRecursively does not use recursion");
         }
     }
-
 }

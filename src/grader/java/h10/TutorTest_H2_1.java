@@ -2,6 +2,7 @@ package h10;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.Method;
@@ -196,16 +197,26 @@ public final class TutorTest_H2_1 {
 
     @Test
     public void testExtractNoOtherMethods() {
-        // TODO : test no other methods
+        // TODO : test no other (unimplemented / new implemented) methods are used
     }
 
     @Test
     public void testExtractReallyIteratively() {
-        // TODO : test really iteratively
+        // TODO : test if extractIteratively has one loop only
     }
 
     @Test
     public void testExtractReallyRecursively() {
-        // TODO : test really recursively
+        var thisList = TutorTest_Generators.generateThisListExtractMockito();
+        try {
+            thisList.extractRecursively(TutorTest_Generators.predT1, TutorTest_Generators.fctExtract1,
+                                        TutorTest_Generators.predU1);
+            // TODO : ClassTransformer to change modifier method, then verify (but how?)
+            /*Mockito.verify(thisList, Mockito.atLeast(2))
+                .extractRecursivelyHelper(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());*/
+        } catch (Exception e) {
+            // MyLinkedListException will never be thrown
+            fail("extractRecursively does not use recursion");
+        }
     }
 }

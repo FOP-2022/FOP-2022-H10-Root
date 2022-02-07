@@ -132,7 +132,7 @@ public class TestMyLinkedList {
      * @see MyLinkedList#extractRecursively(Predicate, Function, Predicate)
      */
     @Test
-    void testExtract() {
+    public void testExtract() {
         Predicate<Integer[]> predT = new TestPredTExtract();
         Function<Integer[], Integer> fct = new TestFctExtract();
         Predicate<Integer> predU = new TestPredUExtract();
@@ -186,7 +186,7 @@ public class TestMyLinkedList {
      * @see MyLinkedList#mixinRecursively(MyLinkedList, BiPredicate, Function, Predicate)
      */
     @Test
-    void testMixin() {
+    public void testMixin() {
         Number[] expected = new Number[8];
         for (int i = 0; i < expected.length; i++) {
             expected[i] = (double) i;

@@ -2,12 +2,10 @@ package h10;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import static java.lang.reflect.Modifier.isPrivate;
@@ -40,9 +38,11 @@ public final class TutorTest_H2_2 {
 
         int found = 0;
         for (Method m : classH2.getDeclaredMethods()) {
-            if (!m.getName().equals("mixinIteratively") && !m.getName().equals("mixinRecursively") &&
-                !m.getName().equals("mixinRecursivelyHelper"))
+            if (!m.getName().equals("mixinIteratively")
+                && !m.getName().equals("mixinRecursively")
+                && !m.getName().equals("mixinRecursivelyHelper")) {
                 continue;
+            }
             found++;
         }
         // methods are found
@@ -59,8 +59,10 @@ public final class TutorTest_H2_2 {
         }
 
         for (Method m : classH2.getDeclaredMethods()) {
-            if (!m.getName().equals("mixinIteratively") && !m.getName().equals("mixinRecursively"))
+            if (!m.getName().equals("mixinIteratively")
+                && !m.getName().equals("mixinRecursively")) {
                 continue;
+            }
 
             // is generic with type U
             assertEquals(1, m.getTypeParameters().length,
@@ -79,12 +81,12 @@ public final class TutorTest_H2_2 {
             // param types are correct
             var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName())
                 .collect(Collectors.toList());
-            assertTrue(paramTypes.contains("h10.MyLinkedList<U>") &&
-                       (paramTypes.contains("java.util.function.BiPredicate<? super T, ? super U>") ||
-                        paramTypes.contains("java.util.function.BiPredicate<? super T,? super U>")) &&
-                       (paramTypes.contains("java.util.function.Function<? super U, ? extends T>") ||
-                        paramTypes.contains("java.util.function.Function<? super U,? extends T>")) &&
-                       paramTypes.contains("java.util.function.Predicate<? super U>"),
+            assertTrue(paramTypes.contains("h10.MyLinkedList<U>")
+                       && (paramTypes.contains("java.util.function.BiPredicate<? super T, ? super U>")
+                           || paramTypes.contains("java.util.function.BiPredicate<? super T,? super U>"))
+                       && (paramTypes.contains("java.util.function.Function<? super U, ? extends T>")
+                           || paramTypes.contains("java.util.function.Function<? super U,? extends T>"))
+                       && paramTypes.contains("java.util.function.Predicate<? super U>"),
                        "Parameters in mixin*-method are incorrect");
 
             // return type is correct
@@ -107,7 +109,9 @@ public final class TutorTest_H2_2 {
         }
 
         for (Method m : classH2.getDeclaredMethods()) {
-            if (!m.getName().equals("mixinRecursivelyHelper")) continue;
+            if (!m.getName().equals("mixinRecursivelyHelper")) {
+                continue;
+            }
 
             // is generic with type U
             assertEquals(1, m.getTypeParameters().length,
@@ -125,14 +129,14 @@ public final class TutorTest_H2_2 {
             // param types are correct
             var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName())
                 .collect(Collectors.toList());
-            assertTrue(paramTypes.contains("h10.MyLinkedList<U>") &&
-                       (paramTypes.contains("java.util.function.BiPredicate<? super T, ? super U>") ||
-                        paramTypes.contains("java.util.function.BiPredicate<? super T,? super U>")) &&
-                       (paramTypes.contains("java.util.function.Function<? super U, ? extends T>") ||
-                        paramTypes.contains("java.util.function.Function<? super U,? extends T>")) &&
-                       paramTypes.contains("java.util.function.Predicate<? super U>") &&
-                       paramTypes.contains("h10.ListItem<T>") &&
-                       paramTypes.contains("int"),
+            assertTrue(paramTypes.contains("h10.MyLinkedList<U>")
+                       && (paramTypes.contains("java.util.function.BiPredicate<? super T, ? super U>")
+                           || paramTypes.contains("java.util.function.BiPredicate<? super T,? super U>"))
+                       && (paramTypes.contains("java.util.function.Function<? super U, ? extends T>")
+                           || paramTypes.contains("java.util.function.Function<? super U,? extends T>"))
+                       && paramTypes.contains("java.util.function.Predicate<? super U>")
+                       && paramTypes.contains("h10.ListItem<T>")
+                       && paramTypes.contains("int"),
                        "Parameters in mixinRecursivelyHelper method are incorrect");
 
             // return type is correct
@@ -153,11 +157,11 @@ public final class TutorTest_H2_2 {
         var otherLists2 = TutorTest_Generators.generateOtherListMixin2WithoutExc();
 
         // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralMixin(thisLists1, otherLists1, TutorTest_H2_1.ExtractType.ITERATIVE,
+        helper1.testGeneralMixin(thisLists1, otherLists1, TutorTest_H2_Helper.MethodType.ITERATIVE,
                                  TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
                                  TutorTest_Generators.predU1);
         // call test for the second list type (String, Double)
-        helper2.testGeneralMixin(thisLists2, otherLists2, TutorTest_H2_1.ExtractType.ITERATIVE,
+        helper2.testGeneralMixin(thisLists2, otherLists2, TutorTest_H2_Helper.MethodType.ITERATIVE,
                                  TutorTest_Generators.biPred2, TutorTest_Generators.fctMixin2,
                                  TutorTest_Generators.predU2);
     }
@@ -170,11 +174,11 @@ public final class TutorTest_H2_2 {
         var otherLists2 = TutorTest_Generators.generateOtherListMixin2WithExc();
 
         // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralMixin(thisLists1, otherLists1, TutorTest_H2_1.ExtractType.ITERATIVE,
+        helper1.testGeneralMixin(thisLists1, otherLists1, TutorTest_H2_Helper.MethodType.ITERATIVE,
                                  TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
                                  TutorTest_Generators.predU1);
         // call test for the second list type (String, Double)
-        helper2.testGeneralMixin(thisLists2, otherLists2, TutorTest_H2_1.ExtractType.ITERATIVE,
+        helper2.testGeneralMixin(thisLists2, otherLists2, TutorTest_H2_Helper.MethodType.ITERATIVE,
                                  TutorTest_Generators.biPred2, TutorTest_Generators.fctMixin2,
                                  TutorTest_Generators.predU2);
     }
@@ -187,11 +191,11 @@ public final class TutorTest_H2_2 {
         var otherLists2 = TutorTest_Generators.generateOtherListMixin2WithoutExc();
 
         // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralMixin(thisLists1, otherLists1, TutorTest_H2_1.ExtractType.RECURSIVE,
+        helper1.testGeneralMixin(thisLists1, otherLists1, TutorTest_H2_Helper.MethodType.RECURSIVE,
                                  TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
                                  TutorTest_Generators.predU1);
         // call test for the second list type (String, Double)
-        helper2.testGeneralMixin(thisLists2, otherLists2, TutorTest_H2_1.ExtractType.RECURSIVE,
+        helper2.testGeneralMixin(thisLists2, otherLists2, TutorTest_H2_Helper.MethodType.RECURSIVE,
                                  TutorTest_Generators.biPred2, TutorTest_Generators.fctMixin2,
                                  TutorTest_Generators.predU2);
     }
@@ -204,11 +208,11 @@ public final class TutorTest_H2_2 {
         var otherLists2 = TutorTest_Generators.generateOtherListMixin2WithExc();
 
         // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralMixin(thisLists1, otherLists1, TutorTest_H2_1.ExtractType.RECURSIVE,
+        helper1.testGeneralMixin(thisLists1, otherLists1, TutorTest_H2_Helper.MethodType.RECURSIVE,
                                  TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
                                  TutorTest_Generators.predU1);
         // call test for the second list type (String, Double)
-        helper2.testGeneralMixin(thisLists2, otherLists2, TutorTest_H2_1.ExtractType.RECURSIVE,
+        helper2.testGeneralMixin(thisLists2, otherLists2, TutorTest_H2_Helper.MethodType.RECURSIVE,
                                  TutorTest_Generators.biPred2, TutorTest_Generators.fctMixin2,
                                  TutorTest_Generators.predU2);
     }
@@ -232,8 +236,8 @@ public final class TutorTest_H2_2 {
             thisList.mixinRecursively(otherList, TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
                                       TutorTest_Generators.predU1);
             //Mockito.verify(thisList, Mockito.atLeast(2))
-                //.mixinRecursivelyHelper(otherList, TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
-                                        //TutorTest_Generators.predU1, otherList.head, new ListItem<>(), 0);
+            //.mixinRecursivelyHelper(otherList, TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
+            //TutorTest_Generators.predU1, otherList.head, new ListItem<>(), 0);
         } catch (MyLinkedListException e) {
             // will never happen
             e.printStackTrace();

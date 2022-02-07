@@ -13,6 +13,14 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public final class TutorTest_H2_Helper<T> {
 
+    /**
+     * Decide which type of extract/mixin method is used.
+     */
+    protected enum MethodType {
+        ITERATIVE,
+        RECURSIVE
+    }
+
     /* *********************************************************************
      *                       Correct expected methods                      *
      **********************************************************************/
@@ -22,7 +30,9 @@ public final class TutorTest_H2_Helper<T> {
                                                   Predicate<? super U> predU) throws MyLinkedListException {
         MyLinkedList<U> removed = new MyLinkedList<>();
         ListItem<U> tail = null;
-        if (sourceList.head == null) return removed;
+        if (sourceList.head == null) {
+            return removed;
+        }
 
         ListItem<T> current = new ListItem<>();
         current.next = sourceList.head;
@@ -38,13 +48,18 @@ public final class TutorTest_H2_Helper<T> {
             }
 
             U mapped = fct.apply(key);
-            if (!predU.test(mapped)) throw new MyLinkedListException(index, mapped);
+            if (!predU.test(mapped)) {
+                throw new MyLinkedListException(index, mapped);
+            }
 
             current.next = current.next.next;
 
             ListItem<U> item = new ListItem<>(mapped);
-            if (tail == null) removed.head = tail = item;
-            else tail = tail.next = item;
+            if (tail == null) {
+                removed.head = tail = item;
+            } else {
+                tail = tail.next = item;
+            }
 
             index++;
         }
@@ -57,7 +72,9 @@ public final class TutorTest_H2_Helper<T> {
                                      BiPredicate<? super T, ? super U> biPred,
                                      Function<? super U, ? extends T> fct,
                                      Predicate<? super U> predU) throws MyLinkedListException {
-        if (otherList.head == null) return;
+        if (otherList.head == null) {
+            return;
+        }
 
         ListItem<U> others = otherList.head;
         ListItem<T> current = new ListItem<>();
@@ -96,18 +113,18 @@ public final class TutorTest_H2_Helper<T> {
      *                   General extract and mixin tests                   *
      **********************************************************************/
 
-    protected <U> void testGeneralExtract(MyLinkedList<T>[] thisLists, TutorTest_H2_1.ExtractType type,
+    protected <U> void testGeneralExtract(MyLinkedList<T>[] thisLists, MethodType type,
                                           Predicate<? super T> predT, Function<? super T, ? extends U> fct,
                                           Predicate<? super U> predU) {
-        MyLinkedList<U> otherList = new MyLinkedList<>(),
-            expectedOtherList = new MyLinkedList<>();
+        MyLinkedList<U> otherList = new MyLinkedList<>();
+        MyLinkedList<U> expectedOtherList = new MyLinkedList<>();
         MyLinkedListException actualExc = null;
 
         for (var thisList : thisLists) {
             var expectedThisList = copyList(thisList);
             // check actual values
             try {
-                if (type == TutorTest_H2_1.ExtractType.ITERATIVE) {
+                if (type == MethodType.ITERATIVE) {
                     otherList = thisList.extractIteratively(predT, fct, predU);
                 } else {
                     otherList = thisList.extractRecursively(predT, fct, predU);
@@ -130,7 +147,7 @@ public final class TutorTest_H2_Helper<T> {
     }
 
     protected <U> void testGeneralMixin(MyLinkedList<T>[] thisLists, MyLinkedList<U>[] otherLists,
-                                        TutorTest_H2_1.ExtractType type, BiPredicate<? super T, ? super U> biPred,
+                                        MethodType type, BiPredicate<? super T, ? super U> biPred,
                                         Function<? super U, ? extends T> fct, Predicate<? super U> predU) {
         MyLinkedListException actualExc = null;
 
@@ -140,7 +157,7 @@ public final class TutorTest_H2_Helper<T> {
             var expectedOtherList = copyList(otherLists[i]);
             // check actual values
             try {
-                if (type == TutorTest_H2_1.ExtractType.ITERATIVE) {
+                if (type == MethodType.ITERATIVE) {
                     thisLists[i].mixinIteratively(otherLists[i], biPred, fct, predU);
                 } else {
                     thisLists[i].mixinRecursively(otherLists[i], biPred, fct, predU);
@@ -177,7 +194,8 @@ public final class TutorTest_H2_Helper<T> {
         ListItem<U> actualCurrent = actual.head;
         for (ListItem<U> expectedCurrent = expected.head; expectedCurrent != null; expectedCurrent = expectedCurrent.next) {
             // actual mustn't end before expected
-            assertNotNull(actualCurrent, "Assertion fails with an expected key: " + expectedCurrent.key
+            assertNotNull(actualCurrent, "Assertion fails with an expected key: "
+                                         + expectedCurrent.key
                                          + ", but was: null");
 
             // if it is an array, check each item
@@ -190,13 +208,13 @@ public final class TutorTest_H2_Helper<T> {
                 var expectedArray = (U[]) expectedCurrent.key;
                 var actualArray = (U[]) expectedCurrent.key;
                 // make sure both have the same lengths
-                assertEquals(expectedArray.length, actualArray.length, "Assertion fails with an expected array length: " +
-                                                                       +expectedArray.length + ", but was: "
-                                                                       + actualArray.length);
+                assertEquals(expectedArray.length, actualArray.length,
+                             "Assertion fails with an expected array length: " + expectedArray.length + ", but was: "
+                             + actualArray.length);
                 for (int i = 0; i < expectedArray.length; i++) {
                     assertEquals(expectedArray[i], actualArray[i],
-                                 "Assertion fails with an expected listElem element: " + expectedArray[i] + ", but was: "
-                                 + actualArray[i]);
+                                 "Assertion fails with an expected listElem element: " + expectedArray[i]
+                                 + ", but was: " + actualArray[i]);
                 }
                 actualCurrent = actualCurrent.next;
                 continue;
@@ -236,8 +254,8 @@ public final class TutorTest_H2_Helper<T> {
         }
 
         copyList.head = new ListItem<>(list.head.key);
-        ListItem<U> current, currentCopy = copyList.head;
-        for (current = list.head.next; current != null; current = current.next) {
+        ListItem<U> currentCopy = copyList.head;
+        for (ListItem<U> current = list.head.next; current != null; current = current.next) {
             currentCopy.next = new ListItem<>(current.key);
             currentCopy = currentCopy.next;
         }

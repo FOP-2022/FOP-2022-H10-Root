@@ -2,7 +2,6 @@ package h10;
 
 import org.sourcegrade.docwatcher.api.grading.DocumentationCriterion;
 import org.sourcegrade.docwatcher.api.grading.DocumentationGrader;
-
 import org.sourcegrade.jagr.api.rubric.Criterion;
 import org.sourcegrade.jagr.api.rubric.Grader;
 import org.sourcegrade.jagr.api.rubric.JUnitTestRef;

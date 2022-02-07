@@ -9,14 +9,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Set;
-
-import static java.lang.reflect.Modifier.isPublic;
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static java.lang.reflect.Modifier.isPublic;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Defines the JUnit test cases related to the class defined in the task H3.
@@ -46,7 +45,9 @@ public final class TutorTest_H3 {
         boolean found = false;
 
         for (Method m : classH3.getDeclaredMethods()) {
-            if (!m.getName().equals("testExtract")) continue;
+            if (!m.getName().equals("testExtract")) {
+                continue;
+            }
 
             found = true;
 
@@ -88,11 +89,13 @@ public final class TutorTest_H3 {
         int found = 0;
         for (Class<?> c : allClasses) {
             var interfaces = c.getInterfaces();
-            boolean fct = interfaces[0].getSimpleName().equals("java.util.function.Function"),
-                predT = interfaces[0].getTypeName().equals("java.util.function.Predicate<Integer[]>"),
-                predU = interfaces[0].getTypeName().equals("java.util.function.Predicate<Integer>");
+            boolean fct = interfaces[0].getSimpleName().equals("java.util.function.Function");
+            boolean predT = interfaces[0].getTypeName().equals("java.util.function.Predicate<Integer[]>");
+            boolean predU = interfaces[0].getTypeName().equals("java.util.function.Predicate<Integer>");
 
-            if (!(fct || predT || predU)) continue;
+            if (!(fct || predT || predU)) {
+                continue;
+            }
             found++;
 
             // TODO : how to check if lambdas are used?
@@ -172,7 +175,9 @@ public final class TutorTest_H3 {
         boolean found = false;
 
         for (Method m : classH3.getDeclaredMethods()) {
-            if (!m.getName().equals("testMixin")) continue;
+            if (!m.getName().equals("testMixin")) {
+                continue;
+            }
 
             found = true;
 
@@ -212,11 +217,13 @@ public final class TutorTest_H3 {
 
         int found = 0;
         for (Field f : fields) {
-            boolean biPred = f.getType().equals(BiPredicate.class),
-                predU = f.getType().equals(Predicate.class),
-                fct = f.getType().equals(Function.class);
+            boolean biPred = f.getType().equals(BiPredicate.class);
+            boolean predU = f.getType().equals(Predicate.class);
+            boolean fct = f.getType().equals(Function.class);
 
-            if (!(biPred || predU || fct)) continue;
+            if (!(biPred || predU || fct)) {
+                continue;
+            }
             found++;
 
             // TODO : how to check if lambdas are used?

@@ -99,8 +99,11 @@ public final class TutorTest_H1 {
         Object[] objs = new Object[numOfTests];
         Random rn = new Random();
         for (int i = 0; i < numOfTests; i++) {
-            if (i % 2 == 0) objs[i] = Integer.toHexString(rn.nextInt());
-            else objs[i] = rn.nextInt();
+            if (i % 2 == 0) {
+                objs[i] = Integer.toHexString(rn.nextInt());
+            } else {
+                objs[i] = rn.nextInt();
+            }
         }
         return objs;
     }

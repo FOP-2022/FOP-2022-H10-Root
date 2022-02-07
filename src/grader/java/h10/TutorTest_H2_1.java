@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -24,11 +23,6 @@ public final class TutorTest_H2_1 {
     TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
     TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
 
-    protected enum ExtractType {
-        ITERATIVE,
-        RECURSIVE
-    }
-
     /* *********************************************************************
      *                               H2.1                                  *
      **********************************************************************/
@@ -44,9 +38,11 @@ public final class TutorTest_H2_1 {
 
         int found = 0;
         for (Method m : classH2.getDeclaredMethods()) {
-            if (!m.getName().equals("extractIteratively") && !m.getName().equals("extractRecursively") &&
-                !m.getName().equals("extractRecursivelyHelper"))
+            if (!m.getName().equals("extractIteratively")
+                && !m.getName().equals("extractRecursively")
+                && !m.getName().equals("extractRecursivelyHelper")) {
                 continue;
+            }
             found++;
         }
         // methods are found
@@ -63,8 +59,10 @@ public final class TutorTest_H2_1 {
         }
 
         for (Method m : classH2.getDeclaredMethods()) {
-            if (!m.getName().equals("extractIteratively") && !m.getName().equals("extractRecursively"))
+            if (!m.getName().equals("extractIteratively")
+                && !m.getName().equals("extractRecursively")) {
                 continue;
+            }
 
             // is generic with type U
             assertEquals(1, m.getTypeParameters().length, "extract*-method is not generic");
@@ -80,10 +78,10 @@ public final class TutorTest_H2_1 {
 
             // param types are correct
             var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName()).collect(Collectors.toList());
-            assertTrue(paramTypes.contains("java.util.function.Predicate<? super T>") &&
-                       (paramTypes.contains("java.util.function.Function<? super T, ? extends U>") ||
-                        paramTypes.contains("java.util.function.Function<? super T,? extends U>")) &&
-                       paramTypes.contains("java.util.function.Predicate<? super U>"),
+            assertTrue(paramTypes.contains("java.util.function.Predicate<? super T>")
+                       && (paramTypes.contains("java.util.function.Function<? super T, ? extends U>")
+                           || paramTypes.contains("java.util.function.Function<? super T,? extends U>"))
+                       && paramTypes.contains("java.util.function.Predicate<? super U>"),
                        "Parameters in extract*-method are incorrect");
 
             // return type is correct
@@ -106,7 +104,9 @@ public final class TutorTest_H2_1 {
         }
 
         for (Method m : classH2.getDeclaredMethods()) {
-            if (!m.getName().equals("extractRecursivelyHelper")) continue;
+            if (!m.getName().equals("extractRecursivelyHelper")) {
+                continue;
+            }
 
             // is generic with type U
             assertEquals(1, m.getTypeParameters().length,
@@ -124,12 +124,12 @@ public final class TutorTest_H2_1 {
             // param types are correct
             var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName())
                 .collect(Collectors.toList());
-            assertTrue(paramTypes.contains("java.util.function.Predicate<? super T>") &&
-                       (paramTypes.contains("java.util.function.Function<? super T, ? extends U>") ||
-                        paramTypes.contains("java.util.function.Function<? super T,? extends U>")) &&
-                       paramTypes.contains("java.util.function.Predicate<? super U>") &&
-                       paramTypes.contains("h10.ListItem<T>") &&
-                       paramTypes.contains("int"),
+            assertTrue(paramTypes.contains("java.util.function.Predicate<? super T>")
+                       && (paramTypes.contains("java.util.function.Function<? super T, ? extends U>")
+                           || paramTypes.contains("java.util.function.Function<? super T,? extends U>"))
+                       && paramTypes.contains("java.util.function.Predicate<? super U>")
+                       && paramTypes.contains("h10.ListItem<T>")
+                       && paramTypes.contains("int"),
                        "Parameters in extractRecursivelyHelper method are incorrect");
 
             // return type is correct
@@ -148,10 +148,10 @@ public final class TutorTest_H2_1 {
         var thisLists2 = TutorTest_Generators.generateThisListExtract2WithoutExc();
 
         // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralExtract(thisLists1, ExtractType.ITERATIVE, TutorTest_Generators.predT1,
+        helper1.testGeneralExtract(thisLists1, TutorTest_H2_Helper.MethodType.ITERATIVE, TutorTest_Generators.predT1,
                                    TutorTest_Generators.fctExtract1, TutorTest_Generators.predU1);
         // call test for the second list type (String, Double)
-        helper2.testGeneralExtract(thisLists2, ExtractType.ITERATIVE, TutorTest_Generators.predT2,
+        helper2.testGeneralExtract(thisLists2, TutorTest_H2_Helper.MethodType.ITERATIVE, TutorTest_Generators.predT2,
                                    TutorTest_Generators.fctExtract2, TutorTest_Generators.predU2);
     }
 
@@ -161,10 +161,10 @@ public final class TutorTest_H2_1 {
         var thisLists2 = TutorTest_Generators.generateThisListExtract2WithExc();
 
         // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralExtract(thisLists1, ExtractType.ITERATIVE, TutorTest_Generators.predT1,
+        helper1.testGeneralExtract(thisLists1, TutorTest_H2_Helper.MethodType.ITERATIVE, TutorTest_Generators.predT1,
                                    TutorTest_Generators.fctExtract1, TutorTest_Generators.predU1);
         // call test for the second list type (String, Double)
-        helper2.testGeneralExtract(thisLists2, ExtractType.ITERATIVE, TutorTest_Generators.predT2,
+        helper2.testGeneralExtract(thisLists2, TutorTest_H2_Helper.MethodType.ITERATIVE, TutorTest_Generators.predT2,
                                    TutorTest_Generators.fctExtract2, TutorTest_Generators.predU2);
     }
 
@@ -174,10 +174,10 @@ public final class TutorTest_H2_1 {
         var thisLists2 = TutorTest_Generators.generateThisListExtract2WithoutExc();
 
         // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralExtract(thisLists1, ExtractType.RECURSIVE, TutorTest_Generators.predT1,
+        helper1.testGeneralExtract(thisLists1, TutorTest_H2_Helper.MethodType.RECURSIVE, TutorTest_Generators.predT1,
                                    TutorTest_Generators.fctExtract1, TutorTest_Generators.predU1);
         // call test for the second list type (String, Double)
-        helper2.testGeneralExtract(thisLists2, ExtractType.RECURSIVE, TutorTest_Generators.predT2,
+        helper2.testGeneralExtract(thisLists2, TutorTest_H2_Helper.MethodType.RECURSIVE, TutorTest_Generators.predT2,
                                    TutorTest_Generators.fctExtract2, TutorTest_Generators.predU2);
     }
 
@@ -187,10 +187,10 @@ public final class TutorTest_H2_1 {
         var thisLists2 = TutorTest_Generators.generateThisListExtract2WithExc();
 
         // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralExtract(thisLists1, ExtractType.RECURSIVE, TutorTest_Generators.predT1,
+        helper1.testGeneralExtract(thisLists1, TutorTest_H2_Helper.MethodType.RECURSIVE, TutorTest_Generators.predT1,
                                    TutorTest_Generators.fctExtract1, TutorTest_Generators.predU1);
         // call test for the second list type (String, Double)
-        helper2.testGeneralExtract(thisLists2, ExtractType.RECURSIVE, TutorTest_Generators.predT2,
+        helper2.testGeneralExtract(thisLists2, TutorTest_H2_Helper.MethodType.RECURSIVE, TutorTest_Generators.predT2,
                                    TutorTest_Generators.fctExtract2, TutorTest_Generators.predU2);
     }
 

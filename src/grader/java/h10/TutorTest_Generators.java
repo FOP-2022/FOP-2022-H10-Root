@@ -26,7 +26,9 @@ public final class TutorTest_Generators {
     // listElem from 0 to the given Integer
     protected static Function<Integer, Integer[]> fctExtract1 = i -> {
         Integer[] ints = new Integer[i];
-        for (int j = 0; j < i; j++) ints[j] = j;
+        for (int j = 0; j < i; j++) {
+            ints[j] = j;
+        }
         return ints;
     };
 
@@ -36,7 +38,9 @@ public final class TutorTest_Generators {
     // max number
     protected static Function<Integer[], Integer> fctMixin1 = ints -> {
         Integer max = ints[0];
-        for (int i = 1; i < ints.length; i++) max = max(ints[i], max);
+        for (int i = 1; i < ints.length; i++) {
+            max = max(ints[i], max);
+        }
         return max;
     };
 
@@ -61,7 +65,9 @@ public final class TutorTest_Generators {
     protected static Predicate<Integer[]> predU1 = i -> {
         int count = 0;
         for (Integer integer : i) {
-            if (integer > 10) count++;
+            if (integer > 10) {
+                count++;
+            }
         }
         return count >= 3;
     };
@@ -110,7 +116,9 @@ public final class TutorTest_Generators {
         sourceLists[0] = list; // {0 -> null}
 
         list = new MyLinkedList<>();
-        for (int i = 0; i < 10; i++) list.add(0);
+        for (int i = 0; i < 10; i++) {
+            list.add(0);
+        }
         sourceLists[1] = list; // {0 -> 0 -> ... -> null}
 
         list = new MyLinkedList<>();
@@ -130,12 +138,14 @@ public final class TutorTest_Generators {
             for (int j = 0; j < 10; j++) {
                 // make sure there are some strings that start with 1
                 String str = "0";
-                if (j % 2 == 0) str = "1";
+                if (j % 2 == 0) {
+                    str = "1";
+                }
                 str += Integer.toString(new Random().nextInt(1000));
 
                 // make sure it is a multiple of 3
-                list.add((Double.parseDouble(str) % 3 != 0) ?
-                             String.valueOf(Double.parseDouble(str) * 3) : str);
+                list.add((Double.parseDouble(str) % 3 != 0)
+                             ? String.valueOf(Double.parseDouble(str) * 3) : str);
             }
             sourceLists[i] = list;
         }
@@ -151,7 +161,9 @@ public final class TutorTest_Generators {
             for (int j = 0; j < 10; j++) {
                 // make sure there are some strings that start with 1
                 String str = "0";
-                if (j % 2 == 0) str = "1";
+                if (j % 2 == 0) {
+                    str = "1";
+                }
 
                 // make sure there are some elements that are not multiples of 3
                 var rn = new Random().nextInt(1000);
@@ -165,8 +177,9 @@ public final class TutorTest_Generators {
 
     protected static MyLinkedList<Integer> generateThisListExtractMockito() {
         MyLinkedList<Integer> list = Mockito.mock(MyLinkedList.class);
-        for (int j = 0; j < 10; j++)
+        for (int j = 0; j < 10; j++) {
             list.add(new Random().nextInt(100) + 10);
+        }
         return list;
     }
 
@@ -216,7 +229,9 @@ public final class TutorTest_Generators {
                 for (int k = 0; k < 10; k++) {
                     // make sure there will be at least 3 elements greater than 10 after all operations
                     listElem[k] = new Random().nextInt(100);
-                    if (k % 3 == 0) listElem[k] += 11;
+                    if (k % 3 == 0) {
+                        listElem[k] += 11;
+                    }
                 }
                 list.add(listElem);
             }
@@ -235,14 +250,18 @@ public final class TutorTest_Generators {
         sourceLists[0] = list; // {{0,0,0} -> null}
 
         list = new MyLinkedList<>();
-        for (int i = 0; i < 10; i++) list.add(new Integer[]{0, 0, 0});
+        for (int i = 0; i < 10; i++) {
+            list.add(new Integer[]{0, 0, 0});
+        }
         sourceLists[1] = list; // {{0,0,0} -> {0,0,0} -> ... -> null}
 
         for (int i = 2; i < 10; i++) {
             list = new MyLinkedList<>();
             for (int j = 0; j < 10; j++) {
                 Integer[] listElem = new Integer[10];
-                for (int k = 0; k < 10; k++) listElem[k] = new Random().nextInt(10);
+                for (int k = 0; k < 10; k++) {
+                    listElem[k] = new Random().nextInt(10);
+                }
                 list.add(listElem);
             }
             sourceLists[i] = list;
@@ -283,8 +302,9 @@ public final class TutorTest_Generators {
 
     protected static MyLinkedList<Integer> generateThisListMixinMockito() {
         MyLinkedList<Integer> list = Mockito.mock(MyLinkedList.class);
-        for (int j = 0; j < 10; j++)
+        for (int j = 0; j < 10; j++) {
             list.add(new Random().nextInt(100));
+        }
         return list;
     }
 
@@ -294,11 +314,12 @@ public final class TutorTest_Generators {
             Integer[] listElem = new Integer[10];
             for (int k = 0; k < 10; k++) {
                 listElem[k] = new Random().nextInt(100);
-                if (k % 3 == 0) listElem[k] += 11;
+                if (k % 3 == 0) {
+                    listElem[k] += 11;
+                }
             }
             list.add(listElem);
         }
         return list;
     }
-
 }

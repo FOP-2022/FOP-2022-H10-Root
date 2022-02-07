@@ -15,7 +15,9 @@ public final class TutorTest_H3_Helper {
 
     protected Number[] generateManyNumbers(int numElems) {
         Number[] ints = new Number[numElems];
-        for (int i = 0; i < numElems; i++) ints[i] = new Random().nextInt();
+        for (int i = 0; i < numElems; i++) {
+            ints[i] = new Random().nextInt();
+        }
         return ints;
     }
 
@@ -32,8 +34,11 @@ public final class TutorTest_H3_Helper {
     protected String[] generateManyStrings(int numElems) {
         String[] strings = new String[numElems];
         for (int i = 0; i < numElems; i++) {
-            if (i % 2 == 0) strings[i] = String.valueOf(new Random().nextInt());
-            else strings[i] = "hello";
+            if (i % 2 == 0) {
+                strings[i] = String.valueOf(new Random().nextInt());
+            } else {
+                strings[i] = "hello";
+            }
         }
         return strings;
     }
@@ -44,14 +49,18 @@ public final class TutorTest_H3_Helper {
 
     protected Integer expectedFct(Integer[] array) {
         Integer result = 0;
-        for (Integer a : array) result += a;
+        for (Integer a : array) {
+            result += a;
+        }
         return result;
     }
 
     protected boolean expectedPredT(Integer[] array) {
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array.length; j++) {
-                if (i != j && array[i] % array[j] == 0) return true;
+                if (i != j && array[i] % array[j] == 0) {
+                    return true;
+                }
             }
         }
         return false;

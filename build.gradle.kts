@@ -25,8 +25,9 @@ submit {
 // This is to prevent the grader from being present in the submission jar
 
 val grader: SourceSet by sourceSets.creating {
-    compileClasspath += sourceSets.test.get().compileClasspath
-    runtimeClasspath += output + compileClasspath
+    val test = sourceSets.test.get()
+    compileClasspath += test.compileClasspath + test.output
+    runtimeClasspath += output + compileClasspath + test.runtimeClasspath
 }
 
 dependencies {

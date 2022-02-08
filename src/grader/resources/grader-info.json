@@ -15,12 +15,11 @@
         "h10/TutorTest_H2_Helper.java",
         "h10/TutorTest_H3.java",
         "h10/TutorTest_H3_Helper.java",
-        "h09/utils/spoon/ArraysInstantiationMethodBodyProcessor.java",
-        "h09/utils/spoon/LambdaExpressionsMethodBodyProcessor.java",
-        "h09/utils/spoon/LoopsMethodBodyProcessor.java",
-        "h09/utils/spoon/MethodCallsProcessor.java",
-        "h09/utils/spoon/SpoonUtils.java",
-        "h09/utils/transformer/TutorTransformer.java"
+        "h10/utils/spoon/LambdaExpressionsMethodBodyProcessor.java",
+        "h10/utils/spoon/LoopsMethodBodyProcessor.java",
+        "h10/utils/spoon/MethodCallsProcessor.java",
+        "h10/utils/spoon/SpoonUtils.java",
+        "h10/utils/transformer/TutorTransformer.java"
       ]
     },
     {

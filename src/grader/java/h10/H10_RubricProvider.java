@@ -1,5 +1,6 @@
 package h10;
 
+import org.junit.jupiter.api.Test;
 import org.sourcegrade.docwatcher.api.grading.DocumentationCriterion;
 import org.sourcegrade.docwatcher.api.grading.DocumentationGrader;
 import org.sourcegrade.jagr.api.rubric.Criterion;
@@ -9,6 +10,7 @@ import org.sourcegrade.jagr.api.rubric.Rubric;
 import org.sourcegrade.jagr.api.rubric.RubricForSubmission;
 import org.sourcegrade.jagr.api.rubric.RubricProvider;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
+import org.sourcegrade.jagr.api.testing.TestCycle;
 
 /**
  * Specifies the criteria of the rubric.
@@ -361,7 +363,8 @@ public final class H10_RubricProvider implements RubricProvider {
         .shortDescription("Die drei Klassen für die Parameters existieren und sind korrekt implementiert.")
         .grader(
             Grader.testAwareBuilder()
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H3.class.getMethod("testParameterClasses")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H3.class.getMethod("testParameterClasses",
+                                                                                      TestCycle.class)))
                 .pointsPassedMax()
                 .pointsFailedMin()
                 .build())
@@ -401,7 +404,8 @@ public final class H10_RubricProvider implements RubricProvider {
         .shortDescription("Die Konstanten werden richtig durch lambda-Ausdrücke eingesetzt.")
         .grader(
             Grader.testAwareBuilder()
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H3.class.getMethod("testParameterConstants")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H3.class.getMethod("testParameterConstants",
+                                                                                      TestCycle.class)))
                 .pointsPassedMax()
                 .pointsFailedMin()
                 .build())
@@ -437,7 +441,7 @@ public final class H10_RubricProvider implements RubricProvider {
      *                              JavaDoc                                 *
      **********************************************************************/
 
-    public static Criterion JAVADOC;
+    //public static Criterion JAVADOC;
 
     static {
         try {
@@ -467,7 +471,7 @@ public final class H10_RubricProvider implements RubricProvider {
 
     public static final Rubric RUBRIC = Rubric.builder()
         .title("h10")
-        .addChildCriteria(H1, H2, H3, JAVADOC)
+        .addChildCriteria(H1, H2, H3)
         .build();
 
     @Override

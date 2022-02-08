@@ -1,5 +1,15 @@
 package h10;
 
+import h10.utils.spoon.LoopsMethodBodyProcessor;
+import h10.utils.spoon.MethodCallsProcessor;
+import h10.utils.spoon.SpoonUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.sourcegrade.jagr.api.testing.TestCycle;
+import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
+import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
+
+import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -205,7 +215,9 @@ public final class TutorTest_H2_Helper<T> {
                                                                          + expectedCurrent.key + ", but was: "
                                                                          + actualCurrent.key);
 
+                @SuppressWarnings("unchecked")
                 var expectedArray = (U[]) expectedCurrent.key;
+                @SuppressWarnings("unchecked")
                 var actualArray = (U[]) expectedCurrent.key;
                 // make sure both have the same lengths
                 assertEquals(expectedArray.length, actualArray.length,
@@ -240,6 +252,34 @@ public final class TutorTest_H2_Helper<T> {
         assertEquals(expected.getMessage().substring(0, maxIndex), actual.getMessage().substring(0, maxIndex),
                      "Assertion fails with an expected message: " + expected.getMessage() + ", but was: "
                      + actual.getMessage());
+    }
+
+    @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
+    public void assertNoOtherMethod(final TestCycle testCycle, Class<?> classType, String methodName) {
+        var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
+        var processor = SpoonUtils.process(testCycle, path, new MethodCallsProcessor(methodName));
+
+        final Set<String> canBeCalled = Set.of("extractIteratively", "extractRecursively", "extractRecursivelyHelper",
+                                               "mixinIteratively", "mixinRecursively", "mixinRecursivelyHelper", "add");
+
+        for (var callee : processor.getCallees()) {
+            var name = callee.getExecutable().getSimpleName();
+            assertFalse(canBeCalled.contains(name), "Assertion fails with an expected number of callee: 0, but was: " + name
+                                                    + " is called.");
+        }
+    }
+
+    @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
+    public void assertOneLoop(final TestCycle testCycle, Class<?> classType) {
+        var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
+        var processor = SpoonUtils.process(testCycle, path,
+                                           new LoopsMethodBodyProcessor(null));
+
+        var actual = processor.getForeachLoops().size()
+                     + processor.getForLoops().size()
+                     + processor.getWhileLoops().size()
+                     + processor.getDoWhileLoops().size();
+        assertEquals(1, actual, "Assertion fails with expected number of loops: 1, but was: " + actual);
     }
 
     /* *********************************************************************

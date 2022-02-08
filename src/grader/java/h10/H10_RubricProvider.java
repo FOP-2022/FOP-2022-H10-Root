@@ -136,7 +136,8 @@ public final class H10_RubricProvider implements RubricProvider {
         .minPoints(-1)
         .grader(
             Grader.testAwareBuilder()
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractNoOtherMethods")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractNoOtherMethods",
+                                                                                        TestCycle.class)))
                 .pointsPassedMax()
                 .pointsFailedMin()
                 .build())
@@ -148,7 +149,8 @@ public final class H10_RubricProvider implements RubricProvider {
         .minPoints(-2)
         .grader(
             Grader.testAwareBuilder()
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractReallyIteratively")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractReallyIteratively",
+                                                                                        TestCycle.class)))
                 .pointsPassedMax()
                 .pointsFailedMin()
                 .build())
@@ -179,8 +181,10 @@ public final class H10_RubricProvider implements RubricProvider {
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractIterativelyException")))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractRecursively")))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractRecursivelyException")))
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractNoOtherMethods")))
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractReallyIteratively")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractNoOtherMethods",
+                                                                                        TestCycle.class)))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractReallyIteratively",
+                                                                                        TestCycle.class)))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractReallyRecursively")))
                 .pointsPassedMax()
                 .pointsFailedMin()
@@ -278,7 +282,8 @@ public final class H10_RubricProvider implements RubricProvider {
         .minPoints(-1)
         .grader(
             Grader.testAwareBuilder()
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinNoOtherMethods")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinNoOtherMethods",
+                                                                                        TestCycle.class)))
                 .pointsPassedMax()
                 .pointsFailedMin()
                 .build())
@@ -290,7 +295,8 @@ public final class H10_RubricProvider implements RubricProvider {
         .minPoints(-2)
         .grader(
             Grader.testAwareBuilder()
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinReallyIteratively")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinReallyIteratively",
+                                                                                        TestCycle.class)))
                 .pointsPassedMax()
                 .pointsFailedMin()
                 .build())
@@ -321,8 +327,10 @@ public final class H10_RubricProvider implements RubricProvider {
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinIterativelyException")))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinRecursively")))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinRecursivelyException")))
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinNoOtherMethods")))
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinReallyIteratively")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinNoOtherMethods",
+                                                                                        TestCycle.class)))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinReallyIteratively",
+                                                                                        TestCycle.class)))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinReallyRecursively")))
                 .pointsPassedMax()
                 .pointsFailedMin()

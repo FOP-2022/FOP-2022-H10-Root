@@ -2,8 +2,12 @@ package h10;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import org.sourcegrade.jagr.api.testing.TestCycle;
+import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
+import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -219,13 +223,16 @@ public final class TutorTest_H2_2 {
     }
 
     @Test
-    public void testMixinNoOtherMethods() {
-        // TODO : test no other (unimplemented / new implemented) methods are used
+    @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
+    public void testMixinNoOtherMethods(final TestCycle testCycle) {
+        helper1.assertNoOtherMethod(testCycle, MyLinkedList.class, "mixinIteratively");
+        helper1.assertNoOtherMethod(testCycle, MyLinkedList.class, "mixinRecursively");
     }
 
     @Test
-    public void testMixinReallyIteratively() {
-        // TODO : test if mixinIteratively has one loop only
+    @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
+    public void testMixinReallyIteratively(final TestCycle testCycle) {
+        helper1.assertOneLoop(testCycle, MyLinkedList.class);
     }
 
     @Test

@@ -1,6 +1,17 @@
 package h10;
 
+import h10.utils.spoon.LambdaExpressionsMethodBodyProcessor;
+import h10.utils.spoon.SpoonUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.sourcegrade.jagr.api.testing.TestCycle;
+import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
+import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
+import spoon.reflect.declaration.CtTypedElement;
+
 import java.util.Random;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Define some helper methods for task H3.
@@ -66,7 +77,43 @@ public final class TutorTest_H3_Helper {
         return false;
     }
 
-    public boolean expectedPredU(Integer integer) {
+    protected boolean expectedPredU(Integer integer) {
         return integer >= 0;
+    }
+
+    /* *********************************************************************
+     *                           Assertion methods                         *
+     **********************************************************************/
+
+    protected void assertObjects(Object expected, Object actual) {
+        assertEquals(expected, actual, "Assertion fails with an expected value: " + expected + ", but was: " + actual);
+    }
+
+    @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
+    protected void assertLambdas(final TestCycle testCycle, Class<?> classType, String fieldName, String expected) {
+        var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
+        var processor = SpoonUtils.process(testCycle, path,
+                                           new LambdaExpressionsMethodBodyProcessor(fieldName));
+        var allLambdas = processor.getLambdas();
+
+        assertEquals(1, allLambdas.size(), "Expected 1 lambda, but was: " + allLambdas.size());
+
+        var actual = allLambdas.stream()
+            .map(CtTypedElement::getType)
+            .collect(Collectors.toList())
+            .get(0)
+            .toString();
+        assertEquals(expected, actual, "Assertion fails with an expected lambda type: " + expected
+                                       + ", but was: " + actual);
+    }
+
+    @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
+    protected void assertNoLambda(final TestCycle testCycle, Class<?> classType, String fieldName) {
+        var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
+        var processor = SpoonUtils.process(testCycle, path,
+                                           new LambdaExpressionsMethodBodyProcessor(fieldName));
+        var allLambdas = processor.getLambdas();
+        assertEquals(0, allLambdas.size(),
+                     "Assertion fails with expected number of lambdas: 0, but was: " + allLambdas.size());
     }
 }

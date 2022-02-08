@@ -2,11 +2,17 @@ package h10;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import org.sourcegrade.jagr.api.testing.TestCycle;
+import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
+import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.lang.reflect.Modifier.isPrivate;
@@ -196,13 +202,16 @@ public final class TutorTest_H2_1 {
     }
 
     @Test
-    public void testExtractNoOtherMethods() {
-        // TODO : test no other (unimplemented / new implemented) methods are used
+    @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
+    public void testExtractNoOtherMethods(final TestCycle testCycle) {
+        helper1.assertNoOtherMethod(testCycle, MyLinkedList.class, "extractIteratively");
+        helper1.assertNoOtherMethod(testCycle, MyLinkedList.class, "extractRecursively");
     }
 
     @Test
-    public void testExtractReallyIteratively() {
-        // TODO : test if extractIteratively has one loop only
+    @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
+    public void testExtractReallyIteratively(final TestCycle testCycle) {
+        helper1.assertOneLoop(testCycle, MyLinkedList.class);
     }
 
     @Test
@@ -211,9 +220,12 @@ public final class TutorTest_H2_1 {
         try {
             thisList.extractRecursively(TutorTest_Generators.predT1, TutorTest_Generators.fctExtract1,
                                         TutorTest_Generators.predU1);
-            // TODO : ClassTransformer to change modifier method, then verify (but how?)
-            /*Mockito.verify(thisList, Mockito.atLeast(2))
-                .extractRecursivelyHelper(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());*/
+            var m = thisList.getClass().getDeclaredMethod("extractRecursivelyHelper", Predicate.class, Function.class,
+                                                  Predicate.class, ListItem.class, int.class);
+            m.setAccessible(true);
+            m.invoke(thisList, Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+            //Mockito.verify(thisList, Mockito.atLeast(2)).
+            //    .extractRecursivelyHelper(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
         } catch (Exception e) {
             // MyLinkedListException will never be thrown
             fail("extractRecursively does not use recursion");

@@ -2,13 +2,17 @@ package h10;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.reflections.Reflections;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import org.sourcegrade.jagr.api.testing.TestCycle;
+import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
+import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -73,16 +77,16 @@ public final class TutorTest_H3 {
     }
 
     @Test
-    public void testParameterClasses() {
-        Reflections reflections = new Reflections("h10");
-        // TODO : this still doesn't work (allClasses is empty)
-        Set<Class<?>> allClasses = reflections.getSubTypesOf(Object.class);
-
-        allClasses = allClasses.stream()
+    @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
+    public void testParameterClasses(TestCycle testCycle) {
+        var allClassesArray = testCycle.getSubmission().getClass().getClasses();
+        var allClasses = Arrays.stream(allClassesArray)
             .filter(x -> !x.getSimpleName().equals("ListItem")
                          && !x.getSimpleName().equals("MyLinkedList")
                          && !x.getSimpleName().equals("MyLinkedListException")
-                         && !x.getSimpleName().equals("TestMyLinkedList")).collect(Collectors.toSet());
+                         && !x.getSimpleName().equals("TestMyLinkedList"))
+            .collect(Collectors.toSet());
+
         // at least three other classes are found
         assertTrue(allClasses.size() >= 3, "At least one class for the three parameters do not exist");
 
@@ -98,20 +102,27 @@ public final class TutorTest_H3 {
             }
             found++;
 
-            // TODO : how to check if lambdas are really used?
             if (fct) {
                 for (Method m : c.getDeclaredMethods()) {
                     if (m.getReturnType().equals(Integer.class)
                         && m.getParameterCount() == 1
                         && m.getParameters()[0].getType().equals(Integer[].class)) {
+                        // no lambda is used
+                        helper.assertNoLambda(testCycle, c, m.getName());
+
+                        // random inputs
                         Integer[][] intArrays = helper.generateManyIntegerArrays(10, 50);
 
                         // check the method in fct class with many Integers Arrays
                         for (var a : intArrays) {
                             Integer expected = helper.expectedFct(a);
-                            // TODO : how to use this class' method to get actual result? something like actual = m(a);
-                            Integer actual = 0;
-                            assertEquals(expected, actual, "fct Class is incorrect");
+                            Integer actual = null;
+                            try {
+                                actual = (Integer) m.invoke(a);
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                e.fillInStackTrace();
+                            }
+                            helper.assertObjects(expected, actual);
                         }
                     }
                 }
@@ -120,14 +131,22 @@ public final class TutorTest_H3 {
                     if (m.getReturnType().equals(boolean.class)
                         && m.getParameterCount() == 1
                         && m.getParameters()[0].getType().equals(Integer[].class)) {
+                        // no lambda is used
+                        helper.assertNoLambda(testCycle, c, m.getName());
+
+                        // random inputs
                         Integer[][] intArrays = helper.generateManyIntegerArrays(10, 50);
 
                         // check the method in predT class with many Integer Arrays
                         for (var a : intArrays) {
                             boolean expected = helper.expectedPredT(a);
-                            // TODO : ditto
                             boolean actual = false;
-                            assertEquals(expected, actual, "predT Class is incorrect");
+                            try {
+                                actual = (boolean) m.invoke(a);
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                e.fillInStackTrace();
+                            }
+                            helper.assertObjects(expected, actual);
                         }
                     }
                 }
@@ -136,14 +155,22 @@ public final class TutorTest_H3 {
                     if (m.getReturnType().equals(boolean.class)
                         && m.getParameterCount() == 1
                         && m.getParameters()[0].getType().equals(Integer.class)) {
+                        // no lambda is used
+                        helper.assertNoLambda(testCycle, c, m.getName());
+
+                        // random inputs
                         Integer[] ints = (Integer[]) helper.generateManyNumbers(50);
 
                         // check the method in predU class with many Integers
                         for (var a : ints) {
                             boolean expected = helper.expectedPredU(a);
-                            // TODO : ditto
                             boolean actual = false;
-                            assertEquals(expected, actual, "predU Class is incorrect");
+                            try {
+                                actual = (boolean) m.invoke(a);
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                e.fillInStackTrace();
+                            }
+                            helper.assertObjects(expected, actual);
                         }
                     }
                 }
@@ -174,7 +201,7 @@ public final class TutorTest_H3 {
         }
 
         // is public
-        assertTrue(isPublic(classH3.getModifiers()), "Class TestMyLinkedList is not public");
+        assertTrue(isPublic(classH3.getModifiers()), "TestMyLinkedList class is not public");
         boolean found = false;
 
         for (Method m : classH3.getDeclaredMethods()) {
@@ -206,7 +233,8 @@ public final class TutorTest_H3 {
     }
 
     @Test
-    public void testParameterConstants() {
+    @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
+    public void testParameterConstants(final TestCycle testCycle) {
         Class<?> classH3 = null;
         try {
             classH3 = Class.forName("h10.TestMyLinkedList");
@@ -227,10 +255,18 @@ public final class TutorTest_H3 {
             if (!(biPred || predU || fct)) {
                 continue;
             }
+
             found++;
 
-            // TODO : how to check if lambdas are NOT used?
+            // is a constant
+            assertTrue(Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()));
+
             if (biPred) {
+                // one lambda is used
+                helper.assertLambdas(testCycle, classH3, "BI_PRED_MIXIN",
+                                     "java.util.function.Predicate<java.lang.Number, java.lang.String>");
+
+                // random inputs
                 Number[] nums = helper.generateManyNumbers(50);
                 String[] strings = Arrays.stream(helper.generateManyNumbers(50))
                     .map(Object::toString)
@@ -239,11 +275,23 @@ public final class TutorTest_H3 {
                 // check the biPred constant with many inputs
                 for (int i = 0; i < 50; i++) {
                     boolean expected = nums[i].doubleValue() > Double.parseDouble(strings[i]);
-                    // TODO : ditto
                     boolean actual = false;
-                    assertEquals(expected, actual, "biPred constant is incorrect");
+                    try {
+                        f.setAccessible(true);
+                        @SuppressWarnings("unchecked")
+                        BiPredicate<Number, String> biPredImpl = (BiPredicate<Number, String>) f.get(null);
+                        actual = biPredImpl.test(nums[i], strings[i]);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    helper.assertObjects(expected, actual);
                 }
             } else if (predU) {
+                // one lambda is used
+                helper.assertLambdas(testCycle, classH3, "PRED_U_MIXIN",
+                                     "java.util.function.Predicate<java.lang.String>");
+
+                // random inputs
                 String[] strings = helper.generateManyStrings(50);
 
                 // check the predU constant with many inputs
@@ -256,19 +304,38 @@ public final class TutorTest_H3 {
                         expected = false;
                     }
 
-                    // TODO : ditto
                     boolean actual = false;
-                    assertEquals(expected, actual, "predU constant is incorrect");
+                    try {
+                        f.setAccessible(true);
+                        @SuppressWarnings("unchecked")
+                        Predicate<String> predUImpl = (Predicate<String>) f.get(null);
+                        actual = predUImpl.test(strings[i]);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    helper.assertObjects(expected, actual);
                 }
             } else {
+                // one lambda is used
+                helper.assertLambdas(testCycle, classH3, "FCT_MIXIN",
+                                     "java.util.function.Function<java.lang.String, java.lang.Number>");
+
+                // random inputs
                 Number[] nums = helper.generateManyNumbers(50);
 
                 // check the fct constant with many inputs
                 for (int i = 0; i < 50; i++) {
-                    double expected = nums[i].doubleValue();
-                    // TODO : ditto
-                    double actual = 0;
-                    assertEquals(expected, actual, "fct constant is incorrect");
+                    Number expected = nums[i].doubleValue();
+                    Number actual = 0;
+                    try {
+                        f.setAccessible(true);
+                        @SuppressWarnings("unchecked")
+                        Function<String, Number> fctImpl = (Function<String, Number>) f.get(null);
+                        actual = fctImpl.apply(String.valueOf(nums[i]));
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    helper.assertObjects(expected, actual);
                 }
             }
         }

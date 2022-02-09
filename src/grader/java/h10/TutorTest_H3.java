@@ -9,7 +9,10 @@ import org.sourcegrade.jagr.api.testing.TestCycle;
 import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -27,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Criterion: H3")
 public final class TutorTest_H3 {
     TutorTest_H3_Helper helper = new TutorTest_H3_Helper();
-    final static String className = "TestMyLinkedList";
+    static final String className = "TestMyLinkedList";
 
     /* *********************************************************************
      *                               H3.1                                  *

@@ -3,7 +3,6 @@ package h10;
 import h10.utils.spoon.LoopsMethodBodyProcessor;
 import h10.utils.spoon.MethodCallsProcessor;
 import h10.utils.spoon.SpoonUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.sourcegrade.jagr.api.testing.TestCycle;
 import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
@@ -244,8 +243,15 @@ public final class TutorTest_H2_Helper<T> {
                      "Assertion for MyLinkedListException Message failed");
     }
 
+    /**
+     * make sure no other newly implemented or unimplemented methods are used, unless explicitly stated.
+     *
+     * @param testCycle  the test cycle
+     * @param classType  the class to be checked
+     * @param methodName the method to be checked
+     */
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
-    public void assertNoOtherMethod(final TestCycle testCycle, Class<?> classType, String methodName) {
+    protected void assertNoOtherMethod(final TestCycle testCycle, Class<?> classType, String methodName) {
         var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
         var processor = SpoonUtils.process(testCycle, path, new MethodCallsProcessor(methodName));
 
@@ -259,8 +265,16 @@ public final class TutorTest_H2_Helper<T> {
         }
     }
 
+    /**
+     * make sure number of loops used are as required (none or only one).
+     *
+     * @param testCycle  the test cycle
+     * @param classType  the class to be checked
+     * @param methodName the method to be checked
+     * @param expected   the expected number of loops
+     */
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
-    public void assertNumberOfLoop(final TestCycle testCycle, Class<?> classType, String methodName, int expected) {
+    protected void assertNumberOfLoop(final TestCycle testCycle, Class<?> classType, String methodName, int expected) {
         var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
         var processor = SpoonUtils.process(testCycle, path,
                                            new LoopsMethodBodyProcessor(methodName));

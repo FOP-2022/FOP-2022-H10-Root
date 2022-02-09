@@ -44,13 +44,13 @@ public class LambdaExpressionsFieldProcessor extends AbstractProcessor<CtField<?
         lambdas.addAll(
             field.getElements(
                 (CtLambda<?> lambda) -> field.getSimpleName().equals(fieldName)
-                             )
-                      );
+                      )
+        );
         references.addAll(
             field.getElements(
                 (CtExecutableReferenceExpression<?, ?> methodReference) -> field.getSimpleName().equals(fieldName)
-                             )
-                         );
+                         )
+        );
     }
 
     /**

@@ -1,7 +1,11 @@
 package h10.utils.spoon;
 
 import spoon.processing.AbstractProcessor;
-import spoon.reflect.code.*;
+import spoon.reflect.code.CtDo;
+import spoon.reflect.code.CtFor;
+import spoon.reflect.code.CtForEach;
+import spoon.reflect.code.CtLoop;
+import spoon.reflect.code.CtWhile;
 import spoon.reflect.declaration.CtMethod;
 
 import java.util.ArrayList;

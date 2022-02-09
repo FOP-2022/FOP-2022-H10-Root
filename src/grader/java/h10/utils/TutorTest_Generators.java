@@ -1,5 +1,6 @@
-package h10;
+package h10.utils;
 
+import h10.MyLinkedList;
 import org.mockito.Mockito;
 
 import java.util.Random;
@@ -24,7 +25,7 @@ public final class TutorTest_Generators {
      **********************************************************************/
 
     // listElem from 0 to the given Integer
-    protected static Function<Integer, Integer[]> fctExtract1 = i -> {
+    public static Function<Integer, Integer[]> fctExtract1 = i -> {
         Integer[] ints = new Integer[i];
         for (int j = 0; j < i; j++) {
             ints[j] = j;
@@ -33,10 +34,10 @@ public final class TutorTest_Generators {
     };
 
     // string to double
-    protected static Function<String, Double> fctExtract2 = Double::valueOf;
+    public static Function<String, Double> fctExtract2 = Double::valueOf;
 
     // max number
-    protected static Function<Integer[], Integer> fctMixin1 = ints -> {
+    public static Function<Integer[], Integer> fctMixin1 = ints -> {
         Integer max = ints[0];
         for (int i = 1; i < ints.length; i++) {
             max = max(ints[i], max);
@@ -45,24 +46,24 @@ public final class TutorTest_Generators {
     };
 
     // listElem of each character in the String
-    protected static Function<Double, String> fctMixin2 = Object::toString;
+    public static Function<Double, String> fctMixin2 = Object::toString;
 
     /* *********************************************************************
      *                     Define some predT predicates                    *
      **********************************************************************/
 
     // is an even number
-    protected static Predicate<Integer> predT1 = i -> i % 2 == 0;
+    public static Predicate<Integer> predT1 = i -> i % 2 == 0;
 
     // first character is 1
-    protected static Predicate<String> predT2 = s -> s.charAt(0) == '1';
+    public static Predicate<String> predT2 = s -> s.charAt(0) == '1';
 
     /* *********************************************************************
      *                     Define some predU predicates                    *
      **********************************************************************/
 
     // has at least three elements greater than 10
-    protected static Predicate<Integer[]> predU1 = i -> {
+    public static Predicate<Integer[]> predU1 = i -> {
         int count = 0;
         for (Integer integer : i) {
             if (integer > 10) {
@@ -73,23 +74,23 @@ public final class TutorTest_Generators {
     };
 
     // is a multiple of 3
-    protected static Predicate<Double> predU2 = d -> d % 3 == 0;
+    public static Predicate<Double> predU2 = d -> d % 3 == 0;
 
     /* *********************************************************************
      *                      Define some biPred predicates                  *
      **********************************************************************/
 
     // have the same values
-    protected static BiPredicate<Integer, Integer[]> biPred1 = (i, a) -> i > a.length;
+    public static BiPredicate<Integer, Integer[]> biPred1 = (i, a) -> i > a.length;
 
     // have the same values
-    protected static BiPredicate<String, Double> biPred2 = (s, d) -> Double.parseDouble(s) == d;
+    public static BiPredicate<String, Double> biPred2 = (s, d) -> Double.parseDouble(s) == d;
 
     /* *********************************************************************
      *                   Define lists generators for extract               *
      **********************************************************************/
 
-    protected static MyLinkedList<Integer>[] generateThisListExtract1WithoutExc() {
+    public static MyLinkedList<Integer>[] generateThisListExtract1WithoutExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer>[] sourceLists = new MyLinkedList[10];
         sourceLists[0] = new MyLinkedList<>(); // null list
@@ -106,7 +107,7 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
-    protected static MyLinkedList<Integer>[] generateThisListExtract1WithExc() {
+    public static MyLinkedList<Integer>[] generateThisListExtract1WithExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer>[] sourceLists = new MyLinkedList[3];
 
@@ -129,7 +130,7 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
-    protected static MyLinkedList<String>[] generateThisListExtract2WithoutExc() {
+    public static MyLinkedList<String>[] generateThisListExtract2WithoutExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<String>[] sourceLists = new MyLinkedList[10];
 
@@ -152,7 +153,7 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
-    protected static MyLinkedList<String>[] generateThisListExtract2WithExc() {
+    public static MyLinkedList<String>[] generateThisListExtract2WithExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<String>[] sourceLists = new MyLinkedList[10];
 
@@ -175,7 +176,8 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
-    protected static MyLinkedList<Integer> generateThisListExtractMockito() {
+    public static MyLinkedList<Integer> generateThisListExtractMockito() {
+        @SuppressWarnings("unchecked")
         MyLinkedList<Integer> list = Mockito.mock(MyLinkedList.class);
         for (int j = 0; j < 10; j++) {
             list.add(new Random().nextInt(100) + 10);
@@ -187,7 +189,7 @@ public final class TutorTest_Generators {
      *                    Define lists generators for mixin                *
      **********************************************************************/
 
-    protected static MyLinkedList<Integer>[] generateThisListMixin1() {
+    public static MyLinkedList<Integer>[] generateThisListMixin1() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer>[] targetLists = new MyLinkedList[10];
         targetLists[0] = new MyLinkedList<>(); // null list
@@ -202,7 +204,7 @@ public final class TutorTest_Generators {
         return targetLists;
     }
 
-    protected static MyLinkedList<String>[] generateThisListMixin2() {
+    public static MyLinkedList<String>[] generateThisListMixin2() {
         @SuppressWarnings("unchecked")
         MyLinkedList<String>[] targetLists = new MyLinkedList[10];
         targetLists[0] = new MyLinkedList<>(); // null list
@@ -217,7 +219,7 @@ public final class TutorTest_Generators {
         return targetLists;
     }
 
-    protected static MyLinkedList<Integer[]>[] generateOtherListMixin1WithoutExc() {
+    public static MyLinkedList<Integer[]>[] generateOtherListMixin1WithoutExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer[]>[] sourceLists = new MyLinkedList[10];
         sourceLists[0] = new MyLinkedList<>(); // null list
@@ -240,7 +242,7 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
-    protected static MyLinkedList<Integer[]>[] generateOtherListMixin1WithExc() {
+    public static MyLinkedList<Integer[]>[] generateOtherListMixin1WithExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer[]>[] sourceLists = new MyLinkedList[10];
 
@@ -269,7 +271,7 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
-    protected static MyLinkedList<Double>[] generateOtherListMixin2WithoutExc() {
+    public static MyLinkedList<Double>[] generateOtherListMixin2WithoutExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Double>[] sourceLists = new MyLinkedList[10];
 
@@ -284,7 +286,7 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
-    protected static MyLinkedList<Double>[] generateOtherListMixin2WithExc() {
+    public static MyLinkedList<Double>[] generateOtherListMixin2WithExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Double>[] sourceLists = new MyLinkedList[10];
 
@@ -300,7 +302,8 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
-    protected static MyLinkedList<Integer> generateThisListMixinMockito() {
+    public static MyLinkedList<Integer> generateThisListMixinMockito() {
+        @SuppressWarnings("unchecked")
         MyLinkedList<Integer> list = Mockito.mock(MyLinkedList.class);
         for (int j = 0; j < 10; j++) {
             list.add(new Random().nextInt(100));
@@ -308,7 +311,8 @@ public final class TutorTest_Generators {
         return list;
     }
 
-    protected static MyLinkedList<Integer[]> generateOtherListMixinMockito() {
+    public static MyLinkedList<Integer[]> generateOtherListMixinMockito() {
+        @SuppressWarnings("unchecked")
         MyLinkedList<Integer[]> list = Mockito.mock(MyLinkedList.class);
         for (int j = 0; j < 10; j++) {
             Integer[] listElem = new Integer[10];

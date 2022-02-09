@@ -196,62 +196,52 @@ public final class TutorTest_H2_Helper<T> {
     protected <U> void assertLinkedList(MyLinkedList<U> expected, MyLinkedList<U> actual) {
         // one of the list is null
         if (expected.head == null || actual.head == null) {
-            assertEquals(expected.head, actual.head, "Assertion fails with an expected list: " + expected.head
-                                                     + ", but was: " + actual.head);
+            assertEquals(expected.head, actual.head, "Assertion for MyLinkedList failed");
             return;
         }
 
         ListItem<U> actualCurrent = actual.head;
         for (ListItem<U> expectedCurrent = expected.head; expectedCurrent != null; expectedCurrent = expectedCurrent.next) {
             // actual mustn't end before expected
-            assertNotNull(actualCurrent, "Assertion fails with an expected key: "
-                                         + expectedCurrent.key
-                                         + ", but was: null");
+            assertNotNull(actualCurrent, "Assertion for MyLinkedList failed");
 
             // if it is an array, check each item
             if (expectedCurrent.key.toString().startsWith("[")) {
                 // actual is also an array
-                assertTrue(actualCurrent.key.toString().startsWith("["), "Assertion fails with an expected key: "
-                                                                         + expectedCurrent.key + ", but was: "
-                                                                         + actualCurrent.key);
+                assertTrue(actualCurrent.key.toString().startsWith("["), "Assertion for MyLinkedList failed");
 
                 @SuppressWarnings("unchecked")
                 var expectedArray = (U[]) expectedCurrent.key;
                 @SuppressWarnings("unchecked")
                 var actualArray = (U[]) expectedCurrent.key;
+
                 // make sure both have the same lengths
-                assertEquals(expectedArray.length, actualArray.length,
-                             "Assertion fails with an expected array length: " + expectedArray.length + ", but was: "
-                             + actualArray.length);
+                assertEquals(expectedArray.length, actualArray.length, "Assertion for MyLinkedList failed");
+
                 for (int i = 0; i < expectedArray.length; i++) {
-                    assertEquals(expectedArray[i], actualArray[i],
-                                 "Assertion fails with an expected listElem element: " + expectedArray[i]
-                                 + ", but was: " + actualArray[i]);
+                    assertEquals(expectedArray[i], actualArray[i], "Assertion for MyLinkedList failed");
                 }
+
                 actualCurrent = actualCurrent.next;
                 continue;
             }
 
             // if it's not an array
-            assertEquals(expectedCurrent.key, actualCurrent.key,
-                         "Assertion fails with an expected key: " + expectedCurrent.key + ", but was: "
-                         + actualCurrent.key);
+            assertEquals(expectedCurrent.key, actualCurrent.key, "Assertion for MyLinkedList failed");
             actualCurrent = actualCurrent.next;
         }
         // actual must end when expected does
-        assertNull(actualCurrent, "Assertion fails with an expected key: null, but was: " + actualCurrent);
+        assertNull(actualCurrent, "Assertion for MyLinkedList failed");
     }
 
     protected void assertExceptionMessage(MyLinkedListException expected, MyLinkedListException actual) {
-        assertNotNull(actual, "Assertion fails with an expected message: " + expected.getMessage()
-                              + ", but was: " + actual);
+        assertNotNull(actual, "Assertion for MyLinkedListException Message failed");
 
         // ignore the object's name
         int indexObject = expected.getMessage().indexOf('@');
         int maxIndex = (indexObject == -1) ? expected.getMessage().length() : indexObject;
         assertEquals(expected.getMessage().substring(0, maxIndex), actual.getMessage().substring(0, maxIndex),
-                     "Assertion fails with an expected message: " + expected.getMessage() + ", but was: "
-                     + actual.getMessage());
+                     "Assertion for MyLinkedListException Message failed");
     }
 
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
@@ -264,22 +254,22 @@ public final class TutorTest_H2_Helper<T> {
 
         for (var callee : processor.getCallees()) {
             var name = callee.getExecutable().getSimpleName();
-            assertFalse(canBeCalled.contains(name), "Assertion fails with an expected number of callee: 0, but was: " + name
-                                                    + " is called.");
+            assertFalse(canBeCalled.contains(name), String.format("Another newly implemented method %s is used",
+                                                                  name));
         }
     }
 
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
-    public void assertOneLoop(final TestCycle testCycle, Class<?> classType) {
+    public void assertNumberOfLoop(final TestCycle testCycle, Class<?> classType, String methodName, int expected) {
         var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
         var processor = SpoonUtils.process(testCycle, path,
-                                           new LoopsMethodBodyProcessor(null));
+                                           new LoopsMethodBodyProcessor(methodName));
 
         var actual = processor.getForeachLoops().size()
                      + processor.getForLoops().size()
                      + processor.getWhileLoops().size()
                      + processor.getDoWhileLoops().size();
-        assertEquals(1, actual, "Assertion fails with expected number of loops: 1, but was: " + actual);
+        assertEquals(expected, actual, "Numbers of required loop do not match");
     }
 
     /* *********************************************************************

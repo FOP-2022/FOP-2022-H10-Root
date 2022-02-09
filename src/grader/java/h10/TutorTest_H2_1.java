@@ -1,5 +1,7 @@
 package h10;
 
+import h10.utils.TutorTest_Generators;
+import h10.utils.TutorTest_Messages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,13 +12,12 @@ import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static java.lang.reflect.Modifier.isPrivate;
-import static java.lang.reflect.Modifier.isPublic;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -29,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class TutorTest_H2_1 {
     TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
     TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
+    final static String className = "MyLinkedList";
 
     /* *********************************************************************
      *                               H2.1                                  *
@@ -37,10 +39,11 @@ public final class TutorTest_H2_1 {
     @Test
     public void testExtractMethodsExist() {
         Class<?> classH2 = null;
+        String methodName = "extract*";
         try {
-            classH2 = Class.forName("h10.MyLinkedList");
+            classH2 = Class.forName("h10." + className);
         } catch (ClassNotFoundException e) {
-            fail("Class MyLinkedList does not exist");
+            fail(TutorTest_Messages.classNotFound(className));
         }
 
         int found = 0;
@@ -53,16 +56,17 @@ public final class TutorTest_H2_1 {
             found++;
         }
         // methods are found
-        assertEquals(3, found, "At least one extract*-method does not exist");
+        assertEquals(3, found, TutorTest_Messages.methodNotFound(methodName));
     }
 
     @Test
     public void testExtractMethodsSignatures() {
         Class<?> classH2 = null;
+        String methodName = "extract*";
         try {
-            classH2 = Class.forName("h10.MyLinkedList");
+            classH2 = Class.forName("h10." + className);
         } catch (ClassNotFoundException e) {
-            fail("Class MyLinkedList does not exist");
+            fail(TutorTest_Messages.classNotFound(className));
         }
 
         for (Method m : classH2.getDeclaredMethods()) {
@@ -72,16 +76,16 @@ public final class TutorTest_H2_1 {
             }
 
             // is generic with type U
-            assertEquals(1, m.getTypeParameters().length, "extract*-method is not generic");
+            assertEquals(1, m.getTypeParameters().length, TutorTest_Messages.methodNotGeneric(methodName));
             assertEquals("U", m.getTypeParameters()[0].getTypeName(),
-                         "extractRecursivelyHelper method is generic with an incorrect type");
+                         TutorTest_Messages.methodGenericTypeIncorrect(methodName));
 
             // is public
-            assertTrue(isPublic(m.getModifiers()));
+            assertEquals(Modifier.PUBLIC, m.getModifiers(), TutorTest_Messages.methodModifierIncorrect(methodName));
 
             // all params are found
             var params = m.getParameters();
-            assertEquals(3, params.length, "Parameters in extract*-method is not complete");
+            assertEquals(3, params.length, TutorTest_Messages.methodParamIncomplete(methodName));
 
             // param types are correct
             var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName()).collect(Collectors.toList());
@@ -89,44 +93,44 @@ public final class TutorTest_H2_1 {
                        && (paramTypes.contains("java.util.function.Function<? super T, ? extends U>")
                            || paramTypes.contains("java.util.function.Function<? super T,? extends U>"))
                        && paramTypes.contains("java.util.function.Predicate<? super U>"),
-                       "Parameters in extract*-method are incorrect");
+                       TutorTest_Messages.methodParamIncorrect(methodName));
 
             // return type is correct
             assertEquals("h10.MyLinkedList<U>", m.getGenericReturnType().getTypeName(),
-                         "Return type in extract*-method is incorrect");
+                         TutorTest_Messages.methodReturnTypeIncorrect(methodName));
 
             // thrown exception type is correct
             assertEquals(MyLinkedListException.class, m.getExceptionTypes()[0],
-                         "Thrown exception in extract*-method is incorrect");
+                         TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
         }
     }
 
     @Test
     public void testExtractHelperMethod() {
         Class<?> classH2 = null;
+        String methodName = "extractRecursivelyHelper";
         try {
-            classH2 = Class.forName("h10.MyLinkedList");
+            classH2 = Class.forName("h10." + className);
         } catch (ClassNotFoundException e) {
-            fail("Class MyLinkedList does not exist");
+            fail(TutorTest_Messages.classNotFound(className));
         }
 
         for (Method m : classH2.getDeclaredMethods()) {
-            if (!m.getName().equals("extractRecursivelyHelper")) {
+            if (!m.getName().equals(methodName)) {
                 continue;
             }
 
             // is generic with type U
-            assertEquals(1, m.getTypeParameters().length,
-                         "extractRecursivelyHelper method is not generic");
+            assertEquals(1, m.getTypeParameters().length, TutorTest_Messages.methodNotGeneric(methodName));
             assertEquals("U", m.getTypeParameters()[0].getTypeName(),
-                         "extractRecursivelyHelper method is generic with an incorrect type");
+                         TutorTest_Messages.methodGenericTypeIncorrect(methodName));
 
-            // is public
-            assertTrue(isPrivate(m.getModifiers()));
+            // is private
+            assertEquals(Modifier.PRIVATE, m.getModifiers(), TutorTest_Messages.methodModifierIncorrect(methodName));
 
             // all params are found
             var params = m.getParameters();
-            assertEquals(5, params.length, "Parameters in extractRecursivelyHelper method are not complete");
+            assertEquals(5, params.length, TutorTest_Messages.methodParamIncomplete(methodName));
 
             // param types are correct
             var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName())
@@ -137,15 +141,15 @@ public final class TutorTest_H2_1 {
                        && paramTypes.contains("java.util.function.Predicate<? super U>")
                        && paramTypes.contains("h10.ListItem<T>")
                        && paramTypes.contains("int"),
-                       "Parameters in extractRecursivelyHelper method are incorrect");
+                       TutorTest_Messages.methodParamIncorrect(methodName));
 
             // return type is correct
             assertEquals("h10.MyLinkedList<U>", m.getGenericReturnType().getTypeName(),
-                         "Return type in extractRecursivelyHelper method is incorrect");
+                         TutorTest_Messages.methodReturnTypeIncorrect(methodName));
 
             // thrown exception type is correct
             assertEquals(MyLinkedListException.class, m.getExceptionTypes()[0],
-                         "Thrown exception in extractRecursivelyHelper method is incorrect");
+                         TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
         }
     }
 
@@ -211,24 +215,31 @@ public final class TutorTest_H2_1 {
     @Test
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     public void testExtractReallyIteratively(final TestCycle testCycle) {
-        helper1.assertOneLoop(testCycle, MyLinkedList.class);
+        helper1.assertNumberOfLoop(testCycle, MyLinkedList.class, "extractIteratively", 1);
     }
 
     @Test
-    public void testExtractReallyRecursively() {
+    @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
+    public void testExtractReallyRecursively(final TestCycle testCycle) {
+        String methodName = "extractRecursively";
+        // not iterative
+        helper1.assertNumberOfLoop(testCycle, MyLinkedList.class, methodName, 0);
+
         var thisList = TutorTest_Generators.generateThisListExtractMockito();
-        try {
-            thisList.extractRecursively(TutorTest_Generators.predT1, TutorTest_Generators.fctExtract1,
-                                        TutorTest_Generators.predU1);
-            var m = thisList.getClass().getDeclaredMethod("extractRecursivelyHelper", Predicate.class, Function.class,
-                                                  Predicate.class, ListItem.class, int.class);
+        ListItem<Integer> dummy = new ListItem<>();
+        dummy.next = thisList.head;
+
+        // TODO
+        /*try {
+            var m = MyLinkedList.class.getDeclaredMethod("extractRecursivelyHelper", Predicate.class, Function.class,
+                                                         Predicate.class, ListItem.class, int.class);
             m.setAccessible(true);
-            m.invoke(thisList, Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-            //Mockito.verify(thisList, Mockito.atLeast(2)).
-            //    .extractRecursivelyHelper(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+            var recursion = m.invoke(thisList, Mockito.any(Predicate.class), Mockito.any(Function.class),
+                                     Mockito.any(Predicate.class), dummy, Mockito.any(int.class));
+            Mockito.verify(recursion, Mockito.atLeast(1));
         } catch (Exception e) {
             // MyLinkedListException will never be thrown
-            fail("extractRecursively does not use recursion");
-        }
+            fail(TutorTest_Messages.methodNoRecursion(methodName));
+        }*/
     }
 }

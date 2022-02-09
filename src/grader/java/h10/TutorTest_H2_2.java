@@ -1,5 +1,7 @@
 package h10;
 
+import h10.utils.TutorTest_Generators;
+import h10.utils.TutorTest_Messages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,11 +12,10 @@ import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static java.lang.reflect.Modifier.isPrivate;
-import static java.lang.reflect.Modifier.isPublic;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -27,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class TutorTest_H2_2 {
     TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
     TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
+    final static String className = "MyLinkedList";
 
     /* *********************************************************************
      *                               H2.2                                  *
@@ -35,10 +37,11 @@ public final class TutorTest_H2_2 {
     @Test
     public void testMixinMethodsExist() {
         Class<?> classH2 = null;
+        String methodName = "mixin*";
         try {
-            classH2 = Class.forName("h10.MyLinkedList");
+            classH2 = Class.forName("h10." + className);
         } catch (ClassNotFoundException e) {
-            fail("Class MyLinkedList does not exist");
+            fail(TutorTest_Messages.classNotFound(className));
         }
 
         int found = 0;
@@ -51,16 +54,17 @@ public final class TutorTest_H2_2 {
             found++;
         }
         // methods are found
-        assertEquals(3, found, "At least one mixin*-method does not exist");
+        assertEquals(3, found, TutorTest_Messages.methodNotFound(methodName));
     }
 
     @Test
     public void testMixinMethodsSignatures() {
         Class<?> classH2 = null;
+        String methodName = "mixin*";
         try {
-            classH2 = Class.forName("h10.MyLinkedList");
+            classH2 = Class.forName("h10." + className);
         } catch (ClassNotFoundException e) {
-            fail("Class MyLinkedList does not exist");
+            fail(TutorTest_Messages.classNotFound(className));
         }
 
         for (Method m : classH2.getDeclaredMethods()) {
@@ -70,18 +74,16 @@ public final class TutorTest_H2_2 {
             }
 
             // is generic with type U
-            assertEquals(1, m.getTypeParameters().length,
-                         "mixin*-method is not generic");
+            assertEquals(1, m.getTypeParameters().length, TutorTest_Messages.methodNotGeneric(methodName));
             assertEquals("U", m.getTypeParameters()[0].getTypeName(),
-                         "mixin*-method is generic with an incorrect type");
-
+                         TutorTest_Messages.methodGenericTypeIncorrect(methodName));
 
             // is public
-            assertTrue(isPublic(m.getModifiers()));
+            assertEquals(Modifier.PUBLIC, m.getModifiers(), TutorTest_Messages.methodModifierIncorrect(methodName));
 
             // all params are found
             var params = m.getParameters();
-            assertEquals(4, params.length, "Parameters in mixin*-method are not complete");
+            assertEquals(4, params.length, TutorTest_Messages.methodParamIncomplete(methodName));
 
             // param types are correct
             var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName())
@@ -92,44 +94,44 @@ public final class TutorTest_H2_2 {
                        && (paramTypes.contains("java.util.function.Function<? super U, ? extends T>")
                            || paramTypes.contains("java.util.function.Function<? super U,? extends T>"))
                        && paramTypes.contains("java.util.function.Predicate<? super U>"),
-                       "Parameters in mixin*-method are incorrect");
+                       TutorTest_Messages.methodParamIncorrect(methodName));
 
             // return type is correct
             assertEquals(void.class, m.getReturnType(),
-                         "Return type in mixin*-method is incorrect");
+                         TutorTest_Messages.methodReturnTypeIncorrect(methodName));
 
             // thrown exception type is correct
             assertEquals(MyLinkedListException.class, m.getExceptionTypes()[0],
-                         "Thrown exception in mixin*-method is incorrect");
+                         TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
         }
     }
 
     @Test
     public void testMixinHelperMethod() {
         Class<?> classH2 = null;
+        String methodName = "mixinRecursivelyHelper";
         try {
-            classH2 = Class.forName("h10.MyLinkedList");
+            classH2 = Class.forName("h10." + className);
         } catch (ClassNotFoundException e) {
-            fail("Class MyLinkedList does not exist");
+            fail(TutorTest_Messages.classNotFound(className));
         }
 
         for (Method m : classH2.getDeclaredMethods()) {
-            if (!m.getName().equals("mixinRecursivelyHelper")) {
+            if (!m.getName().equals(methodName)) {
                 continue;
             }
 
             // is generic with type U
-            assertEquals(1, m.getTypeParameters().length,
-                         "mixinRecursivelyHelper method is not generic");
+            assertEquals(1, m.getTypeParameters().length, TutorTest_Messages.methodNotGeneric(methodName));
             assertEquals("U", m.getTypeParameters()[0].getTypeName(),
-                         "mixinRecursivelyHelper method is generic with an incorrect type");
+                         TutorTest_Messages.methodGenericTypeIncorrect(methodName));
 
-            // is public
-            assertTrue(isPrivate(m.getModifiers()));
+            // is private
+            assertEquals(Modifier.PRIVATE, m.getModifiers(), TutorTest_Messages.methodModifierIncorrect(methodName));
 
             // all params are found
             var params = m.getParameters();
-            assertEquals(7, params.length, "Parameters in mixinRecursivelyHelper method are not complete");
+            assertEquals(7, params.length, TutorTest_Messages.methodParamIncomplete(methodName));
 
             // param types are correct
             var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName())
@@ -142,15 +144,15 @@ public final class TutorTest_H2_2 {
                        && paramTypes.contains("java.util.function.Predicate<? super U>")
                        && paramTypes.contains("h10.ListItem<T>")
                        && paramTypes.contains("int"),
-                       "Parameters in mixinRecursivelyHelper method are incorrect");
+                       TutorTest_Messages.methodParamIncorrect(methodName));
 
             // return type is correct
             assertEquals(void.class, m.getReturnType(),
-                         "Return type in mixinRecursivelyHelper method is incorrect");
+                         TutorTest_Messages.methodReturnTypeIncorrect(methodName));
 
             // thrown exception type is correct
             assertEquals(MyLinkedListException.class, m.getExceptionTypes()[0],
-                         "Thrown exception in mixinRecursivelyHelper method is incorrect");
+                         TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
         }
     }
 
@@ -232,23 +234,35 @@ public final class TutorTest_H2_2 {
     @Test
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     public void testMixinReallyIteratively(final TestCycle testCycle) {
-        helper1.assertOneLoop(testCycle, MyLinkedList.class);
+        helper1.assertNumberOfLoop(testCycle, MyLinkedList.class, "mixinIteratively", 1);
     }
 
     @Test
-    public void testMixinReallyRecursively() {
+    @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
+    public void testMixinReallyRecursively(final TestCycle testCycle) {
+        String methodName = "mixinRecursively";
+        // not iterative
+        helper1.assertNumberOfLoop(testCycle, MyLinkedList.class, methodName, 0);
+
         var thisList = TutorTest_Generators.generateThisListMixinMockito();
         var otherList = TutorTest_Generators.generateOtherListMixinMockito();
+
         try {
             thisList.mixinRecursively(otherList, TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
                                       TutorTest_Generators.predU1);
-            // TODO : ClassTransformer to change modifier method, then verify (but how?)
-            /*Mockito.verify(thisList, Mockito.atLeast(2))
+        } catch (MyLinkedListException e) {
+            // do not take other points
+            return;
+        }
+
+        // TODO
+        /*try {
+            Mockito.verify(thisList, Mockito.atLeast(2))
                 .mixinRecursivelyHelper(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
-                                        Mockito.any(), Mockito.any());*/
+                                        Mockito.any(), Mockito.any());
         } catch (Exception e) {
             // MyLinkedListException will never be thrown
-            fail("mixinRecursively does not use recursion");
-        }
+            fail(TutorTest_Messages.methodNoRecursion(methodName));
+        }*/
     }
 }

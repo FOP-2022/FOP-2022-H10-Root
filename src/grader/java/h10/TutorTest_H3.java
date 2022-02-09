@@ -1,5 +1,6 @@
 package h10;
 
+import h10.utils.TutorTest_Messages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,17 +9,13 @@ import org.sourcegrade.jagr.api.testing.TestCycle;
 import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static java.lang.reflect.Modifier.isPublic;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -30,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Criterion: H3")
 public final class TutorTest_H3 {
     TutorTest_H3_Helper helper = new TutorTest_H3_Helper();
+    final static String className = "TestMyLinkedList";
 
     /* *********************************************************************
      *                               H3.1                                  *
@@ -38,137 +36,166 @@ public final class TutorTest_H3 {
     @Test
     public void testExtractTestSignatures() {
         Class<?> classH3 = null;
+        String methodName = "testExtract";
         try {
-            classH3 = Class.forName("h10.TestMyLinkedList");
+            classH3 = Class.forName("h10." + className);
         } catch (ClassNotFoundException e) {
-            fail("Class TestMyLinkedList does not exist");
+            fail(TutorTest_Messages.classNotFound(className));
         }
 
         // is public
-        assertTrue(isPublic(classH3.getModifiers()), "Class TestMyLinkedList is not public");
+        assertEquals(Modifier.PUBLIC, classH3.getModifiers(), TutorTest_Messages.classModifierIncorrect(className));
         boolean found = false;
 
         for (Method m : classH3.getDeclaredMethods()) {
-            if (!m.getName().equals("testExtract")) {
+            if (!m.getName().equals(methodName)) {
                 continue;
             }
 
             found = true;
 
             // is not generic
-            assertEquals(0, m.getTypeParameters().length, "testExtract method is generic");
+            assertEquals(0, m.getTypeParameters().length, TutorTest_Messages.methodGeneric(methodName));
 
             // is public
-            assertTrue(isPublic(m.getModifiers()), "testExtract method is not public");
+            assertEquals(Modifier.PUBLIC, m.getModifiers(), TutorTest_Messages.methodModifierIncorrect(methodName));
 
             // has no parameter
-            assertEquals(0, m.getParameterCount(), "textExtract method has parameter(s)");
+            assertEquals(0, m.getParameterCount(), TutorTest_Messages.methodParamIncomplete(methodName));
 
             // return type is correct
             assertEquals(void.class, m.getReturnType(),
-                         "Return type in textExtract method is incorrect");
+                         TutorTest_Messages.methodReturnTypeIncorrect(methodName));
 
             // thrown exception type is correct
             assertEquals(0, m.getExceptionTypes().length,
-                         "textExtract method throws exception(s)");
+                         TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
         }
         // method is found
-        assertTrue(found, "testExtract method does not exist");
+        assertTrue(found, TutorTest_Messages.methodNotFound(methodName));
     }
 
     @Test
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     public void testParameterClasses(TestCycle testCycle) {
-        var allClassesArray = testCycle.getSubmission().getClass().getClasses();
-        var allClasses = Arrays.stream(allClassesArray)
-            .filter(x -> !x.getSimpleName().equals("ListItem")
-                         && !x.getSimpleName().equals("MyLinkedList")
-                         && !x.getSimpleName().equals("MyLinkedListException")
-                         && !x.getSimpleName().equals("TestMyLinkedList"))
-            .collect(Collectors.toSet());
+        var allClassesNamesSet = testCycle.getSubmission().getClassNames();
+        var allClassesNames = allClassesNamesSet.stream()
+            .filter(x -> !(x.equals("ListItem")
+                           || x.equals("MyLinkedList")
+                           || x.equals("MyLinkedListException")
+                           || x.equals("TestMyLinkedList")))
+            .collect(Collectors.toList());
 
         // at least three other classes are found
-        assertTrue(allClasses.size() >= 3, "At least one class for the three parameters do not exist");
+        assertTrue(allClassesNames.size() >= 3,
+                   TutorTest_Messages.classNotFound("fct/predT/predU"));
 
         int found = 0;
-        for (Class<?> c : allClasses) {
-            var interfaces = c.getInterfaces();
-            boolean fct = interfaces[0].getSimpleName().equals("java.util.function.Function");
-            boolean predT = interfaces[0].getTypeName().equals("java.util.function.Predicate<Integer[]>");
-            boolean predU = interfaces[0].getTypeName().equals("java.util.function.Predicate<Integer>");
+        for (String className : allClassesNames) {
+            Class<?> classH3 = null;
+            try {
+                classH3 = Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                fail(TutorTest_Messages.classNotFound(className));
+            }
+
+            var interfacesArray = classH3.getGenericInterfaces();
+            if (interfacesArray.length < 1) {
+                continue;
+            }
+
+            // check if this class implements one of the interfaces
+            var interfaces = Arrays.stream(interfacesArray).map(Type::getTypeName).collect(Collectors.toList());
+            boolean fct = interfaces.contains("java.util.function.Function<java.lang.Integer[], java.lang.Integer>")
+                          || interfaces.contains("java.util.function.Function<java.lang.Integer[],java.lang.Integer>");
+            boolean predT = interfaces.contains("java.util.function.Predicate<java.lang.Integer[]>");
+            boolean predU = interfaces.contains("java.util.function.Predicate<java.lang.Integer>");
 
             if (!(fct || predT || predU)) {
                 continue;
             }
+
             found++;
 
             if (fct) {
-                for (Method m : c.getDeclaredMethods()) {
+                // check if this method does the required implementation
+                for (Method m : classH3.getDeclaredMethods()) {
                     if (m.getReturnType().equals(Integer.class)
                         && m.getParameterCount() == 1
                         && m.getParameters()[0].getType().equals(Integer[].class)) {
+                        m.setAccessible(true);
+
                         // no lambda is used
-                        helper.assertNoLambda(testCycle, c, m.getName());
+                        helper.assertNoLambda(testCycle, classH3, m.getName());
 
                         // random inputs
-                        Integer[][] intArrays = helper.generateManyIntegerArrays(10, 50);
+                        Integer[][] intArrays = helper.generateManyIntegerArrays();
 
                         // check the method in fct class with many Integers Arrays
-                        for (var a : intArrays) {
-                            Integer expected = helper.expectedFct(a);
+                        for (Integer[] ints : intArrays) {
+                            Integer expected = helper.expectedFct(ints);
                             Integer actual = null;
                             try {
-                                actual = (Integer) m.invoke(a);
-                            } catch (IllegalAccessException | InvocationTargetException e) {
-                                e.fillInStackTrace();
+                                var object = classH3.getDeclaredConstructor().newInstance();
+                                actual = (Integer) m.invoke(object, new Object[]{ints});
+                            } catch (Exception e) {
+                                fail(TutorTest_Messages.testingPredicates(className));
                             }
                             helper.assertObjects(expected, actual);
                         }
                     }
                 }
             } else if (predT) {
-                for (Method m : c.getDeclaredMethods()) {
+                // check if this method does the required implementation
+                for (Method m : classH3.getDeclaredMethods()) {
                     if (m.getReturnType().equals(boolean.class)
                         && m.getParameterCount() == 1
                         && m.getParameters()[0].getType().equals(Integer[].class)) {
+                        m.setAccessible(true);
+
                         // no lambda is used
-                        helper.assertNoLambda(testCycle, c, m.getName());
+                        helper.assertNoLambda(testCycle, classH3, m.getName());
 
                         // random inputs
-                        Integer[][] intArrays = helper.generateManyIntegerArrays(10, 50);
+                        Integer[][] intArrays = helper.generateManyIntegerArrays();
 
                         // check the method in predT class with many Integer Arrays
-                        for (var a : intArrays) {
-                            boolean expected = helper.expectedPredT(a);
+                        for (Integer[] ints : intArrays) {
+                            boolean expected = helper.expectedPredT(ints);
                             boolean actual = false;
                             try {
-                                actual = (boolean) m.invoke(a);
-                            } catch (IllegalAccessException | InvocationTargetException e) {
-                                e.fillInStackTrace();
+                                var object = classH3.getDeclaredConstructor().newInstance();
+                                actual = (boolean) m.invoke(object, new Object[]{ints});
+                            } catch (Exception e) {
+                                fail(TutorTest_Messages.testingPredicates(className));
                             }
                             helper.assertObjects(expected, actual);
                         }
                     }
                 }
             } else {
-                for (Method m : c.getDeclaredMethods()) {
+                for (Method m : classH3.getDeclaredMethods()) {
+                    // check if this method does the required implementation
                     if (m.getReturnType().equals(boolean.class)
                         && m.getParameterCount() == 1
                         && m.getParameters()[0].getType().equals(Integer.class)) {
+                        m.setAccessible(true);
+
                         // no lambda is used
-                        helper.assertNoLambda(testCycle, c, m.getName());
+                        helper.assertNoLambda(testCycle, classH3, m.getName());
 
                         // random inputs
-                        Integer[] ints = (Integer[]) helper.generateManyNumbers(50);
+                        Number[] ints = helper.generateManyNumbers();
 
                         // check the method in predU class with many Integers
-                        for (var a : ints) {
-                            boolean expected = helper.expectedPredU(a);
+                        for (Number i : ints) {
+                            boolean expected = helper.expectedPredU((Integer) i);
                             boolean actual = false;
                             try {
-                                actual = (boolean) m.invoke(a);
-                            } catch (IllegalAccessException | InvocationTargetException e) {
-                                e.fillInStackTrace();
+                                var object = classH3.getDeclaredConstructor().newInstance();
+                                actual = (boolean) m.invoke(object, i);
+                            } catch (Exception e) {
+                                fail(TutorTest_Messages.testingPredicates(className));
                             }
                             helper.assertObjects(expected, actual);
                         }
@@ -177,7 +204,7 @@ public final class TutorTest_H3 {
             }
         }
         // all three param classes are found
-        assertEquals(3, found, "At least one class for the three parameters does not exist");
+        assertEquals(3, found, TutorTest_Messages.classNotFound("fct/predT/predU"));
     }
 
     @Test
@@ -194,42 +221,43 @@ public final class TutorTest_H3 {
     @Test
     public void testMixinTestSignatures() {
         Class<?> classH3 = null;
+        String methodName = "testMixin";
         try {
-            classH3 = Class.forName("h10.TestMyLinkedList");
+            classH3 = Class.forName("h10." + className);
         } catch (ClassNotFoundException e) {
-            fail("Class TestMyLinkedList does not exist");
+            fail(TutorTest_Messages.classNotFound(className));
         }
 
         // is public
-        assertTrue(isPublic(classH3.getModifiers()), "TestMyLinkedList class is not public");
+        assertEquals(Modifier.PUBLIC, classH3.getModifiers(), TutorTest_Messages.classModifierIncorrect(className));
         boolean found = false;
 
         for (Method m : classH3.getDeclaredMethods()) {
-            if (!m.getName().equals("testMixin")) {
+            if (!m.getName().equals(methodName)) {
                 continue;
             }
 
             found = true;
 
             // is not generic
-            assertEquals(0, m.getTypeParameters().length, "testMixin method is generic");
+            assertEquals(0, m.getTypeParameters().length, TutorTest_Messages.methodGeneric(methodName));
 
             // is public
-            assertTrue(isPublic(m.getModifiers()), "testMixin method is not public");
+            assertEquals(Modifier.PUBLIC, m.getModifiers(), TutorTest_Messages.methodModifierIncorrect(methodName));
 
             // has no parameter
-            assertEquals(0, m.getParameterCount(), "textMixin method has parameter(s)");
+            assertEquals(0, m.getParameterCount(), TutorTest_Messages.methodParamIncomplete(methodName));
 
             // return type is correct
             assertEquals(void.class, m.getReturnType(),
-                         "Return type in textMixin method is incorrect");
+                         TutorTest_Messages.methodReturnTypeIncorrect(methodName));
 
             // thrown exception type is correct
             assertEquals(0, m.getExceptionTypes().length,
-                         "textMixin method throws exception(s)");
+                         TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
         }
         // method is found
-        assertTrue(found, "testMixin method does not exist");
+        assertTrue(found, TutorTest_Messages.methodNotFound(methodName));
     }
 
     @Test
@@ -237,14 +265,14 @@ public final class TutorTest_H3 {
     public void testParameterConstants(final TestCycle testCycle) {
         Class<?> classH3 = null;
         try {
-            classH3 = Class.forName("h10.TestMyLinkedList");
+            classH3 = Class.forName("h10." + className);
         } catch (ClassNotFoundException e) {
-            fail("Class TestMyLinkedList does not exist");
+            fail(TutorTest_Messages.classNotFound(className));
         }
 
         var fields = classH3.getDeclaredFields();
         // at least three fields are found
-        assertTrue(fields.length >= 3, "At least one constant for the three parameters does not exist");
+        assertTrue(fields.length >= 3, TutorTest_Messages.fieldNotFound("biPred/predU/fct"));
 
         int found = 0;
         for (Field f : fields) {
@@ -264,16 +292,16 @@ public final class TutorTest_H3 {
             if (biPred) {
                 // one lambda is used
                 helper.assertLambdas(testCycle, classH3, "BI_PRED_MIXIN",
-                                     "java.util.function.Predicate<java.lang.Number, java.lang.String>");
+                                     "java.util.function.BiPredicate<java.lang.Number, java.lang.String>");
 
                 // random inputs
-                Number[] nums = helper.generateManyNumbers(50);
-                String[] strings = Arrays.stream(helper.generateManyNumbers(50))
+                Number[] nums = helper.generateManyNumbers();
+                String[] strings = Arrays.stream(helper.generateManyNumbers())
                     .map(Object::toString)
                     .toArray(String[]::new);
 
                 // check the biPred constant with many inputs
-                for (int i = 0; i < 50; i++) {
+                for (int i = 0; i < nums.length; i++) {
                     boolean expected = nums[i].doubleValue() > Double.parseDouble(strings[i]);
                     boolean actual = false;
                     try {
@@ -282,7 +310,7 @@ public final class TutorTest_H3 {
                         BiPredicate<Number, String> biPredImpl = (BiPredicate<Number, String>) f.get(null);
                         actual = biPredImpl.test(nums[i], strings[i]);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        fail(TutorTest_Messages.testingPredicates(f.getName()));
                     }
                     helper.assertObjects(expected, actual);
                 }
@@ -292,13 +320,13 @@ public final class TutorTest_H3 {
                                      "java.util.function.Predicate<java.lang.String>");
 
                 // random inputs
-                String[] strings = helper.generateManyStrings(50);
+                String[] strings = helper.generateManyStrings();
 
                 // check the predU constant with many inputs
-                for (int i = 0; i < 50; i++) {
+                for (String string : strings) {
                     boolean expected;
                     try {
-                        Double.valueOf(strings[i]);
+                        Double.valueOf(string);
                         expected = true;
                     } catch (NumberFormatException e) {
                         expected = false;
@@ -309,9 +337,9 @@ public final class TutorTest_H3 {
                         f.setAccessible(true);
                         @SuppressWarnings("unchecked")
                         Predicate<String> predUImpl = (Predicate<String>) f.get(null);
-                        actual = predUImpl.test(strings[i]);
+                        actual = predUImpl.test(string);
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        fail(TutorTest_Messages.testingPredicates(f.getName()));
                     }
                     helper.assertObjects(expected, actual);
                 }
@@ -321,26 +349,26 @@ public final class TutorTest_H3 {
                                      "java.util.function.Function<java.lang.String, java.lang.Number>");
 
                 // random inputs
-                Number[] nums = helper.generateManyNumbers(50);
+                Number[] nums = helper.generateManyNumbers();
 
                 // check the fct constant with many inputs
-                for (int i = 0; i < 50; i++) {
-                    Number expected = nums[i].doubleValue();
+                for (Number num : nums) {
+                    Number expected = num.doubleValue();
                     Number actual = 0;
                     try {
                         f.setAccessible(true);
                         @SuppressWarnings("unchecked")
                         Function<String, Number> fctImpl = (Function<String, Number>) f.get(null);
-                        actual = fctImpl.apply(String.valueOf(nums[i]));
+                        actual = fctImpl.apply(String.valueOf(num));
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        fail(TutorTest_Messages.testingPredicates(f.getName()));
                     }
                     helper.assertObjects(expected, actual);
                 }
             }
         }
         // all three param constants are found
-        assertEquals(3, found, "At least one constant for the three parameters does not exist");
+        assertEquals(3, found, TutorTest_Messages.fieldNotFound("biPred/predU/fct"));
     }
 
     @Test

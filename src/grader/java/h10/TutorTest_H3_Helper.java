@@ -1,5 +1,6 @@
 package h10;
 
+import h10.utils.spoon.LambdaExpressionsFieldProcessor;
 import h10.utils.spoon.LambdaExpressionsMethodBodyProcessor;
 import h10.utils.spoon.SpoonUtils;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,27 +25,27 @@ public final class TutorTest_H3_Helper {
      *                       Define some generators                        *
      **********************************************************************/
 
-    protected Number[] generateManyNumbers(int numElems) {
-        Number[] ints = new Number[numElems];
-        for (int i = 0; i < numElems; i++) {
+    protected Number[] generateManyNumbers() {
+        Number[] ints = new Number[50];
+        for (int i = 0; i < 50; i++) {
             ints[i] = new Random().nextInt();
         }
         return ints;
     }
 
-    protected Integer[][] generateManyIntegerArrays(int numElems, int numArrays) {
-        Integer[][] intArrays = new Integer[numArrays][numElems];
-        for (int i = 0; i < numArrays; i++) {
-            for (int j = 0; j < numElems; j++) {
+    protected Integer[][] generateManyIntegerArrays() {
+        Integer[][] intArrays = new Integer[50][10];
+        for (int i = 0; i < 50; i++) {
+            for (int j = 0; j < 10; j++) {
                 intArrays[i][j] = new Random().nextInt();
             }
         }
         return intArrays;
     }
 
-    protected String[] generateManyStrings(int numElems) {
-        String[] strings = new String[numElems];
-        for (int i = 0; i < numElems; i++) {
+    protected String[] generateManyStrings() {
+        String[] strings = new String[50];
+        for (int i = 0; i < 50; i++) {
             if (i % 2 == 0) {
                 strings[i] = String.valueOf(new Random().nextInt());
             } else {
@@ -86,34 +87,35 @@ public final class TutorTest_H3_Helper {
      **********************************************************************/
 
     protected void assertObjects(Object expected, Object actual) {
-        assertEquals(expected, actual, "Assertion fails with an expected value: " + expected + ", but was: " + actual);
+        assertEquals(expected, actual, "Assertion failed");
     }
 
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     protected void assertLambdas(final TestCycle testCycle, Class<?> classType, String fieldName, String expected) {
         var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
         var processor = SpoonUtils.process(testCycle, path,
-                                           new LambdaExpressionsMethodBodyProcessor(fieldName));
+                                           new LambdaExpressionsFieldProcessor(fieldName));
         var allLambdas = processor.getLambdas();
+        var allMethodReferences = processor.getReferences();
 
-        assertEquals(1, allLambdas.size(), "Expected 1 lambda, but was: " + allLambdas.size());
+        // check both normal lambdas and method reference lambdas
+        assertEquals(1, allLambdas.size() + allMethodReferences.size(),
+                     String.format("No/more than one lambda is used in %s", fieldName));
 
-        var actual = allLambdas.stream()
+        var actual = ((allLambdas.size() == 0) ? allMethodReferences : allLambdas).stream()
             .map(CtTypedElement::getType)
             .collect(Collectors.toList())
             .get(0)
             .toString();
-        assertEquals(expected, actual, "Assertion fails with an expected lambda type: " + expected
-                                       + ", but was: " + actual);
+        assertEquals(expected, actual, String.format("Assertion for lambda type in %s failed", fieldName));
     }
 
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
-    protected void assertNoLambda(final TestCycle testCycle, Class<?> classType, String fieldName) {
+    protected void assertNoLambda(final TestCycle testCycle, Class<?> classType, String methodName) {
         var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
         var processor = SpoonUtils.process(testCycle, path,
-                                           new LambdaExpressionsMethodBodyProcessor(fieldName));
+                                           new LambdaExpressionsMethodBodyProcessor(methodName));
         var allLambdas = processor.getLambdas();
-        assertEquals(0, allLambdas.size(),
-                     "Assertion fails with expected number of lambdas: 0, but was: " + allLambdas.size());
+        assertEquals(0, allLambdas.size(), String.format("Lambda is used in %s", methodName));
     }
 }

@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestForSubmission("h10")
 @DisplayName("Criterion: H1")
 public final class TutorTest_H1 {
+    final static String className = "MyLinkedListException";
 
     /* *********************************************************************
      *                                 H1                                  *
@@ -28,18 +29,18 @@ public final class TutorTest_H1 {
     public void testClassSignatures() {
         Class<?> classH1 = null;
         try {
-            classH1 = Class.forName("h10.MyLinkedListException");
+            classH1 = Class.forName("h10." + className);
         } catch (ClassNotFoundException e) {
-            fail("Class MyLinkedListException does not exist");
+            fail(String.format("Class %s does not exist", className));
         }
 
         // is not abstract
-        assertFalse(isAbstract(classH1.getModifiers()), "Class MyLinkedListException is abstract");
+        assertFalse(isAbstract(classH1.getModifiers()), String.format("Class %s is abstract", className));
         // is public
-        assertTrue(isPublic(classH1.getModifiers()), "Class MyLinkedListException is not public");
+        assertTrue(isPublic(classH1.getModifiers()), String.format("Class %s is not public", className));
         // is a direct extension from Exception
         assertEquals(Exception.class, classH1.getSuperclass(),
-                     "Class TimeStamp is not a direct extension from Exception");
+                     String.format("Class %s is not a direct extension from Exception", className));
     }
 
     @Test
@@ -59,10 +60,10 @@ public final class TutorTest_H1 {
 
         // does not exist
         assertTrue(exceptions < 2,
-                   "Constructor MyLinkedListException does not exist or is not correct");
+                   String.format("Constructor %s does not exist or is incorrect", className));
         // is public
         assertTrue(isPublic(constructor.getModifiers()),
-                   "Constructor MyLinkedListException is not public");
+                   String.format("Constructor %s is not public", className));
     }
 
     @Test
@@ -74,7 +75,7 @@ public final class TutorTest_H1 {
         for (int i = 0; i < numOfTests; i++) {
             assertEquals(new MyLinkedListException(nums[i], objs[i]).getMessage(),
                          createCorrectMessage(nums[i], objs[i]),
-                         "Constructor MyLinkedListException returns wrong message");
+                         String.format("Constructor %s returns wrong message", className));
         }
     }
 

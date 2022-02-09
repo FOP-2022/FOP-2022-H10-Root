@@ -1,136 +1,140 @@
 package h10.utils.transformer;
 
+import javassist.bytecode.Opcode;
 import org.objectweb.asm.*;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
 
-/**
- * An abstract class transformer which will transform a class into another class for testing purposes.
- *
- * @author Nhan Huynh, Darya Nikitina
- */
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
+import static org.objectweb.asm.Type.getArgumentTypes;
+
 public class TutorTransformer implements ClassTransformer {
-
-    /**
-     * The source class that should be transformed.
-     */
-    private final String source;
-    /**
-     * The original class name that should be replaced.
-     */
-    private final String original;
-    /**
-     * THe replacement class name.
-     */
-    private final String replacement;
-    /**
-     * The location to replace the class name in bytecode.
-     */
-    private final String location;
-
-
-    /**
-     * Retrieves the class name if there exists alternative class names.
-     *
-     * @param classNames the alternative class names
-     *
-     * @return the found class name
-     */
-    private static String getClassName(final String... classNames) {
-        for (final var className : classNames) {
-            try {
-                Class.forName(className);
-                return className.replaceAll("\\.", "/");
-            } catch (ClassNotFoundException e) {
-                continue;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Constructs and initializes a transformer on the source class.
-     *
-     * @param sources     the source classes name to be transformed
-     * @param originals   the original classes name that that should be replaced
-     * @param replacement the replacement class
-     * @param location    the replacement location in bytecode
-     */
-    public TutorTransformer(final String[] sources, final String[] originals, final String replacement, final String location) {
-        this.source = getClassName(sources);
-        this.original = getClassName(originals);
-        this.replacement = replacement;
-        this.location = location;
-    }
 
     @Override
     public String getName() {
-        return source;
+        return null;
     }
 
     @Override
-    public void transform(final ClassReader reader, final ClassWriter writer) {
-        if (reader.getClassName().equals(source)) {
-            reader.accept(new TutorClassVisitor(writer), 0);
-        } else {
-            reader.accept(writer, 0);
-        }
+    public void transform(ClassReader reader, ClassWriter writer) {
+        reader.accept(new MethodTransformer(writer), 0);
     }
 
-    /**
-     * The class visitor used for the transformation.
-     */
-    private class TutorClassVisitor extends ClassVisitor {
+    @Override
+    public int getWriterFlags() {
+        return ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES;
+    }
 
-        /**
-         * Constructs and initialized the class visitor.
-         *
-         * @param classVisitor the class visitor instance
-         */
-        public TutorClassVisitor(final ClassVisitor classVisitor) {
-            super(Opcodes.ASM9, classVisitor);
+    static class MethodTransformer extends ClassVisitor {
+
+        String className;
+        int maxVar = 0;
+
+        public MethodTransformer(ClassWriter writer) {
+            super(Opcodes.ASM9, writer);
         }
 
         @Override
-        public MethodVisitor visitMethod(final int access, final String name, final String descriptor, final String signature,
-                                         final String[] exceptions) {
-            if (location == null || name.equals(location)) {
-                return new TutorMethodVisitor(super.visitMethod(access, name, descriptor, signature, exceptions));
+        public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+            this.className = name;
+            super.visit(version, access, name, signature, superName, interfaces);
+        }
+
+        @Override
+        public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+
+            boolean isStatic = Modifier.isStatic(access);
+            boolean forceStatic = isStatic && (name.equals("main") || name.equals("<clinit>"));
+            access &= ~Modifier.PRIVATE;
+            access &= ~Modifier.PROTECTED;
+            access |= Modifier.PUBLIC;
+
+            if (isStatic && !forceStatic) {
+                final int modifiedAccess = access ^ Modifier.PUBLIC;
+                var mv = new MethodVisitor(Opcodes.ASM9, super.visitMethod(modifiedAccess, name, descriptor, signature, exceptions)) {
+
+                    @Override
+                    public void visitIincInsn(int var, int increment) {
+                        var += 1;
+                        maxVar = Math.max(maxVar, var);
+                        super.visitIincInsn(var, increment);
+                    }
+
+                    @Override
+                    public void visitVarInsn(int opcode, int var) {
+                        var += 1;
+                        maxVar = Math.max(maxVar, var);
+                        super.visitVarInsn(opcode, var);
+                    }
+
+                    @Override
+                    public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
+                        List<Type> types = stream(getArgumentTypes(descriptor)).collect(toList());
+                        if (opcode == Opcodes.INVOKESTATIC && className.equals(owner)) {
+                            int n = ByteUtils.store(this, types, maxVar);
+                            super.visitVarInsn(Opcodes.ALOAD, 0);
+                            ByteUtils.load(this, types, n);
+                            super.visitMethodInsn(Opcode.INVOKEVIRTUAL, owner, name, descriptor, isInterface);
+
+                        } else {
+                            super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+                        }
+                    }
+                };
+                mv.visitMaxs(0, 0);
+                return mv;
             }
             return super.visitMethod(access, name, descriptor, signature, exceptions);
         }
     }
 
-    /**
-     * The method visitor used for the transformation.
-     */
-    private class TutorMethodVisitor extends MethodVisitor {
+    interface ByteUtils {
 
-        /**
-         * Constructs and initialized the method visitor.
-         *
-         * @param methodVisitor the method visitor instance
-         */
-        public TutorMethodVisitor(final MethodVisitor methodVisitor) {
-            super(Opcodes.ASM9, methodVisitor);
+        static int store(MethodVisitor visitor, List<Type> types, int start) {
+            types = new ArrayList<>(types);
+            Collections.reverse(types);
+            for (Type type : types) {
+                if (type == Type.BOOLEAN_TYPE || type == Type.BYTE_TYPE || type == Type.CHAR_TYPE || type == Type.SHORT_TYPE || type == Type.INT_TYPE) {
+                    visitor.visitVarInsn(Opcodes.ISTORE, start++);
+                } else if (type == Type.LONG_TYPE) {
+                    visitor.visitVarInsn(Opcodes.LSTORE, start++);
+                    //start++;
+                } else if (type == Type.FLOAT_TYPE) {
+                    visitor.visitVarInsn(Opcodes.FSTORE, start++);
+                } else if (type == Type.DOUBLE_TYPE) {
+                    visitor.visitVarInsn(Opcodes.DSTORE, start++);
+                    //start++;
+                } else {
+                    visitor.visitVarInsn(Opcodes.ASTORE, start++);
+                }
+            }
+            return start - 1;
         }
 
-        @Override
-        public void visitTypeInsn(final int opcode, final String type) {
-            if (opcode == Opcodes.NEW && type.equals(original)) {
-                super.visitTypeInsn(opcode, replacement);
-            } else {
-                super.visitTypeInsn(opcode, type);
-            }
-        }
+        @SuppressWarnings("UnusedReturnValue")
+        static int load(MethodVisitor visitor, List<Type> types, int start) {
+            for (Type type : types) {
+                if (type == Type.BOOLEAN_TYPE || type == Type.BYTE_TYPE || type == Type.CHAR_TYPE || type == Type.SHORT_TYPE || type == Type.INT_TYPE) {
+                    visitor.visitVarInsn(Opcodes.ILOAD, start--);
+                } else if (type == Type.LONG_TYPE) {
+                    visitor.visitVarInsn(Opcodes.LLOAD, start--);
+                    //start--;
+                } else if (type == Type.FLOAT_TYPE) {
+                    visitor.visitVarInsn(Opcodes.FLOAD, start--);
+                } else if (type == Type.DOUBLE_TYPE) {
+                    visitor.visitVarInsn(Opcodes.DLOAD, start--);
+                    //start--;
+                } else {
+                    visitor.visitVarInsn(Opcodes.ALOAD, start--);
+                }
 
-        @Override
-        public void visitMethodInsn(final int opcode, final String owner, final String name, final String descriptor,
-                                    final boolean isInterface) {
-            if (owner.equals(original)) {
-                super.visitMethodInsn(opcode, replacement, name, descriptor, isInterface);
-            } else {
-                super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
             }
+            return start + 1;
         }
     }
 }

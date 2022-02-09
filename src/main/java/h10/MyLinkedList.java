@@ -8,7 +8,6 @@ import java.util.function.Predicate;
  * Represents a list as a linked structure, where each element has a reference to its successor.
  *
  * @param <T> the type of the elements in this list
- *
  * @author Nhan Huynh
  * @see ListItem
  */
@@ -26,9 +25,7 @@ public class MyLinkedList<T> {
      * @param fct   The function that maps from type T to U potential candidates
      * @param predU the predicate, which checks whether the mapped element is valid
      * @param <U>   the type of the list containing the removed mapped elements
-     *
      * @return a list that contains the removed mapped elements from this list that satisfy the predicate
-     *
      * @throws MyLinkedListException if the mapped element is invalid for removal
      */
     public <U> MyLinkedList<U> extractIteratively(Predicate<? super T> predT,
@@ -91,9 +88,7 @@ public class MyLinkedList<T> {
      * @param fct   The function that maps from type T to U potential candidates
      * @param predU the predicate, which checks whether the mapped element is valid
      * @param <U>   the type of the list containing the removed mapped elements
-     *
      * @return a list that contains the removed mapped elements from this list that satisfy the predicate
-     *
      * @throws MyLinkedListException if the mapped element is invalid for removal
      */
     public <U> MyLinkedList<U> extractRecursively(Predicate<? super T> predT,
@@ -119,15 +114,14 @@ public class MyLinkedList<T> {
      * @param pSrc  the pointer to the current element of the list
      * @param index the current index of the element of the list
      * @param <U>   the type of the list containing the removed mapped elements
-     *
      * @return a list that contains the removed mapped elements from this list that satisfy the predicate
-     *
      * @throws MyLinkedListException if the mapped element is invalid for removal
      */
-    private <U> MyLinkedList<U> extractRecursivelyHelper(Predicate<? super T> predT,
-                                                         Function<? super T, ? extends U> fct,
-                                                         Predicate<? super U> predU,
-                                                         ListItem<T> pSrc, int index) throws MyLinkedListException {
+    // set to public for testExtractReallyRecursively in TutorTest_H2_1
+    public <U> MyLinkedList<U> extractRecursivelyHelper(Predicate<? super T> predT,
+                                                           Function<? super T, ? extends U> fct,
+                                                           Predicate<? super U> predU,
+                                                           ListItem<T> pSrc, int index) throws MyLinkedListException {
         if (pSrc.next == null) {
             return new MyLinkedList<>();
         }
@@ -168,7 +162,6 @@ public class MyLinkedList<T> {
      * @param fct       the function that maps an element from the source list to a matching type of the target list
      * @param predU     the predicate, which checks whether the source element is valid for insertion
      * @param <U>       the type of the list which should be merged to this list
-     *
      * @throws MyLinkedListException if the source element is invalid for insertion
      */
     public <U> void mixinIteratively(MyLinkedList<U> otherList,
@@ -236,7 +229,6 @@ public class MyLinkedList<T> {
      * @param fct       the function that maps an element from the source list to a matching type of the target list
      * @param predU     the predicate, which checks whether the source element is valid for insertion
      * @param <U>       the type of the list which should be merged to this list
-     *
      * @throws MyLinkedListException if the source element is invalid for insertion
      */
     public <U> void mixinRecursively(MyLinkedList<U> otherList,
@@ -268,16 +260,16 @@ public class MyLinkedList<T> {
      * @param pDest     the pointer to the current element of the (target) list
      * @param index     the current index of the element of the list
      * @param <U>       the type of the list which should be merged to this list
-     *
      * @throws MyLinkedListException if the source element is invalid for insertion
      */
-    private <U> void mixinRecursivelyHelper(MyLinkedList<U> otherList,
-                                            BiPredicate<? super T, ? super U> biPred,
-                                            Function<? super U, ? extends T> fct,
-                                            Predicate<? super U> predU,
-                                            ListItem<U> pSrc,
-                                            ListItem<T> pDest,
-                                            int index) throws MyLinkedListException {
+    // set to public for testMixinReallyRecursively in TutorTest_H2_2
+    public <U> void mixinRecursivelyHelper(MyLinkedList<U> otherList,
+                                              BiPredicate<? super T, ? super U> biPred,
+                                              Function<? super U, ? extends T> fct,
+                                              Predicate<? super U> predU,
+                                              ListItem<U> pSrc,
+                                              ListItem<T> pDest,
+                                              int index) throws MyLinkedListException {
         // We have to insert all elements from the other list until there are no elements left
         if (pSrc == null) {
             return;
@@ -314,7 +306,6 @@ public class MyLinkedList<T> {
      * Adds the element to the end of this list.
      *
      * @param key the element to be added
-     *
      * @return {@code true} if this list changed as a result of the call
      */
     public boolean add(T key) {

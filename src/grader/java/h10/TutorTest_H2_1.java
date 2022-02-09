@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class TutorTest_H2_1 {
     TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
     TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
-    final static String className = "MyLinkedList";
+    static final String className = "MyLinkedList";
 
     /* *********************************************************************
      *                               H2.1                                  *
@@ -229,17 +229,22 @@ public final class TutorTest_H2_1 {
         ListItem<Integer> dummy = new ListItem<>();
         dummy.next = thisList.head;
 
-        // TODO
-        /*try {
-            var m = MyLinkedList.class.getDeclaredMethod("extractRecursivelyHelper", Predicate.class, Function.class,
-                                                         Predicate.class, ListItem.class, int.class);
-            m.setAccessible(true);
-            var recursion = m.invoke(thisList, Mockito.any(Predicate.class), Mockito.any(Function.class),
-                                     Mockito.any(Predicate.class), dummy, Mockito.any(int.class));
-            Mockito.verify(recursion, Mockito.atLeast(1));
+        try {
+            thisList.extractRecursively(TutorTest_Generators.predT1, TutorTest_Generators.fctExtract1,
+                                        TutorTest_Generators.predU1);
+        } catch (MyLinkedListException e) {
+            // do not take other points
+            return;
+        }
+
+        // extractRecursivelyHelper is set to public for this test
+        try {
+            Mockito.verify(thisList, Mockito.atLeast(2))
+                .extractRecursivelyHelper(Mockito.any(Predicate.class), Mockito.any(Function.class),
+                                          Mockito.any(Predicate.class), Mockito.any(ListItem.class), Mockito.anyInt());
         } catch (Exception e) {
             // MyLinkedListException will never be thrown
             fail(TutorTest_Messages.methodNoRecursion(methodName));
-        }*/
+        }
     }
 }

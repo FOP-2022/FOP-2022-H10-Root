@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestForSubmission("h10")
 @DisplayName("Criterion: H1")
 public final class TutorTest_H1 {
-    final static String className = "MyLinkedListException";
+    static final String className = "MyLinkedListException";
 
     /* *********************************************************************
      *                                 H1                                  *

@@ -90,6 +90,10 @@ public final class TutorTest_Generators {
      *                   Define lists generators for extract               *
      **********************************************************************/
 
+    /**
+     * Generate random lists with type Integer for extract*-methods, so that it does not throw any exception.
+     * @return the generated lists
+     */
     public static MyLinkedList<Integer>[] generateThisListExtract1WithoutExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer>[] sourceLists = new MyLinkedList[10];
@@ -107,6 +111,10 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
+    /**
+     * Generate random lists with type Integer for extract*-methods, so that it throws exception.
+     * @return the generated lists
+     */
     public static MyLinkedList<Integer>[] generateThisListExtract1WithExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer>[] sourceLists = new MyLinkedList[3];
@@ -130,6 +138,10 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
+    /**
+     * Generate random lists with type String for extract*-methods, so that it does not throw any exception.
+     * @return the generated lists
+     */
     public static MyLinkedList<String>[] generateThisListExtract2WithoutExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<String>[] sourceLists = new MyLinkedList[10];
@@ -153,6 +165,10 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
+    /**
+     * Generate random lists with type String for extract*-methods, so that it throws exception.
+     * @return the generated lists
+     */
     public static MyLinkedList<String>[] generateThisListExtract2WithExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<String>[] sourceLists = new MyLinkedList[10];
@@ -176,9 +192,14 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
+    /**
+     * Generate a random list with type Integer as an input while spying extractRecursively, so that it does not throw
+     * any exception.
+     * @return the generated list
+     */
     public static MyLinkedList<Integer> generateThisListExtractMockito() {
         @SuppressWarnings("unchecked")
-        MyLinkedList<Integer> list = Mockito.mock(MyLinkedList.class);
+        MyLinkedList<Integer> list = Mockito.spy(MyLinkedList.class);
         for (int j = 0; j < 10; j++) {
             list.add(new Random().nextInt(100) + 10);
         }
@@ -189,6 +210,10 @@ public final class TutorTest_Generators {
      *                    Define lists generators for mixin                *
      **********************************************************************/
 
+    /**
+     * Generate random lists with type Integer as thisList for mixin*-methods, so that it does not throw any exception.
+     * @return the generated lists
+     */
     public static MyLinkedList<Integer>[] generateThisListMixin1() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer>[] targetLists = new MyLinkedList[10];
@@ -204,6 +229,10 @@ public final class TutorTest_Generators {
         return targetLists;
     }
 
+    /**
+     * Generate random lists with type String as thisList for mixin*-methods, so that it does not throw any exception.
+     * @return the generated lists
+     */
     public static MyLinkedList<String>[] generateThisListMixin2() {
         @SuppressWarnings("unchecked")
         MyLinkedList<String>[] targetLists = new MyLinkedList[10];
@@ -219,6 +248,10 @@ public final class TutorTest_Generators {
         return targetLists;
     }
 
+    /**
+     * Generate random lists with type Integer[] as otherList for mixin*-methods, so that it does not throw any exception.
+     * @return the generated lists
+     */
     public static MyLinkedList<Integer[]>[] generateOtherListMixin1WithoutExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer[]>[] sourceLists = new MyLinkedList[10];
@@ -242,6 +275,10 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
+    /**
+     * Generate random lists with type Integer[] as otherList for mixin*-methods, so that it throws exception.
+     * @return the generated lists
+     */
     public static MyLinkedList<Integer[]>[] generateOtherListMixin1WithExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer[]>[] sourceLists = new MyLinkedList[10];
@@ -271,6 +308,10 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
+    /**
+     * Generate random lists with type Double as otherList for mixin*-methods, so that it does not throw any exception.
+     * @return the generated lists
+     */
     public static MyLinkedList<Double>[] generateOtherListMixin2WithoutExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Double>[] sourceLists = new MyLinkedList[10];
@@ -286,6 +327,10 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
+    /**
+     * Generate random lists with type Double as otherList for mixin*-methods, so that it throws exception.
+     * @return the generated lists
+     */
     public static MyLinkedList<Double>[] generateOtherListMixin2WithExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Double>[] sourceLists = new MyLinkedList[10];
@@ -302,18 +347,28 @@ public final class TutorTest_Generators {
         return sourceLists;
     }
 
+    /**
+     * Generate a random list with type Integer as an input for thisList while spying extractRecursively, so that it
+     * does not throw any exception.
+     * @return the generated list
+     */
     public static MyLinkedList<Integer> generateThisListMixinMockito() {
         @SuppressWarnings("unchecked")
-        MyLinkedList<Integer> list = Mockito.mock(MyLinkedList.class);
+        MyLinkedList<Integer> list = Mockito.spy(MyLinkedList.class);
         for (int j = 0; j < 10; j++) {
             list.add(new Random().nextInt(100));
         }
         return list;
     }
 
+    /**
+     * Generate a random list with type Integer[] as an input for otherList while spying extractRecursively, so that it
+     * does not throw any exception.
+     * @return the generated list
+     */
     public static MyLinkedList<Integer[]> generateOtherListMixinMockito() {
         @SuppressWarnings("unchecked")
-        MyLinkedList<Integer[]> list = Mockito.mock(MyLinkedList.class);
+        MyLinkedList<Integer[]> list = Mockito.spy(MyLinkedList.class);
         for (int j = 0; j < 10; j++) {
             Integer[] listElem = new Integer[10];
             for (int k = 0; k < 10; k++) {

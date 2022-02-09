@@ -14,6 +14,9 @@ import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class TutorTest_H2_2 {
     TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
     TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
-    final static String className = "MyLinkedList";
+    static final String className = "MyLinkedList";
 
     /* *********************************************************************
      *                               H2.2                                  *
@@ -255,14 +258,15 @@ public final class TutorTest_H2_2 {
             return;
         }
 
-        // TODO
-        /*try {
+        // mixinRecursivelyHelper is set to public for this test
+        try {
             Mockito.verify(thisList, Mockito.atLeast(2))
-                .mixinRecursivelyHelper(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
-                                        Mockito.any(), Mockito.any());
+                .mixinRecursivelyHelper(Mockito.any(MyLinkedList.class), Mockito.any(BiPredicate.class),
+                                        Mockito.any(Function.class), Mockito.any(Predicate.class),
+                                        Mockito.any(ListItem.class), Mockito.any(ListItem.class), Mockito.anyInt());
         } catch (Exception e) {
             // MyLinkedListException will never be thrown
             fail(TutorTest_Messages.methodNoRecursion(methodName));
-        }*/
+        }
     }
 }

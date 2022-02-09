@@ -18,6 +18,9 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static org.objectweb.asm.Type.getArgumentTypes;
 
+/**
+ * Transformer class.
+ */
 public class TutorTransformer implements ClassTransformer {
 
     @Override
@@ -56,7 +59,7 @@ public class TutorTransformer implements ClassTransformer {
                                          String[] exceptions) {
 
             boolean isStatic = Modifier.isStatic(access);
-            boolean forceStatic = isStatic && (name.equals("main") || name.equals("<clinit>"));
+            final boolean forceStatic = isStatic && (name.equals("main") || name.equals("<clinit>"));
             access &= ~Modifier.PRIVATE;
             access &= ~Modifier.PROTECTED;
             access |= Modifier.PUBLIC;

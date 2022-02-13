@@ -5,7 +5,6 @@ import h10.utils.TutorTest_Messages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.sourcegrade.jagr.api.testing.TestCycle;
 import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
@@ -19,6 +18,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Defines the JUnit test cases related to the class defined in the task H2.1.
@@ -60,49 +60,47 @@ public final class TutorTest_H2_1 {
     }
 
     @Test
-    public void testExtractMethodsSignatures() {
+    public void testExtractIterativelyMethodSignatures() {
         Class<?> classH2 = null;
-        String methodName = "extract*";
+        String methodName = "extractIteratively";
         try {
             classH2 = Class.forName("h10." + className);
         } catch (ClassNotFoundException e) {
             fail(TutorTest_Messages.classNotFound(className));
         }
 
+        boolean found = false;
         for (Method m : classH2.getDeclaredMethods()) {
-            if (!m.getName().equals("extractIteratively")
-                && !m.getName().equals("extractRecursively")) {
+            if (!m.getName().equals(methodName)) {
                 continue;
             }
-
-            // is generic with type U
-            assertEquals(1, m.getTypeParameters().length, TutorTest_Messages.methodNotGeneric(methodName));
-            assertEquals("U", m.getTypeParameters()[0].getTypeName(),
-                         TutorTest_Messages.methodGenericTypeIncorrect(methodName));
-
-            // is public
-            assertEquals(Modifier.PUBLIC, m.getModifiers(), TutorTest_Messages.methodModifierIncorrect(methodName));
-
-            // all params are found
-            var params = m.getParameters();
-            assertEquals(3, params.length, TutorTest_Messages.methodParamIncomplete(methodName));
-
-            // param types are correct
-            var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName()).collect(Collectors.toList());
-            assertTrue(paramTypes.contains("java.util.function.Predicate<? super T>")
-                       && (paramTypes.contains("java.util.function.Function<? super T, ? extends U>")
-                           || paramTypes.contains("java.util.function.Function<? super T,? extends U>"))
-                       && paramTypes.contains("java.util.function.Predicate<? super U>"),
-                       TutorTest_Messages.methodParamIncorrect(methodName));
-
-            // return type is correct
-            assertEquals("h10.MyLinkedList<U>", m.getGenericReturnType().getTypeName(),
-                         TutorTest_Messages.methodReturnTypeIncorrect(methodName));
-
-            // thrown exception type is correct
-            assertEquals(MyLinkedListException.class, m.getExceptionTypes()[0],
-                         TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
+            found = true;
+            TutorTest_H2_Helper.assertExtractMethodsSignatures(m, methodName);
         }
+        // method is found
+        assertTrue(found, TutorTest_Messages.methodNotFound(methodName));
+    }
+
+    @Test
+    public void testExtractRecursivelyMethodSignatures() {
+        Class<?> classH2 = null;
+        String methodName = "extractRecursively";
+        try {
+            classH2 = Class.forName("h10." + className);
+        } catch (ClassNotFoundException e) {
+            fail(TutorTest_Messages.classNotFound(className));
+        }
+
+        boolean found = false;
+        for (Method m : classH2.getDeclaredMethods()) {
+            if (!m.getName().equals(methodName)) {
+                continue;
+            }
+            found = true;
+            TutorTest_H2_Helper.assertExtractMethodsSignatures(m, methodName);
+        }
+        // method is found
+        assertTrue(found, TutorTest_Messages.methodNotFound(methodName));
     }
 
     @Test
@@ -115,10 +113,13 @@ public final class TutorTest_H2_1 {
             fail(TutorTest_Messages.classNotFound(className));
         }
 
+        boolean found = false;
         for (Method m : classH2.getDeclaredMethods()) {
             if (!m.getName().equals(methodName)) {
                 continue;
             }
+
+            found = true;
 
             // is generic with type U
             assertEquals(1, m.getTypeParameters().length, TutorTest_Messages.methodNotGeneric(methodName));
@@ -151,6 +152,8 @@ public final class TutorTest_H2_1 {
             assertEquals(MyLinkedListException.class, m.getExceptionTypes()[0],
                          TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
         }
+        // method is found
+        assertTrue(found, TutorTest_Messages.methodNotFound(methodName));
     }
 
     @Test
@@ -208,14 +211,14 @@ public final class TutorTest_H2_1 {
     @Test
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     public void testExtractNoOtherMethods(final TestCycle testCycle) {
-        helper1.assertNoOtherMethod(testCycle, MyLinkedList.class, "extractIteratively");
-        helper1.assertNoOtherMethod(testCycle, MyLinkedList.class, "extractRecursively");
+        TutorTest_H2_Helper.assertNoOtherMethod(testCycle, MyLinkedList.class, "extractIteratively");
+        TutorTest_H2_Helper.assertNoOtherMethod(testCycle, MyLinkedList.class, "extractRecursively");
     }
 
     @Test
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     public void testExtractReallyIteratively(final TestCycle testCycle) {
-        helper1.assertNumberOfLoop(testCycle, MyLinkedList.class, "extractIteratively", 1);
+        TutorTest_H2_Helper.assertNumberOfLoop(testCycle, MyLinkedList.class, "extractIteratively", 1);
     }
 
     @Test
@@ -223,7 +226,7 @@ public final class TutorTest_H2_1 {
     public void testExtractReallyRecursively(final TestCycle testCycle) {
         String methodName = "extractRecursively";
         // not iterative
-        helper1.assertNumberOfLoop(testCycle, MyLinkedList.class, methodName, 0);
+        TutorTest_H2_Helper.assertNumberOfLoop(testCycle, MyLinkedList.class, methodName, 0);
 
         var thisList = TutorTest_Generators.generateThisListExtractMockito();
         ListItem<Integer> dummy = new ListItem<>();
@@ -239,9 +242,9 @@ public final class TutorTest_H2_1 {
 
         // extractRecursivelyHelper is set to public for this test
         try {
-            Mockito.verify(thisList, Mockito.atLeast(2))
-                .extractRecursivelyHelper(Mockito.any(Predicate.class), Mockito.any(Function.class),
-                                          Mockito.any(Predicate.class), Mockito.any(ListItem.class), Mockito.anyInt());
+            verify(thisList, atLeast(2))
+                .extractRecursivelyHelper(any(Predicate.class), any(Function.class),
+                                          any(Predicate.class), any(ListItem.class), anyInt());
         } catch (Exception e) {
             // MyLinkedListException will never be thrown
             fail(TutorTest_Messages.methodNoRecursion(methodName));

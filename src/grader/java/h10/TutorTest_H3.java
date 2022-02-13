@@ -29,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestForSubmission("h10")
 @DisplayName("Criterion: H3")
 public final class TutorTest_H3 {
-    TutorTest_H3_Helper helper = new TutorTest_H3_Helper();
     static final String className = "TestMyLinkedList";
 
     /* *********************************************************************
@@ -129,14 +128,14 @@ public final class TutorTest_H3 {
                         m.setAccessible(true);
 
                         // no lambda is used
-                        helper.assertNoLambda(testCycle, classH3, m.getName());
+                        TutorTest_H3_Helper.assertNoLambda(testCycle, classH3, m.getName());
 
                         // random inputs
-                        Integer[][] intArrays = helper.generateManyIntegerArrays();
+                        Integer[][] intArrays = TutorTest_H3_Helper.generateManyIntegerArrays();
 
                         // check the method in fct class with many Integers Arrays
                         for (Integer[] ints : intArrays) {
-                            Integer expected = helper.expectedFct(ints);
+                            Integer expected = TutorTest_H3_Helper.expectedFct(ints);
                             Integer actual = null;
                             try {
                                 var object = classH3.getDeclaredConstructor().newInstance();
@@ -144,7 +143,7 @@ public final class TutorTest_H3 {
                             } catch (Exception e) {
                                 fail(TutorTest_Messages.testingPredicates(className));
                             }
-                            helper.assertObjects(expected, actual);
+                            TutorTest_H3_Helper.assertObjects(expected, actual);
                         }
                     }
                 }
@@ -157,14 +156,14 @@ public final class TutorTest_H3 {
                         m.setAccessible(true);
 
                         // no lambda is used
-                        helper.assertNoLambda(testCycle, classH3, m.getName());
+                        TutorTest_H3_Helper.assertNoLambda(testCycle, classH3, m.getName());
 
                         // random inputs
-                        Integer[][] intArrays = helper.generateManyIntegerArrays();
+                        Integer[][] intArrays = TutorTest_H3_Helper.generateManyIntegerArrays();
 
                         // check the method in predT class with many Integer Arrays
                         for (Integer[] ints : intArrays) {
-                            boolean expected = helper.expectedPredT(ints);
+                            boolean expected = TutorTest_H3_Helper.expectedPredT(ints);
                             boolean actual = false;
                             try {
                                 var object = classH3.getDeclaredConstructor().newInstance();
@@ -172,7 +171,7 @@ public final class TutorTest_H3 {
                             } catch (Exception e) {
                                 fail(TutorTest_Messages.testingPredicates(className));
                             }
-                            helper.assertObjects(expected, actual);
+                            TutorTest_H3_Helper.assertObjects(expected, actual);
                         }
                     }
                 }
@@ -185,14 +184,14 @@ public final class TutorTest_H3 {
                         m.setAccessible(true);
 
                         // no lambda is used
-                        helper.assertNoLambda(testCycle, classH3, m.getName());
+                        TutorTest_H3_Helper.assertNoLambda(testCycle, classH3, m.getName());
 
                         // random inputs
-                        Number[] ints = helper.generateManyNumbers();
+                        Number[] ints = TutorTest_H3_Helper.generateManyNumbers();
 
                         // check the method in predU class with many Integers
                         for (Number i : ints) {
-                            boolean expected = helper.expectedPredU((Integer) i);
+                            boolean expected = TutorTest_H3_Helper.expectedPredU((Integer) i);
                             boolean actual = false;
                             try {
                                 var object = classH3.getDeclaredConstructor().newInstance();
@@ -200,7 +199,7 @@ public final class TutorTest_H3 {
                             } catch (Exception e) {
                                 fail(TutorTest_Messages.testingPredicates(className));
                             }
-                            helper.assertObjects(expected, actual);
+                            TutorTest_H3_Helper.assertObjects(expected, actual);
                         }
                     }
                 }
@@ -294,12 +293,12 @@ public final class TutorTest_H3 {
 
             if (biPred) {
                 // one lambda is used
-                helper.assertLambdas(testCycle, classH3, "BI_PRED_MIXIN",
-                                     "java.util.function.BiPredicate<java.lang.Number, java.lang.String>");
+                TutorTest_H3_Helper.assertLambdas(testCycle, classH3, "BI_PRED_MIXIN",
+                                                      "java.util.function.BiPredicate<java.lang.Number, java.lang.String>");
 
                 // random inputs
-                Number[] nums = helper.generateManyNumbers();
-                String[] strings = Arrays.stream(helper.generateManyNumbers())
+                Number[] nums = TutorTest_H3_Helper.generateManyNumbers();
+                String[] strings = Arrays.stream(TutorTest_H3_Helper.generateManyNumbers())
                     .map(Object::toString)
                     .toArray(String[]::new);
 
@@ -315,15 +314,15 @@ public final class TutorTest_H3 {
                     } catch (Exception e) {
                         fail(TutorTest_Messages.testingPredicates(f.getName()));
                     }
-                    helper.assertObjects(expected, actual);
+                    TutorTest_H3_Helper.assertObjects(expected, actual);
                 }
             } else if (predU) {
                 // one lambda is used
-                helper.assertLambdas(testCycle, classH3, "PRED_U_MIXIN",
-                                     "java.util.function.Predicate<java.lang.String>");
+                TutorTest_H3_Helper.assertLambdas(testCycle, classH3, "PRED_U_MIXIN",
+                                                      "java.util.function.Predicate<java.lang.String>");
 
                 // random inputs
-                String[] strings = helper.generateManyStrings();
+                String[] strings = TutorTest_H3_Helper.generateManyStrings();
 
                 // check the predU constant with many inputs
                 for (String string : strings) {
@@ -344,15 +343,15 @@ public final class TutorTest_H3 {
                     } catch (IllegalAccessException e) {
                         fail(TutorTest_Messages.testingPredicates(f.getName()));
                     }
-                    helper.assertObjects(expected, actual);
+                    TutorTest_H3_Helper.assertObjects(expected, actual);
                 }
             } else {
                 // one lambda is used
-                helper.assertLambdas(testCycle, classH3, "FCT_MIXIN",
-                                     "java.util.function.Function<java.lang.String, java.lang.Number>");
+                TutorTest_H3_Helper.assertLambdas(testCycle, classH3, "FCT_MIXIN",
+                                                      "java.util.function.Function<java.lang.String, java.lang.Number>");
 
                 // random inputs
-                Number[] nums = helper.generateManyNumbers();
+                Number[] nums = TutorTest_H3_Helper.generateManyNumbers();
 
                 // check the fct constant with many inputs
                 for (Number num : nums) {
@@ -366,7 +365,7 @@ public final class TutorTest_H3 {
                     } catch (IllegalAccessException e) {
                         fail(TutorTest_Messages.testingPredicates(f.getName()));
                     }
-                    helper.assertObjects(expected, actual);
+                    TutorTest_H3_Helper.assertObjects(expected, actual);
                 }
             }
         }

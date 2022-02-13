@@ -1,5 +1,6 @@
 package h10;
 
+import h10.utils.TutorTest_Messages;
 import h10.utils.spoon.LoopsMethodBodyProcessor;
 import h10.utils.spoon.MethodCallsProcessor;
 import h10.utils.spoon.SpoonUtils;
@@ -8,10 +9,14 @@ import org.sourcegrade.jagr.api.testing.TestCycle;
 import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -192,7 +197,70 @@ public final class TutorTest_H2_Helper<T> {
      *                           Assertion methods                         *
      **********************************************************************/
 
-    protected <U> void assertLinkedList(MyLinkedList<U> expected, MyLinkedList<U> actual) {
+    protected static void assertExtractMethodsSignatures(Method method, String methodName) {
+        // is generic with type U
+        assertEquals(1, method.getTypeParameters().length, TutorTest_Messages.methodNotGeneric(methodName));
+        assertEquals("U", method.getTypeParameters()[0].getTypeName(),
+                     TutorTest_Messages.methodGenericTypeIncorrect(methodName));
+
+        // is public
+        assertEquals(Modifier.PUBLIC, method.getModifiers(), TutorTest_Messages.methodModifierIncorrect(methodName));
+
+        // all params are found
+        var params = method.getParameters();
+        assertEquals(3, params.length, TutorTest_Messages.methodParamIncomplete(methodName));
+
+        // param types are correct
+        var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName()).collect(Collectors.toList());
+        assertTrue(paramTypes.contains("java.util.function.Predicate<? super T>")
+                   && (paramTypes.contains("java.util.function.Function<? super T, ? extends U>")
+                       || paramTypes.contains("java.util.function.Function<? super T,? extends U>"))
+                   && paramTypes.contains("java.util.function.Predicate<? super U>"),
+                   TutorTest_Messages.methodParamIncorrect(methodName));
+
+        // return type is correct
+        assertEquals("h10.MyLinkedList<U>", method.getGenericReturnType().getTypeName(),
+                     TutorTest_Messages.methodReturnTypeIncorrect(methodName));
+
+        // thrown exception type is correct
+        assertEquals(MyLinkedListException.class, method.getExceptionTypes()[0],
+                     TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
+    }
+
+    protected static void assertMixinMethodsSignatures(Method method, String methodName) {
+        // is generic with type U
+        assertEquals(1, method.getTypeParameters().length, TutorTest_Messages.methodNotGeneric(methodName));
+        assertEquals("U", method.getTypeParameters()[0].getTypeName(),
+                     TutorTest_Messages.methodGenericTypeIncorrect(methodName));
+
+        // is public
+        assertEquals(Modifier.PUBLIC, method.getModifiers(), TutorTest_Messages.methodModifierIncorrect(methodName));
+
+        // all params are found
+        var params = method.getParameters();
+        assertEquals(4, params.length, TutorTest_Messages.methodParamIncomplete(methodName));
+
+        // param types are correct
+        var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName())
+            .collect(Collectors.toList());
+        assertTrue(paramTypes.contains("h10.MyLinkedList<U>")
+                   && (paramTypes.contains("java.util.function.BiPredicate<? super T, ? super U>")
+                       || paramTypes.contains("java.util.function.BiPredicate<? super T,? super U>"))
+                   && (paramTypes.contains("java.util.function.Function<? super U, ? extends T>")
+                       || paramTypes.contains("java.util.function.Function<? super U,? extends T>"))
+                   && paramTypes.contains("java.util.function.Predicate<? super U>"),
+                   TutorTest_Messages.methodParamIncorrect(methodName));
+
+        // return type is correct
+        assertEquals(void.class, method.getReturnType(),
+                     TutorTest_Messages.methodReturnTypeIncorrect(methodName));
+
+        // thrown exception type is correct
+        assertEquals(MyLinkedListException.class, method.getExceptionTypes()[0],
+                     TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
+    }
+
+    protected static <U> void assertLinkedList(MyLinkedList<U> expected, MyLinkedList<U> actual) {
         // one of the list is null
         if (expected.head == null || actual.head == null) {
             assertEquals(expected.head, actual.head, "Assertion for MyLinkedList failed");
@@ -233,7 +301,7 @@ public final class TutorTest_H2_Helper<T> {
         assertNull(actualCurrent, "Assertion for MyLinkedList failed");
     }
 
-    protected void assertExceptionMessage(MyLinkedListException expected, MyLinkedListException actual) {
+    protected static void assertExceptionMessage(MyLinkedListException expected, MyLinkedListException actual) {
         assertNotNull(actual, "Assertion for MyLinkedListException Message failed");
 
         // ignore the object's name
@@ -251,7 +319,7 @@ public final class TutorTest_H2_Helper<T> {
      * @param methodName the method to be checked
      */
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
-    protected void assertNoOtherMethod(final TestCycle testCycle, Class<?> classType, String methodName) {
+    protected static void assertNoOtherMethod(final TestCycle testCycle, Class<?> classType, String methodName) {
         var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
         var processor = SpoonUtils.process(testCycle, path, new MethodCallsProcessor(methodName));
 
@@ -274,7 +342,7 @@ public final class TutorTest_H2_Helper<T> {
      * @param expected   the expected number of loops
      */
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
-    protected void assertNumberOfLoop(final TestCycle testCycle, Class<?> classType, String methodName, int expected) {
+    protected static void assertNumberOfLoop(final TestCycle testCycle, Class<?> classType, String methodName, int expected) {
         var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
         var processor = SpoonUtils.process(testCycle, path,
                                            new LoopsMethodBodyProcessor(methodName));
@@ -290,7 +358,7 @@ public final class TutorTest_H2_Helper<T> {
      *                          Other helper methods                       *
      **********************************************************************/
 
-    protected <U> MyLinkedList<U> copyList(MyLinkedList<U> list) {
+    protected static <U> MyLinkedList<U> copyList(MyLinkedList<U> list) {
         MyLinkedList<U> copyList = new MyLinkedList<>();
         if (list.head == null) {
             copyList.head = null;

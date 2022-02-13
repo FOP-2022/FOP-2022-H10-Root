@@ -68,17 +68,26 @@ public final class H10_RubricProvider implements RubricProvider {
         .build();
 
     public static final Criterion H2_1_2 = Criterion.builder()
-        .shortDescription("Die Signaturen der extract*-Methoden sind vollständig und korrekt.")
-        .maxPoints(2)
+        .shortDescription("Die Signatur der extractIteratively-Methode ist vollständig und korrekt.")
         .grader(
             Grader.testAwareBuilder()
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractMethodsSignatures")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractIterativelyMethodSignatures")))
                 .pointsPassedMax()
                 .pointsFailedMin()
                 .build())
         .build();
 
     public static final Criterion H2_1_3 = Criterion.builder()
+        .shortDescription("Die Signatur der extractRecursively-Methode ist vollständig und korrekt.")
+        .grader(
+            Grader.testAwareBuilder()
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractRecursivelyMethodSignatures")))
+                .pointsPassedMax()
+                .pointsFailedMin()
+                .build())
+        .build();
+
+    public static final Criterion H2_1_4 = Criterion.builder()
         .shortDescription("Die Signatur der extractHelper-Methode ist vollständig und korrekt.")
         .grader(
             Grader.testAwareBuilder()
@@ -88,7 +97,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_1_4 = Criterion.builder()
+    public static final Criterion H2_1_5 = Criterion.builder()
         .shortDescription("Methode extractIteratively ist beim Normalfall korrekt implementiert.")
         .maxPoints(2)
         .grader(
@@ -99,7 +108,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_1_5 = Criterion.builder()
+    public static final Criterion H2_1_6 = Criterion.builder()
         .shortDescription("Methode extractIteratively ist beim Exceptionfall korrekt implementiert.")
         .maxPoints(2)
         .grader(
@@ -110,7 +119,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_1_6 = Criterion.builder()
+    public static final Criterion H2_1_7 = Criterion.builder()
         .shortDescription("Methode extractRecursively ist beim Normalfall korrekt implementiert.")
         .maxPoints(2)
         .grader(
@@ -121,7 +130,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_1_7 = Criterion.builder()
+    public static final Criterion H2_1_8 = Criterion.builder()
         .shortDescription("Methode extractRecursively ist beim Exceptionfall korrekt implementiert.")
         .maxPoints(2)
         .grader(
@@ -132,8 +141,8 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_1_8 = Criterion.builder()
-        .shortDescription("Mindestens eine der extract*-Methode ist korrekt.")
+    public static final Criterion H2_1_9 = Criterion.builder()
+        .shortDescription("Mindestens eine der extract*-Methode ist korrekt implementiert.")
         .grader(
             Grader.testAwareBuilder()
                 .requirePass(JUnitTestRef.or(
@@ -146,7 +155,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_1_9 = Criterion.builder()
+    public static final Criterion H2_1_10 = Criterion.builder()
         .shortDescription("extract*-Methoden verwenden keine nicht bereits implementierten methoden.")
         .maxPoints(0)
         .minPoints(-1)
@@ -159,7 +168,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_1_10 = Criterion.builder()
+    public static final Criterion H2_1_11 = Criterion.builder()
         .shortDescription("extractIteratively hat genau eine Schleife und keine Rekursion.")
         .maxPoints(0)
         .minPoints(-2)
@@ -172,7 +181,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_1_11 = Criterion.builder()
+    public static final Criterion H2_1_12 = Criterion.builder()
         .shortDescription("extractRecursively benutzt Rekursion und hat keine Schleife.")
         .maxPoints(0)
         .minPoints(-2)
@@ -185,12 +194,13 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_1_12 = Criterion.builder()
+    public static final Criterion H2_1_13 = Criterion.builder()
         .shortDescription("Die gesamte Aufgabe ist korrekt implementiert.")
         .grader(
             Grader.testAwareBuilder()
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractMethodsExist")))
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractMethodsSignatures")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractIterativelyMethodSignatures")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractRecursivelyMethodSignatures")))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractHelperMethod")))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractIteratively")))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractIterativelyException")))
@@ -211,7 +221,7 @@ public final class H10_RubricProvider implements RubricProvider {
         .shortDescription("H2.1: extract*-Methoden")
         .minPoints(0)
         .addChildCriteria(H2_1_1, H2_1_2, H2_1_3, H2_1_4, H2_1_5, H2_1_6, H2_1_7, H2_1_8, H2_1_9, H2_1_10, H2_1_11,
-                          H2_1_12)
+                          H2_1_12, H2_1_13)
         .build();
 
     /* *********************************************************************
@@ -229,17 +239,26 @@ public final class H10_RubricProvider implements RubricProvider {
         .build();
 
     public static final Criterion H2_2_2 = Criterion.builder()
-        .shortDescription("Die Signaturen der mixin*-Methoden sind vollständig und korrekt.")
-        .maxPoints(2)
+        .shortDescription("Die Signatur der mixinIteratively-Methode ist vollständig und korrekt.")
         .grader(
             Grader.testAwareBuilder()
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinMethodsSignatures")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinIterativelyMethodSignatures")))
                 .pointsPassedMax()
                 .pointsFailedMin()
                 .build())
         .build();
 
     public static final Criterion H2_2_3 = Criterion.builder()
+        .shortDescription("Die Signatur der mixinRecursively-Methode ist vollständig und korrekt.")
+        .grader(
+            Grader.testAwareBuilder()
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinRecursivelyMethodSignatures")))
+                .pointsPassedMax()
+                .pointsFailedMin()
+                .build())
+        .build();
+
+    public static final Criterion H2_2_4 = Criterion.builder()
         .shortDescription("Die Signatur der mixinHelper-Methode ist vollständig und korrekt.")
         .grader(
             Grader.testAwareBuilder()
@@ -249,7 +268,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_2_4 = Criterion.builder()
+    public static final Criterion H2_2_5 = Criterion.builder()
         .shortDescription("Methode mixinIteratively ist beim Normalfall korrekt implementiert.")
         .maxPoints(2)
         .grader(
@@ -260,7 +279,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_2_5 = Criterion.builder()
+    public static final Criterion H2_2_6 = Criterion.builder()
         .shortDescription("Methode mixinIteratively ist beim Exceptionfall korrekt implementiert.")
         .maxPoints(2)
         .grader(
@@ -271,7 +290,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_2_6 = Criterion.builder()
+    public static final Criterion H2_2_7 = Criterion.builder()
         .shortDescription("Methode mixinRecursively ist beim Normalfall korrekt implementiert.")
         .maxPoints(2)
         .grader(
@@ -282,7 +301,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_2_7 = Criterion.builder()
+    public static final Criterion H2_2_8 = Criterion.builder()
         .shortDescription("Methode mixinRecursively ist beim Exceptionfall korrekt implementiert.")
         .maxPoints(2)
         .grader(
@@ -293,7 +312,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_2_8 = Criterion.builder()
+    public static final Criterion H2_2_9 = Criterion.builder()
         .shortDescription("Mindestens eine der mixin*-Methode ist korrekt.")
         .grader(
             Grader.testAwareBuilder()
@@ -307,7 +326,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_2_9 = Criterion.builder()
+    public static final Criterion H2_2_10 = Criterion.builder()
         .shortDescription("mixin*-Methoden verwenden keine nicht bereits implementierten methoden.")
         .maxPoints(0)
         .minPoints(-1)
@@ -320,7 +339,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_2_10 = Criterion.builder()
+    public static final Criterion H2_2_11 = Criterion.builder()
         .shortDescription("mixinIteratively hat genau eine Schleife und keine Rekursion.")
         .maxPoints(0)
         .minPoints(-2)
@@ -333,7 +352,7 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_2_11 = Criterion.builder()
+    public static final Criterion H2_2_12 = Criterion.builder()
         .shortDescription("mixinRecursively benutzt Rekursion und hat keine Schleife.")
         .maxPoints(0)
         .minPoints(-2)
@@ -346,12 +365,13 @@ public final class H10_RubricProvider implements RubricProvider {
                 .build())
         .build();
 
-    public static final Criterion H2_2_12 = Criterion.builder()
+    public static final Criterion H2_2_13 = Criterion.builder()
         .shortDescription("Die gesamte Aufgabe ist korrekt implementiert.")
         .grader(
             Grader.testAwareBuilder()
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinMethodsExist")))
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinMethodsSignatures")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinIterativelyMethodSignatures")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinRecursivelyMethodSignatures")))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinHelperMethod")))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinIteratively")))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_2.class.getMethod("testMixinIterativelyException")))
@@ -372,7 +392,7 @@ public final class H10_RubricProvider implements RubricProvider {
         .shortDescription("H2.2: mixin*-Methoden")
         .minPoints(0)
         .addChildCriteria(H2_2_1, H2_2_2, H2_2_3, H2_2_4, H2_2_5, H2_2_6, H2_2_7, H2_2_8, H2_2_9, H2_2_10, H2_2_11,
-                          H2_2_12)
+                          H2_2_12, H2_2_13)
         .build();
 
     /* *********************************************************************

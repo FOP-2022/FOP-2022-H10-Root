@@ -25,7 +25,7 @@ public final class TutorTest_H3_Helper {
      *                       Define some generators                        *
      **********************************************************************/
 
-    protected Number[] generateManyNumbers() {
+    protected static Number[] generateManyNumbers() {
         Number[] ints = new Number[50];
         for (int i = 0; i < 50; i++) {
             ints[i] = new Random().nextInt();
@@ -33,7 +33,7 @@ public final class TutorTest_H3_Helper {
         return ints;
     }
 
-    protected Integer[][] generateManyIntegerArrays() {
+    protected static Integer[][] generateManyIntegerArrays() {
         Integer[][] intArrays = new Integer[50][10];
         for (int i = 0; i < 50; i++) {
             for (int j = 0; j < 10; j++) {
@@ -43,7 +43,7 @@ public final class TutorTest_H3_Helper {
         return intArrays;
     }
 
-    protected String[] generateManyStrings() {
+    protected static String[] generateManyStrings() {
         String[] strings = new String[50];
         for (int i = 0; i < 50; i++) {
             if (i % 2 == 0) {
@@ -59,7 +59,7 @@ public final class TutorTest_H3_Helper {
      *               Define expected functions and predicates              *
      **********************************************************************/
 
-    protected Integer expectedFct(Integer[] array) {
+    protected static Integer expectedFct(Integer[] array) {
         Integer result = 0;
         for (Integer a : array) {
             result += a;
@@ -67,7 +67,7 @@ public final class TutorTest_H3_Helper {
         return result;
     }
 
-    protected boolean expectedPredT(Integer[] array) {
+    protected static boolean expectedPredT(Integer[] array) {
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array.length; j++) {
                 if (i != j && array[i] % array[j] == 0) {
@@ -78,7 +78,7 @@ public final class TutorTest_H3_Helper {
         return false;
     }
 
-    protected boolean expectedPredU(Integer integer) {
+    protected static boolean expectedPredU(Integer integer) {
         return integer >= 0;
     }
 
@@ -86,12 +86,12 @@ public final class TutorTest_H3_Helper {
      *                           Assertion methods                         *
      **********************************************************************/
 
-    protected void assertObjects(Object expected, Object actual) {
+    protected static void assertObjects(Object expected, Object actual) {
         assertEquals(expected, actual, "Assertion failed");
     }
 
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
-    protected void assertLambdas(final TestCycle testCycle, Class<?> classType, String fieldName, String expected) {
+    protected static void assertLambdas(final TestCycle testCycle, Class<?> classType, String fieldName, String expected) {
         var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
         var processor = SpoonUtils.process(testCycle, path,
                                            new LambdaExpressionsFieldProcessor(fieldName));
@@ -111,7 +111,7 @@ public final class TutorTest_H3_Helper {
     }
 
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
-    protected void assertNoLambda(final TestCycle testCycle, Class<?> classType, String methodName) {
+    protected static void assertNoLambda(final TestCycle testCycle, Class<?> classType, String methodName) {
         var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
         var processor = SpoonUtils.process(testCycle, path,
                                            new LambdaExpressionsMethodBodyProcessor(methodName));

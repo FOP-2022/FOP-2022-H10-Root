@@ -19,12 +19,20 @@ public final class TutorTest_Messages {
         return String.format("Class %s has incorrect modifier", className);
     }
 
+    public static String classExtendsIncorrect(String className) {
+        return String.format("Class %s has incorrect super class", className);
+    }
+
     public static String fieldNotFound(String fieldName) {
         return String.format("Field %s does not exist", fieldName);
     }
 
     public static String fieldNotConstant(String fieldName) {
         return String.format("Field %s is not a constant", fieldName);
+    }
+
+    public static String exceptionMessageIncorrect() {
+        return "Message of MyLinkedListException is incorrect";
     }
 
     public static String methodNotFound(String methodName) {

@@ -1,10 +1,13 @@
 package h10;
 
+import h10.utils.TutorTest_Helper;
+import h10.utils.TutorTest_Messages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
 import static java.lang.reflect.Modifier.isAbstract;
@@ -30,55 +33,45 @@ public final class TutorTest_H1 {
 
     @Test
     public void testClassSignatures() {
-        Class<?> classH1 = null;
-        try {
-            classH1 = Class.forName("h10." + className);
-        } catch (ClassNotFoundException e) {
-            fail(String.format("Class %s does not exist", className));
-        }
-
+        // class is found
+        var classH1 = TutorTest_Helper.getClass(className);
         // is not abstract
-        assertFalse(isAbstract(classH1.getModifiers()), String.format("Class %s is abstract", className));
+        assertFalse(isAbstract(classH1.getModifiers()), TutorTest_Messages.classModifierIncorrect(className));
         // is public
-        assertTrue(isPublic(classH1.getModifiers()), String.format("Class %s is not public", className));
+        assertTrue(isPublic(classH1.getModifiers()), TutorTest_Messages.classModifierIncorrect(className));
         // is a direct extension from Exception
         assertEquals(Exception.class, classH1.getSuperclass(),
-                     String.format("Class %s is not a direct extension from Exception", className));
+                     TutorTest_Messages.classExtendsIncorrect(className));
     }
 
     @Test
     public void testConstructor() {
-        int exceptions = 0;
-        Constructor<?> constructor = null;
-        try {
-            constructor = MyLinkedListException.class.getDeclaredConstructor(Integer.class, Object.class);
-        } catch (NoSuchMethodException e) {
-            exceptions++;
-        }
-        try {
-            constructor = MyLinkedListException.class.getDeclaredConstructor(Object.class, Integer.class);
-        } catch (NoSuchMethodException e) {
-            exceptions++;
-        }
+        // class is found
+        Class<?> classH1 = TutorTest_Helper.getClass(className);
+        var constructor = TutorTest_Helper.getMyLinkedListExceptionConstructor(classH1);
 
-        // does not exist
-        assertTrue(exceptions < 2,
-                   String.format("Constructor %s does not exist or is incorrect", className));
         // is public
-        assertTrue(isPublic(constructor.getModifiers()),
-                   String.format("Constructor %s is not public", className));
+        assertTrue(isPublic(constructor.getModifiers()), TutorTest_Messages.methodModifierIncorrect(className));
     }
 
     @Test
     public void testMessage() {
+        // class is found
+        Class<?> classH1 = TutorTest_Helper.getClass(className);
+
         int numOfTests = 100;
         var nums = createManyRandomIntegers(numOfTests);
         var objs = createManyRandomObjects(numOfTests);
 
         for (int i = 0; i < numOfTests; i++) {
-            assertEquals(new MyLinkedListException(nums[i], objs[i]).getMessage(),
-                         createCorrectMessage(nums[i], objs[i]),
-                         String.format("Constructor %s returns wrong message", className));
+            var constructor = TutorTest_Helper.getMyLinkedListExceptionConstructor(classH1);
+            try {
+                assertEquals(constructor.newInstance(nums[i], objs[i]).getMessage(),
+                             createCorrectMessage(nums[i], objs[i]),
+                             String.format("Constructor %s returns wrong message", className));
+            } catch (Exception e) {
+                fail(String.format("Cannot create an object of class %s", className));
+            }
         }
     }
 

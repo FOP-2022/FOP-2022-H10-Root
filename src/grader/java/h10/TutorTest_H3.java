@@ -1,5 +1,6 @@
 package h10;
 
+import h10.utils.TutorTest_Helper;
 import h10.utils.TutorTest_Messages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,6 @@ import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.function.BiPredicate;
@@ -35,6 +35,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 @DisplayName("Criterion: H3")
 public final class TutorTest_H3 {
     static final String className = "TestMyLinkedList";
+    static final String methodNameEx = "testExtract";
+    static final String methodNameMix = "testMixin";
 
     /* *********************************************************************
      *                               H3.1                                  *
@@ -42,44 +44,28 @@ public final class TutorTest_H3 {
 
     @Test
     public void testExtractTestSignatures() {
-        Class<?> classH3 = null;
-        String methodName = "testExtract";
-        try {
-            classH3 = Class.forName("h10." + className);
-        } catch (ClassNotFoundException e) {
-            fail(TutorTest_Messages.classNotFound(className));
-        }
+        var classH3 = TutorTest_Helper.getClass(className);
+        var method = TutorTest_Helper.getMethod(methodNameEx, classH3);
 
-        // is public
-        assertEquals(Modifier.PUBLIC, classH3.getModifiers(), TutorTest_Messages.classModifierIncorrect(className));
-        boolean found = false;
+        // class is public
+        assertTrue(isPublic(classH3.getModifiers()), TutorTest_Messages.classModifierIncorrect(className));
 
-        for (Method m : classH3.getDeclaredMethods()) {
-            if (!m.getName().equals(methodName)) {
-                continue;
-            }
+        // is not generic
+        assertEquals(0, method.getTypeParameters().length, TutorTest_Messages.methodGeneric(methodNameEx));
 
-            found = true;
+        // method is public
+        assertTrue(isPublic(method.getModifiers()), TutorTest_Messages.methodModifierIncorrect(methodNameEx));
 
-            // is not generic
-            assertEquals(0, m.getTypeParameters().length, TutorTest_Messages.methodGeneric(methodName));
+        // has no parameter
+        assertEquals(0, method.getParameterCount(), TutorTest_Messages.methodParamIncomplete(methodNameEx));
 
-            // is public
-            assertTrue(isPublic(m.getModifiers()), TutorTest_Messages.methodModifierIncorrect(methodName));
+        // return type is correct
+        assertEquals(void.class, method.getReturnType(),
+                     TutorTest_Messages.methodReturnTypeIncorrect(methodNameEx));
 
-            // has no parameter
-            assertEquals(0, m.getParameterCount(), TutorTest_Messages.methodParamIncomplete(methodName));
-
-            // return type is correct
-            assertEquals(void.class, m.getReturnType(),
-                         TutorTest_Messages.methodReturnTypeIncorrect(methodName));
-
-            // thrown exception type is correct
-            assertEquals(0, m.getExceptionTypes().length,
-                         TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
-        }
-        // method is found
-        assertTrue(found, TutorTest_Messages.methodNotFound(methodName));
+        // thrown exception type is correct
+        assertEquals(0, method.getExceptionTypes().length,
+                     TutorTest_Messages.methodExceptionTypeIncorrect(methodNameEx));
     }
 
     @Test
@@ -99,12 +85,7 @@ public final class TutorTest_H3 {
 
         int found = 0;
         for (String className : allClassesNames) {
-            Class<?> classH3 = null;
-            try {
-                classH3 = Class.forName(className);
-            } catch (ClassNotFoundException e) {
-                fail(TutorTest_Messages.classNotFound(className));
-            }
+            var classH3 = TutorTest_Helper.getClass(className);
 
             var interfacesArray = classH3.getGenericInterfaces();
             if (interfacesArray.length < 1) {
@@ -217,8 +198,13 @@ public final class TutorTest_H3 {
     @Test
     public void testExtractTest() {
         // TODO : how to test what inputs are used and what is tested?
-        TestMyLinkedList test = new TestMyLinkedList();
-        test.testExtract();
+        var classH3 = TutorTest_Helper.getClass(className);
+        try {
+            var test = (TestMyLinkedList) classH3.getDeclaredConstructor().newInstance();
+            test.testExtract();
+        } catch (Exception e) {
+            fail(String.format("Cannot create an object of class %s", className));
+        }
     }
 
     /* *********************************************************************
@@ -227,55 +213,34 @@ public final class TutorTest_H3 {
 
     @Test
     public void testMixinTestSignatures() {
-        Class<?> classH3 = null;
-        String methodName = "testMixin";
-        try {
-            classH3 = Class.forName("h10." + className);
-        } catch (ClassNotFoundException e) {
-            fail(TutorTest_Messages.classNotFound(className));
-        }
+        var classH3 = TutorTest_Helper.getClass(className);
+        var method = TutorTest_Helper.getMethod(methodNameMix, classH3);
 
-        // is public
+        // class is public
         assertTrue(isPublic(classH3.getModifiers()), TutorTest_Messages.classModifierIncorrect(className));
-        boolean found = false;
 
-        for (Method m : classH3.getDeclaredMethods()) {
-            if (!m.getName().equals(methodName)) {
-                continue;
-            }
+        // is not generic
+        assertEquals(0, method.getTypeParameters().length, TutorTest_Messages.methodGeneric(methodNameMix));
 
-            found = true;
+        // method is public
+        assertTrue(isPublic(method.getModifiers()), TutorTest_Messages.methodModifierIncorrect(methodNameMix));
 
-            // is not generic
-            assertEquals(0, m.getTypeParameters().length, TutorTest_Messages.methodGeneric(methodName));
+        // has no parameter
+        assertEquals(0, method.getParameterCount(), TutorTest_Messages.methodParamIncomplete(methodNameMix));
 
-            // is public
-            assertTrue(isPublic(m.getModifiers()), TutorTest_Messages.methodModifierIncorrect(methodName));
+        // return type is correct
+        assertEquals(void.class, method.getReturnType(),
+                     TutorTest_Messages.methodReturnTypeIncorrect(methodNameMix));
 
-            // has no parameter
-            assertEquals(0, m.getParameterCount(), TutorTest_Messages.methodParamIncomplete(methodName));
-
-            // return type is correct
-            assertEquals(void.class, m.getReturnType(),
-                         TutorTest_Messages.methodReturnTypeIncorrect(methodName));
-
-            // thrown exception type is correct
-            assertEquals(0, m.getExceptionTypes().length,
-                         TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
-        }
-        // method is found
-        assertTrue(found, TutorTest_Messages.methodNotFound(methodName));
+        // thrown exception type is correct
+        assertEquals(0, method.getExceptionTypes().length,
+                     TutorTest_Messages.methodExceptionTypeIncorrect(methodNameMix));
     }
 
     @Test
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     public void testParameterConstants(final TestCycle testCycle) {
-        Class<?> classH3 = null;
-        try {
-            classH3 = Class.forName("h10." + className);
-        } catch (ClassNotFoundException e) {
-            fail(TutorTest_Messages.classNotFound(className));
-        }
+        var classH3 = TutorTest_Helper.getClass(className);
 
         var fields = classH3.getDeclaredFields();
         // at least three fields are found
@@ -382,7 +347,12 @@ public final class TutorTest_H3 {
     @Test
     public void testMixinTest() {
         // TODO : how to test what inputs are used and what is tested?
-        TestMyLinkedList test = new TestMyLinkedList();
-        test.testMixin();
+        var classH3 = TutorTest_Helper.getClass(className);
+        try {
+            var test = (TestMyLinkedList) classH3.getDeclaredConstructor().newInstance();
+            test.testMixin();
+        } catch (Exception e) {
+            fail(String.format("Cannot create an object of class %s", className));
+        }
     }
 }

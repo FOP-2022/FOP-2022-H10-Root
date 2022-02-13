@@ -1,5 +1,6 @@
 package h10;
 
+import h10.utils.ExpectedMyLinkedListException;
 import h10.utils.TutorTest_Messages;
 import h10.utils.spoon.LoopsMethodBodyProcessor;
 import h10.utils.spoon.MethodCallsProcessor;
@@ -18,8 +19,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.lang.reflect.Modifier.isPublic;
-import static org.junit.jupiter.api.Assertions.*;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * Define some helper methods for task H2.
  *
@@ -41,7 +44,7 @@ public final class TutorTest_H2_Helper<T> {
 
     protected <U> MyLinkedList<U> expectedExtract(MyLinkedList<T> sourceList, Predicate<? super T> predT,
                                                   Function<? super T, ? extends U> fct,
-                                                  Predicate<? super U> predU) throws MyLinkedListException {
+                                                  Predicate<? super U> predU) throws ExpectedMyLinkedListException {
         MyLinkedList<U> removed = new MyLinkedList<>();
         ListItem<U> tail = null;
         if (sourceList.head == null) {
@@ -63,7 +66,7 @@ public final class TutorTest_H2_Helper<T> {
 
             U mapped = fct.apply(key);
             if (!predU.test(mapped)) {
-                throw new MyLinkedListException(index, mapped);
+                throw new ExpectedMyLinkedListException(index, mapped);
             }
 
             current.next = current.next.next;
@@ -85,7 +88,7 @@ public final class TutorTest_H2_Helper<T> {
     protected <U> void expectedMixin(MyLinkedList<T> sourceList, MyLinkedList<U> otherList,
                                      BiPredicate<? super T, ? super U> biPred,
                                      Function<? super U, ? extends T> fct,
-                                     Predicate<? super U> predU) throws MyLinkedListException {
+                                     Predicate<? super U> predU) throws ExpectedMyLinkedListException {
         if (otherList.head == null) {
             return;
         }
@@ -100,7 +103,7 @@ public final class TutorTest_H2_Helper<T> {
             U key = others.key;
             System.out.println(others.key.getClass());
             if (!predU.test(key)) {
-                throw new MyLinkedListException(index, key);
+                throw new ExpectedMyLinkedListException(index, key);
             } else if (current.next != null) {
                 T element = current.next.key;
                 if (biPred.test(element, key)) {
@@ -132,7 +135,6 @@ public final class TutorTest_H2_Helper<T> {
                                           Predicate<? super U> predU) {
         MyLinkedList<U> otherList = new MyLinkedList<>();
         MyLinkedList<U> expectedOtherList = new MyLinkedList<>();
-        MyLinkedListException actualExc = null;
 
         for (var thisList : thisLists) {
             var expectedThisList = copyList(thisList);
@@ -143,14 +145,48 @@ public final class TutorTest_H2_Helper<T> {
                 } else {
                     otherList = thisList.extractRecursively(predT, fct, predU);
                 }
-            } catch (MyLinkedListException e) {
+            } catch (Exception e) {
+                assertNull(e.getMessage(), (TutorTest_Messages.exceptionMessageIncorrect()));
+            }
+
+            // check expected values
+            try {
+                expectedOtherList = expectedExtract(expectedThisList, predT, fct, predU);
+            } catch (ExpectedMyLinkedListException expectedExc) {
+                // will never happen
+            }
+
+            // assert both lists
+            assertLinkedList(expectedOtherList, otherList);
+            assertLinkedList(expectedThisList, thisList);
+        }
+    }
+
+    protected <U> void testGeneralExtractException(MyLinkedList<T>[] thisLists, MethodType type,
+                                                   Predicate<? super T> predT, Function<? super T, ? extends U> fct,
+                                                   Predicate<? super U> predU) {
+        MyLinkedList<U> otherList = new MyLinkedList<>();
+        MyLinkedList<U> expectedOtherList = new MyLinkedList<>();
+        Exception actualExc = null;
+
+        for (var thisList : thisLists) {
+            var expectedThisList = copyList(thisList);
+            // check actual values
+            try {
+                if (type == MethodType.ITERATIVE) {
+                    otherList = thisList.extractIteratively(predT, fct, predU);
+                } else {
+                    otherList = thisList.extractRecursively(predT, fct, predU);
+                }
+            } catch (Exception e) {
                 actualExc = e;
             }
 
             // check expected values
             try {
                 expectedOtherList = expectedExtract(expectedThisList, predT, fct, predU);
-            } catch (MyLinkedListException expectedExc) {
+            } catch (ExpectedMyLinkedListException expectedExc) {
+                assertNotNull(actualExc, TutorTest_Messages.exceptionMessageIncorrect());
                 assertExceptionMessage(expectedExc, actualExc);
             }
 
@@ -163,7 +199,38 @@ public final class TutorTest_H2_Helper<T> {
     protected <U> void testGeneralMixin(MyLinkedList<T>[] thisLists, MyLinkedList<U>[] otherLists,
                                         MethodType type, BiPredicate<? super T, ? super U> biPred,
                                         Function<? super U, ? extends T> fct, Predicate<? super U> predU) {
-        MyLinkedListException actualExc = null;
+        // first list
+        for (int i = 0; i < thisLists.length; i++) {
+            var expectedThisList = copyList(thisLists[i]);
+            var expectedOtherList = copyList(otherLists[i]);
+            // check actual values
+            try {
+                if (type == MethodType.ITERATIVE) {
+                    thisLists[i].mixinIteratively(otherLists[i], biPred, fct, predU);
+                } else {
+                    thisLists[i].mixinRecursively(otherLists[i], biPred, fct, predU);
+                }
+            } catch (Exception e) {
+                assertNull(e.getMessage(), (TutorTest_Messages.exceptionMessageIncorrect()));
+            }
+
+            // check expected values
+            try {
+                expectedMixin(expectedThisList, expectedOtherList, biPred, fct, predU);
+            } catch (ExpectedMyLinkedListException expectedExc) {
+                // will never happen
+            }
+
+            // assert both lists
+            assertLinkedList(expectedOtherList, otherLists[i]);
+            assertLinkedList(expectedThisList, thisLists[i]);
+        }
+    }
+
+    protected <U> void testGeneralMixinException(MyLinkedList<T>[] thisLists, MyLinkedList<U>[] otherLists,
+                                                 MethodType type, BiPredicate<? super T, ? super U> biPred,
+                                                 Function<? super U, ? extends T> fct, Predicate<? super U> predU) {
+        Exception actualExc = null;
 
         // first list
         for (int i = 0; i < thisLists.length; i++) {
@@ -176,14 +243,15 @@ public final class TutorTest_H2_Helper<T> {
                 } else {
                     thisLists[i].mixinRecursively(otherLists[i], biPred, fct, predU);
                 }
-            } catch (MyLinkedListException e) {
+            } catch (Exception e) {
                 actualExc = e;
             }
 
             // check expected values
             try {
                 expectedMixin(expectedThisList, expectedOtherList, biPred, fct, predU);
-            } catch (MyLinkedListException expectedExc) {
+            } catch (ExpectedMyLinkedListException expectedExc) {
+                assertNotNull(actualExc, TutorTest_Messages.exceptionMessageIncorrect());
                 assertExceptionMessage(expectedExc, actualExc);
             }
 
@@ -223,7 +291,7 @@ public final class TutorTest_H2_Helper<T> {
                      TutorTest_Messages.methodReturnTypeIncorrect(methodName));
 
         // thrown exception type is correct
-        assertEquals(MyLinkedListException.class, method.getExceptionTypes()[0],
+        assertEquals("MyLinkedListException", method.getExceptionTypes()[0].getSimpleName(),
                      TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
     }
 
@@ -256,7 +324,7 @@ public final class TutorTest_H2_Helper<T> {
                      TutorTest_Messages.methodReturnTypeIncorrect(methodName));
 
         // thrown exception type is correct
-        assertEquals(MyLinkedListException.class, method.getExceptionTypes()[0],
+        assertEquals("MyLinkedListException", method.getExceptionTypes()[0].getSimpleName(),
                      TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
     }
 
@@ -301,14 +369,12 @@ public final class TutorTest_H2_Helper<T> {
         assertNull(actualCurrent, "Assertion for MyLinkedList failed");
     }
 
-    protected static void assertExceptionMessage(MyLinkedListException expected, MyLinkedListException actual) {
-        assertNotNull(actual, "Assertion for MyLinkedListException Message failed");
-
+    protected static void assertExceptionMessage(ExpectedMyLinkedListException expected, Exception actual) {
         // ignore the object's name
         int indexObject = expected.getMessage().indexOf('@');
         int maxIndex = (indexObject == -1) ? expected.getMessage().length() : indexObject;
         assertEquals(expected.getMessage().substring(0, maxIndex), actual.getMessage().substring(0, maxIndex),
-                     "Assertion for MyLinkedListException Message failed");
+                     TutorTest_Messages.exceptionMessageIncorrect());
     }
 
     /**
@@ -328,8 +394,7 @@ public final class TutorTest_H2_Helper<T> {
 
         for (var callee : processor.getCallees()) {
             var name = callee.getExecutable().getSimpleName();
-            assertFalse(canBeCalled.contains(name), String.format("Another newly implemented method %s is used",
-                                                                  name));
+            assertTrue(canBeCalled.contains(name), String.format("Another newly implemented method %s is used", name));
         }
     }
 

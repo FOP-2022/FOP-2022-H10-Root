@@ -541,6 +541,6 @@ public final class H10_RubricProvider implements RubricProvider {
 
     @Override
     public void configure(final RubricConfiguration configuration) {
-        // TODO : what is this for?
+        configuration.addTransformer(Global.TRANSFORMER);
     }
 }

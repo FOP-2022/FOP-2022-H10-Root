@@ -19,7 +19,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static java.lang.reflect.Modifier.isFinal;
+import static java.lang.reflect.Modifier.isPublic;
+import static java.lang.reflect.Modifier.isStatic;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Defines the JUnit test cases related to the class defined in the task H3.
@@ -60,7 +65,7 @@ public final class TutorTest_H3 {
             assertEquals(0, m.getTypeParameters().length, TutorTest_Messages.methodGeneric(methodName));
 
             // is public
-            assertEquals(Modifier.PUBLIC, m.getModifiers(), TutorTest_Messages.methodModifierIncorrect(methodName));
+            assertTrue(isPublic(m.getModifiers()), TutorTest_Messages.methodModifierIncorrect(methodName));
 
             // has no parameter
             assertEquals(0, m.getParameterCount(), TutorTest_Messages.methodParamIncomplete(methodName));
@@ -231,7 +236,7 @@ public final class TutorTest_H3 {
         }
 
         // is public
-        assertEquals(Modifier.PUBLIC, classH3.getModifiers(), TutorTest_Messages.classModifierIncorrect(className));
+        assertTrue(isPublic(classH3.getModifiers()), TutorTest_Messages.classModifierIncorrect(className));
         boolean found = false;
 
         for (Method m : classH3.getDeclaredMethods()) {
@@ -245,7 +250,7 @@ public final class TutorTest_H3 {
             assertEquals(0, m.getTypeParameters().length, TutorTest_Messages.methodGeneric(methodName));
 
             // is public
-            assertEquals(Modifier.PUBLIC, m.getModifiers(), TutorTest_Messages.methodModifierIncorrect(methodName));
+            assertTrue(isPublic(m.getModifiers()), TutorTest_Messages.methodModifierIncorrect(methodName));
 
             // has no parameter
             assertEquals(0, m.getParameterCount(), TutorTest_Messages.methodParamIncomplete(methodName));
@@ -289,12 +294,13 @@ public final class TutorTest_H3 {
             found++;
 
             // is a constant
-            assertTrue(Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()));
+            assertTrue(isStatic(f.getModifiers()) && isFinal(f.getModifiers()),
+                       TutorTest_Messages.fieldNotConstant(f.getName()));
 
             if (biPred) {
                 // one lambda is used
                 TutorTest_H3_Helper.assertLambdas(testCycle, classH3, "BI_PRED_MIXIN",
-                                                      "java.util.function.BiPredicate<java.lang.Number, java.lang.String>");
+                                                  "java.util.function.BiPredicate<java.lang.Number, java.lang.String>");
 
                 // random inputs
                 Number[] nums = TutorTest_H3_Helper.generateManyNumbers();
@@ -319,7 +325,7 @@ public final class TutorTest_H3 {
             } else if (predU) {
                 // one lambda is used
                 TutorTest_H3_Helper.assertLambdas(testCycle, classH3, "PRED_U_MIXIN",
-                                                      "java.util.function.Predicate<java.lang.String>");
+                                                  "java.util.function.Predicate<java.lang.String>");
 
                 // random inputs
                 String[] strings = TutorTest_H3_Helper.generateManyStrings();
@@ -348,7 +354,7 @@ public final class TutorTest_H3 {
             } else {
                 // one lambda is used
                 TutorTest_H3_Helper.assertLambdas(testCycle, classH3, "FCT_MIXIN",
-                                                      "java.util.function.Function<java.lang.String, java.lang.Number>");
+                                                  "java.util.function.Function<java.lang.String, java.lang.Number>");
 
                 // random inputs
                 Number[] nums = TutorTest_H3_Helper.generateManyNumbers();

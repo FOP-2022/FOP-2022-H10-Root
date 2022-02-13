@@ -10,7 +10,6 @@ import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.function.BiPredicate;
@@ -18,6 +17,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static java.lang.reflect.Modifier.isPublic;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -204,7 +204,7 @@ public final class TutorTest_H2_Helper<T> {
                      TutorTest_Messages.methodGenericTypeIncorrect(methodName));
 
         // is public
-        assertEquals(Modifier.PUBLIC, method.getModifiers(), TutorTest_Messages.methodModifierIncorrect(methodName));
+        assertTrue(isPublic(method.getModifiers()), TutorTest_Messages.methodModifierIncorrect(methodName));
 
         // all params are found
         var params = method.getParameters();
@@ -234,7 +234,7 @@ public final class TutorTest_H2_Helper<T> {
                      TutorTest_Messages.methodGenericTypeIncorrect(methodName));
 
         // is public
-        assertEquals(Modifier.PUBLIC, method.getModifiers(), TutorTest_Messages.methodModifierIncorrect(methodName));
+        assertTrue(isPublic(method.getModifiers()), TutorTest_Messages.methodModifierIncorrect(methodName));
 
         // all params are found
         var params = method.getParameters();

@@ -5,21 +5,21 @@ import h10.utils.TutorTest_Messages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.sourcegrade.jagr.api.testing.TestCycle;
 import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static java.lang.reflect.Modifier.isPrivate;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Defines the JUnit test cases related to the class defined in the task H2.2.
@@ -128,7 +128,7 @@ public final class TutorTest_H2_2 {
                          TutorTest_Messages.methodGenericTypeIncorrect(methodName));
 
             // is private
-            assertEquals(Modifier.PRIVATE, m.getModifiers(), TutorTest_Messages.methodModifierIncorrect(methodName));
+            assertTrue(isPrivate(m.getModifiers()), TutorTest_Messages.methodModifierIncorrect(methodName));
 
             // all params are found
             var params = m.getParameters();
@@ -260,10 +260,10 @@ public final class TutorTest_H2_2 {
 
         // mixinRecursivelyHelper is set to public for this test
         try {
-            verify(thisList, atLeast(2))
-                .mixinRecursivelyHelper(any(MyLinkedList.class), any(BiPredicate.class),
-                                        any(Function.class), any(Predicate.class),
-                                        any(ListItem.class), any(ListItem.class), anyInt());
+            Mockito.verify(thisList, Mockito.atLeast(2))
+                .mixinRecursivelyHelper(ArgumentMatchers.any(), ArgumentMatchers.any(),
+                                        ArgumentMatchers.any(), ArgumentMatchers.any(),
+                                        ArgumentMatchers.any(), ArgumentMatchers.any(), Mockito.anyInt());
         } catch (Exception e) {
             // MyLinkedListException will never be thrown
             fail(TutorTest_Messages.methodNoRecursion(methodName));

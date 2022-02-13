@@ -23,6 +23,10 @@ public final class TutorTest_Messages {
         return String.format("Field %s does not exist", fieldName);
     }
 
+    public static String fieldNotConstant(String fieldName) {
+        return String.format("Field %s is not a constant", fieldName);
+    }
+
     public static String methodNotFound(String methodName) {
         return String.format("%s-method does not exist", methodName);
     }

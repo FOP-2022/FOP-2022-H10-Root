@@ -197,11 +197,11 @@ public final class TutorTest_H3 {
 
     @Test
     public void testExtractTest() {
-        // TODO : how to test what inputs are used and what is tested?
         var classH3 = TutorTest_Helper.getClass(className);
         try {
-            var test = (TestMyLinkedList) classH3.getDeclaredConstructor().newInstance();
-            test.testExtract();
+            var object = classH3.getDeclaredConstructor().newInstance();
+            var method = TutorTest_Helper.getMethod("testExtract", classH3);
+            method.invoke(object);
         } catch (Exception e) {
             fail(String.format("Cannot create an object of class %s", className));
         }
@@ -346,11 +346,11 @@ public final class TutorTest_H3 {
 
     @Test
     public void testMixinTest() {
-        // TODO : how to test what inputs are used and what is tested?
         var classH3 = TutorTest_Helper.getClass(className);
         try {
-            var test = (TestMyLinkedList) classH3.getDeclaredConstructor().newInstance();
-            test.testMixin();
+            var object = classH3.getDeclaredConstructor().newInstance();
+            var method = TutorTest_Helper.getMethod("testMixin", classH3);
+            method.invoke(object);
         } catch (Exception e) {
             fail(String.format("Cannot create an object of class %s", className));
         }

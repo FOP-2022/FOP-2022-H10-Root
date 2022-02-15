@@ -48,7 +48,7 @@ public final class H10_RubricProvider implements RubricProvider {
 
     public static final Criterion H1 = Criterion.builder()
         .shortDescription("H1: Klasse MyLinkedListException")
-        .minPoints(2)
+        .maxPoints(2)
         .minPoints(0)
         .addChildCriteria(H1_1, H1_2)
         .build();
@@ -219,6 +219,7 @@ public final class H10_RubricProvider implements RubricProvider {
 
     public static final Criterion H2_1 = Criterion.builder()
         .shortDescription("H2.1: extract*-Methoden")
+        .maxPoints(14)
         .minPoints(0)
         .addChildCriteria(H2_1_1, H2_1_2, H2_1_3, H2_1_4, H2_1_5, H2_1_6, H2_1_7, H2_1_8, H2_1_9, H2_1_10, H2_1_11,
                           H2_1_12, H2_1_13)
@@ -390,6 +391,7 @@ public final class H10_RubricProvider implements RubricProvider {
 
     public static final Criterion H2_2 = Criterion.builder()
         .shortDescription("H2.2: mixin*-Methoden")
+        .maxPoints(14)
         .minPoints(0)
         .addChildCriteria(H2_2_1, H2_2_2, H2_2_3, H2_2_4, H2_2_5, H2_2_6, H2_2_7, H2_2_8, H2_2_9, H2_2_10, H2_2_11,
                           H2_2_12, H2_2_13)
@@ -401,6 +403,7 @@ public final class H10_RubricProvider implements RubricProvider {
 
     public static final Criterion H2 = Criterion.builder()
         .shortDescription("H2: extract*- und mixin*-Methoden")
+        .maxPoints(28)
         .minPoints(0)
         .addChildCriteria(H2_1, H2_2)
         .build();
@@ -442,6 +445,7 @@ public final class H10_RubricProvider implements RubricProvider {
 
     public static final Criterion H3_1 = Criterion.builder()
         .shortDescription("H3.1: extract*-Tests")
+        .maxPoints(3)
         .minPoints(0)
         .addChildCriteria(H3_1_1, H3_1_2, H3_1_3)
         .build();
@@ -483,6 +487,7 @@ public final class H10_RubricProvider implements RubricProvider {
 
     public static final Criterion H3_2 = Criterion.builder()
         .shortDescription("H3.2: mixin*-Tests")
+        .maxPoints(3)
         .minPoints(0)
         .addChildCriteria(H3_2_1, H3_2_2, H3_2_3)
         .build();
@@ -493,6 +498,7 @@ public final class H10_RubricProvider implements RubricProvider {
 
     public static final Criterion H3 = Criterion.builder()
         .shortDescription("H3: extract*- und mixin*-Tests")
+        .maxPoints(6)
         .minPoints(0)
         .addChildCriteria(H3_1, H3_2)
         .build();

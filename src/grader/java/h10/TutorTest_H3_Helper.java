@@ -116,6 +116,8 @@ public final class TutorTest_H3_Helper {
         var processor = SpoonUtils.process(testCycle, path,
                                            new LambdaExpressionsMethodBodyProcessor(methodName));
         var allLambdas = processor.getLambdas();
-        assertEquals(0, allLambdas.size(), String.format("Lambda is used in %s", methodName));
+        var allMethodReferences = processor.getReferences();
+        assertEquals(0, allLambdas.size() + allMethodReferences.size(),
+                     String.format("Lambda is used in %s", methodName));
     }
 }

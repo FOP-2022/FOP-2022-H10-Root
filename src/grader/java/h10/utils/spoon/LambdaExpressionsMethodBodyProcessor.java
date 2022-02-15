@@ -1,6 +1,7 @@
 package h10.utils.spoon;
 
 import spoon.processing.AbstractProcessor;
+import spoon.reflect.code.CtExecutableReferenceExpression;
 import spoon.reflect.code.CtLambda;
 import spoon.reflect.declaration.CtMethod;
 
@@ -22,6 +23,10 @@ public class LambdaExpressionsMethodBodyProcessor extends AbstractProcessor<CtMe
      * Contains all lambda expressions.
      */
     private final List<CtLambda<?>> lambdas;
+    /**
+     * Contains all method references.
+     */
+    private final List<CtExecutableReferenceExpression<?, ?>> references;
 
     /**
      * Constructs and initializes a processor which scans all meth lambda expressions in the specified method.
@@ -31,6 +36,7 @@ public class LambdaExpressionsMethodBodyProcessor extends AbstractProcessor<CtMe
     public LambdaExpressionsMethodBodyProcessor(final String methodName) {
         this.methodName = methodName;
         this.lambdas = new ArrayList<>();
+        this.references = new ArrayList<>();
     }
 
     @Override
@@ -40,6 +46,11 @@ public class LambdaExpressionsMethodBodyProcessor extends AbstractProcessor<CtMe
                 (CtLambda<?> lambda) -> method.getSimpleName().equals(methodName)
             )
         );
+        references.addAll(
+            method.getElements(
+                (CtExecutableReferenceExpression<?, ?> methodReference) -> method.getSimpleName().equals(methodName)
+                             )
+                         );
     }
 
     /**
@@ -50,5 +61,15 @@ public class LambdaExpressionsMethodBodyProcessor extends AbstractProcessor<CtMe
      */
     public List<CtLambda<?>> getLambdas() {
         return lambdas;
+    }
+
+    /**
+     * Returns the scanned method references so far. If this processor does not process any field yet, the content will
+     * be  empty.
+     *
+     * @return the scanned constructor calls  so far
+     */
+    public List<CtExecutableReferenceExpression<?, ?>> getReferences() {
+        return references;
     }
 }

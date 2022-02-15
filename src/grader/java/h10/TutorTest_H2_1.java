@@ -203,6 +203,11 @@ public final class TutorTest_H2_1 {
         if (method != null) {
             TutorTest_H2_Helper.assertNoOtherMethod(testCycle, classH2, methodNameRec);
         }
+        method = TutorTest_Helper.getMethodDontFail(methodNameRecHelp, classH2, Predicate.class, Function.class,
+                                                    Predicate.class, ListItem.class, int.class);
+        if (method != null) {
+            TutorTest_H2_Helper.assertNoOtherMethod(testCycle, classH2, methodNameRecHelp);
+        }
     }
 
     @Test
@@ -230,9 +235,12 @@ public final class TutorTest_H2_1 {
             return;
         }
 
-        var method = TutorTest_Helper.getMethodDontFail(methodNameRec, classH2, Predicate.class, Function.class,
-                                                        Predicate.class);
-        if (method == null) {
+        var methodRec = TutorTest_Helper.getMethodDontFail(methodNameRec, classH2, Predicate.class, Function.class,
+                                                           Predicate.class);
+        var methodRecHelp = TutorTest_Helper.getMethodDontFail(methodNameRecHelp, classH2, Predicate.class,
+                                                               Function.class, Predicate.class, ListItem.class,
+                                                               int.class);
+        if (methodRec == null || methodRecHelp == null) {
             // do not take other points
             return;
         }

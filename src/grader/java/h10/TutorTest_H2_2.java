@@ -208,6 +208,7 @@ public final class TutorTest_H2_2 {
             // do not take other points
             return;
         }
+
         var method = TutorTest_Helper.getMethodDontFail(methodNameIt, classH2, classH2, BiPredicate.class,
                                                         Function.class, Predicate.class);
         if (method != null) {
@@ -217,6 +218,12 @@ public final class TutorTest_H2_2 {
                                                     Predicate.class);
         if (method != null) {
             TutorTest_H2_Helper.assertNoOtherMethod(testCycle, classH2, methodNameRec);
+        }
+        method = TutorTest_Helper.getMethodDontFail(methodNameRecHelp, classH2, classH2, BiPredicate.class,
+                                                    Function.class, Predicate.class, ListItem.class, ListItem.class,
+                                                    int.class);
+        if (method != null) {
+            TutorTest_H2_Helper.assertNoOtherMethod(testCycle, classH2, methodNameRecHelp);
         }
     }
 
@@ -245,9 +252,12 @@ public final class TutorTest_H2_2 {
             return;
         }
 
-        var method = TutorTest_Helper.getMethodDontFail(methodNameRec, classH2, classH2, BiPredicate.class,
-                                                        Function.class, Predicate.class);
-        if (method == null) {
+        var methodRec = TutorTest_Helper.getMethodDontFail(methodNameRec, classH2, classH2, BiPredicate.class,
+                                                           Function.class, Predicate.class);
+        var methodRecHelp = TutorTest_Helper.getMethodDontFail(methodNameRecHelp, classH2, classH2, BiPredicate.class,
+                                                               Function.class, Predicate.class, ListItem.class,
+                                                               ListItem.class, int.class);
+        if (methodRec == null || methodRecHelp == null) {
             // do not take other points
             return;
         }

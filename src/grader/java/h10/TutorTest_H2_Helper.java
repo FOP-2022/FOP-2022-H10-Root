@@ -390,7 +390,8 @@ public final class TutorTest_H2_Helper<T> {
         var processor = SpoonUtils.process(testCycle, path, new MethodCallsProcessor(methodName));
 
         final Set<String> canBeCalled = Set.of("extractIteratively", "extractRecursively", "extractRecursivelyHelper",
-                                               "mixinIteratively", "mixinRecursively", "mixinRecursivelyHelper", "add");
+                                               "mixinIteratively", "mixinRecursively", "mixinRecursivelyHelper", "add",
+                                               "test", "apply");
 
         for (var callee : processor.getCallees()) {
             var name = callee.getExecutable().getSimpleName();

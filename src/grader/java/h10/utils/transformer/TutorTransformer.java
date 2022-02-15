@@ -1,11 +1,6 @@
 package h10.utils.transformer;
 
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
+import org.objectweb.asm.*;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
 
 import java.lang.reflect.Modifier;
@@ -17,9 +12,6 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static org.objectweb.asm.Type.getArgumentTypes;
 
-/**
- * Transformer class.
- */
 public class TutorTransformer implements ClassTransformer {
 
     @Override
@@ -86,9 +78,11 @@ public class TutorTransformer implements ClassTransformer {
 
         String className;
         int maxVar = 0;
+        ClassWriter writer;
 
         public MethodTransformer(ClassWriter writer) {
             super(Opcodes.ASM9, writer);
+            this.writer = writer;
         }
 
         @Override
@@ -102,14 +96,18 @@ public class TutorTransformer implements ClassTransformer {
 
             boolean isStatic = Modifier.isStatic(access);
             boolean isSynthetic = name.startsWith("lambda$");
+
             boolean forceStatic = isStatic && (name.equals("main") || name.equals("<clinit>") || isSynthetic);
             access &= ~Modifier.PRIVATE;
             access &= ~Modifier.PROTECTED;
             access |= Modifier.PUBLIC;
 
             if (isStatic && !forceStatic) {
-                final int modifiedAccess = access ^ Modifier.PUBLIC;
-                var mv = new MethodVisitor(Opcodes.ASM9, super.visitMethod(modifiedAccess, name, descriptor, signature, exceptions)) {
+                var superMV = new MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
+                };
+                final int modifiedAccess = access ^ Modifier.STATIC;
+
+                var mv = new MethodVisitor(Opcodes.ASM9, superMV) {
 
                     @Override
                     public void visitIincInsn(int var, int increment) {
@@ -140,7 +138,7 @@ public class TutorTransformer implements ClassTransformer {
                     }
                 };
                 mv.visitMaxs(0, 0);
-                return mv;
+                return superMV;
             }
             return super.visitMethod(access, name, descriptor, signature, exceptions);
         }

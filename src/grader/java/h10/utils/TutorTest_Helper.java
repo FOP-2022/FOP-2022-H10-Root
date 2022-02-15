@@ -21,11 +21,11 @@ public class TutorTest_Helper {
     }
 
     public static Class<?> getClassDontFail(String className) {
-        Class<?> aClass = null;
+        Class<?> aClass;
         try {
             aClass = Class.forName("h10." + className);
         } catch (ClassNotFoundException e) {
-            return aClass;
+            return null;
         }
         return aClass;
     }
@@ -34,18 +34,18 @@ public class TutorTest_Helper {
        Method method = null;
         try {
             method = theClass.getDeclaredMethod(methodName, args);
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException | SecurityException e) {
             fail(TutorTest_Messages.methodNotFound(methodName));
         }
         return method;
     }
 
     public static Method getMethodDontFail(String methodName, Class<?> theClass, Class<?>... args) {
-        Method method = null;
+        Method method;
         try {
             method = theClass.getDeclaredMethod(methodName, args);
-        } catch (NoSuchMethodException e) {
-            return method;
+        } catch (NoSuchMethodException | SecurityException e) {
+            return null;
         }
         return method;
     }
@@ -55,12 +55,12 @@ public class TutorTest_Helper {
         Constructor<?> constructor = null;
         try {
             constructor = aClass.getDeclaredConstructor(Integer.class, Object.class);
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException | SecurityException e) {
             exceptions++;
         }
         try {
             constructor = aClass.getDeclaredConstructor(Object.class, Integer.class);
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException | SecurityException e) {
             exceptions++;
         }
 

@@ -13,7 +13,7 @@ public class TutorTest_Helper {
     public static Class<?> getClass(String className) {
         Class<?> aClass = null;
         try {
-            aClass = Class.forName("h10." + className);
+            aClass = Class.forName(className);
         } catch (ClassNotFoundException e) {
             fail(TutorTest_Messages.classNotFound(className));
         }
@@ -23,7 +23,7 @@ public class TutorTest_Helper {
     public static Class<?> getClassDontFail(String className) {
         Class<?> aClass;
         try {
-            aClass = Class.forName("h10." + className);
+            aClass = Class.forName(className);
         } catch (ClassNotFoundException e) {
             return null;
         }

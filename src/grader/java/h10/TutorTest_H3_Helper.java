@@ -1,5 +1,6 @@
 package h10;
 
+import h10.utils.TutorTest_Messages;
 import h10.utils.spoon.LambdaExpressionsFieldProcessor;
 import h10.utils.spoon.LambdaExpressionsMethodBodyProcessor;
 import h10.utils.spoon.SpoonUtils;
@@ -100,14 +101,14 @@ public final class TutorTest_H3_Helper {
 
         // check both normal lambdas and method reference lambdas
         assertEquals(1, allLambdas.size() + allMethodReferences.size(),
-                     String.format("No/more than one lambda is used in %s", fieldName));
+                     TutorTest_Messages.assertLambdaFailed(fieldName));
 
         var actual = ((allLambdas.size() == 0) ? allMethodReferences : allLambdas).stream()
             .map(CtTypedElement::getType)
             .collect(Collectors.toList())
             .get(0)
             .toString();
-        assertEquals(expected, actual, String.format("Assertion for lambda type in %s failed", fieldName));
+        assertEquals(expected, actual, TutorTest_Messages.assertLambdaFailed(fieldName));
     }
 
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
@@ -118,6 +119,6 @@ public final class TutorTest_H3_Helper {
         var allLambdas = processor.getLambdas();
         var allMethodReferences = processor.getReferences();
         assertEquals(0, allLambdas.size() + allMethodReferences.size(),
-                     String.format("Lambda is used in %s", methodName));
+                     TutorTest_Messages.assertLambdaFailed(methodName));
     }
 }

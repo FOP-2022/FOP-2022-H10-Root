@@ -1,5 +1,6 @@
 package h10;
 
+import h10.utils.TutorTest_Constants;
 import h10.utils.TutorTest_Helper;
 import h10.utils.TutorTest_Messages;
 import org.junit.jupiter.api.DisplayName;
@@ -34,9 +35,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 @TestForSubmission("h10")
 @DisplayName("Criterion: H3")
 public final class TutorTest_H3 {
-    static final String className = "TestMyLinkedList";
-    static final String methodNameEx = "testExtract";
-    static final String methodNameMix = "testMixin";
 
     /* *********************************************************************
      *                               H3.1                                  *
@@ -44,28 +42,32 @@ public final class TutorTest_H3 {
 
     @Test
     public void testExtractTestSignatures() {
-        var classH3 = TutorTest_Helper.getClass(className);
-        var method = TutorTest_Helper.getMethod(methodNameEx, classH3);
+        var classH3 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_TEST);
+        var method = TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_TEST_EXT, classH3);
 
         // class is public
-        assertTrue(isPublic(classH3.getModifiers()), TutorTest_Messages.classModifierIncorrect(className));
+        assertTrue(isPublic(classH3.getModifiers()),
+                   TutorTest_Messages.classModifierIncorrect(TutorTest_Constants.CLASS_TEST));
 
         // is not generic
-        assertEquals(0, method.getTypeParameters().length, TutorTest_Messages.methodGeneric(methodNameEx));
+        assertEquals(0, method.getTypeParameters().length,
+                     TutorTest_Messages.methodGeneric(TutorTest_Constants.METHOD_TEST_EXT));
 
         // method is public
-        assertTrue(isPublic(method.getModifiers()), TutorTest_Messages.methodModifierIncorrect(methodNameEx));
+        assertTrue(isPublic(method.getModifiers()),
+                   TutorTest_Messages.methodModifierIncorrect(TutorTest_Constants.METHOD_TEST_EXT));
 
         // has no parameter
-        assertEquals(0, method.getParameterCount(), TutorTest_Messages.methodParamIncomplete(methodNameEx));
+        assertEquals(0, method.getParameterCount(),
+                     TutorTest_Messages.methodParamIncomplete(TutorTest_Constants.METHOD_TEST_EXT));
 
         // return type is correct
         assertEquals(void.class, method.getReturnType(),
-                     TutorTest_Messages.methodReturnTypeIncorrect(methodNameEx));
+                     TutorTest_Messages.methodReturnTypeIncorrect(TutorTest_Constants.METHOD_TEST_EXT));
 
         // thrown exception type is correct
         assertEquals(0, method.getExceptionTypes().length,
-                     TutorTest_Messages.methodExceptionTypeIncorrect(methodNameEx));
+                     TutorTest_Messages.methodExceptionTypeIncorrect(TutorTest_Constants.METHOD_TEST_EXT));
     }
 
     @Test
@@ -73,15 +75,15 @@ public final class TutorTest_H3 {
     public void testParameterClasses(TestCycle testCycle) {
         var allClassesNamesSet = testCycle.getSubmission().getClassNames();
         var allClassesNames = allClassesNamesSet.stream()
-            .filter(x -> !(x.equals("ListItem")
-                           || x.equals("MyLinkedList")
-                           || x.equals("MyLinkedListException")
-                           || x.equals("TestMyLinkedList")))
+            .filter(x -> !(x.equals(TutorTest_Constants.CLASS_LIST)
+                           || x.equals(TutorTest_Constants.CLASS_ITEM)
+                           || x.equals(TutorTest_Constants.CLASS_EXC)
+                           || x.equals(TutorTest_Constants.CLASS_TEST)))
             .collect(Collectors.toList());
 
         // at least three other classes are found
         assertTrue(allClassesNames.size() >= 3,
-                   TutorTest_Messages.classNotFound("fct/predT/predU"));
+                   TutorTest_Messages.classNotFound(TutorTest_Constants.ONE_OF_EXT));
 
         int found = 0;
         for (String className : allClassesNames) {
@@ -94,10 +96,10 @@ public final class TutorTest_H3 {
 
             // check if this class implements one of the interfaces
             var interfaces = Arrays.stream(interfacesArray).map(Type::getTypeName).collect(Collectors.toList());
-            boolean fct = interfaces.contains("java.util.function.Function<java.lang.Integer[], java.lang.Integer>")
-                          || interfaces.contains("java.util.function.Function<java.lang.Integer[],java.lang.Integer>");
-            boolean predT = interfaces.contains("java.util.function.Predicate<java.lang.Integer[]>");
-            boolean predU = interfaces.contains("java.util.function.Predicate<java.lang.Integer>");
+            boolean fct = interfaces.contains(TutorTest_Constants.FCT + "<java.lang.Integer[], java.lang.Integer>")
+                          || interfaces.contains(TutorTest_Constants.FCT + "<java.lang.Integer[],java.lang.Integer>");
+            boolean predT = interfaces.contains(TutorTest_Constants.PRED + "<java.lang.Integer[]>");
+            boolean predU = interfaces.contains(TutorTest_Constants.PRED + "<java.lang.Integer>");
 
             if (!(fct || predT || predU)) {
                 continue;
@@ -192,18 +194,18 @@ public final class TutorTest_H3 {
             }
         }
         // all three param classes are found
-        assertEquals(3, found, TutorTest_Messages.classNotFound("fct/predT/predU"));
+        assertEquals(3, found, TutorTest_Messages.classNotFound(TutorTest_Constants.ONE_OF_EXT));
     }
 
     @Test
     public void testExtractTest() {
-        var classH3 = TutorTest_Helper.getClass(className);
+        var classH3 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_TEST);
         try {
             var object = classH3.getDeclaredConstructor().newInstance();
-            var method = TutorTest_Helper.getMethod("testExtract", classH3);
+            var method = TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_TEST_EXT, classH3);
             method.invoke(object);
         } catch (Exception e) {
-            fail(String.format("Cannot create an object of class %s", className));
+            fail(TutorTest_Messages.cannotCreateObject(TutorTest_Constants.CLASS_TEST));
         }
     }
 
@@ -213,38 +215,42 @@ public final class TutorTest_H3 {
 
     @Test
     public void testMixinTestSignatures() {
-        var classH3 = TutorTest_Helper.getClass(className);
-        var method = TutorTest_Helper.getMethod(methodNameMix, classH3);
+        var classH3 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_TEST);
+        var method = TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_TEST_MIX, classH3);
 
         // class is public
-        assertTrue(isPublic(classH3.getModifiers()), TutorTest_Messages.classModifierIncorrect(className));
+        assertTrue(isPublic(classH3.getModifiers()),
+                   TutorTest_Messages.classModifierIncorrect(TutorTest_Constants.CLASS_TEST));
 
         // is not generic
-        assertEquals(0, method.getTypeParameters().length, TutorTest_Messages.methodGeneric(methodNameMix));
+        assertEquals(0, method.getTypeParameters().length,
+                     TutorTest_Messages.methodGeneric(TutorTest_Constants.METHOD_TEST_MIX));
 
         // method is public
-        assertTrue(isPublic(method.getModifiers()), TutorTest_Messages.methodModifierIncorrect(methodNameMix));
+        assertTrue(isPublic(method.getModifiers()),
+                   TutorTest_Messages.methodModifierIncorrect(TutorTest_Constants.METHOD_TEST_MIX));
 
         // has no parameter
-        assertEquals(0, method.getParameterCount(), TutorTest_Messages.methodParamIncomplete(methodNameMix));
+        assertEquals(0, method.getParameterCount(),
+                     TutorTest_Messages.methodParamIncomplete(TutorTest_Constants.METHOD_TEST_MIX));
 
         // return type is correct
         assertEquals(void.class, method.getReturnType(),
-                     TutorTest_Messages.methodReturnTypeIncorrect(methodNameMix));
+                     TutorTest_Messages.methodReturnTypeIncorrect(TutorTest_Constants.METHOD_TEST_MIX));
 
         // thrown exception type is correct
         assertEquals(0, method.getExceptionTypes().length,
-                     TutorTest_Messages.methodExceptionTypeIncorrect(methodNameMix));
+                     TutorTest_Messages.methodExceptionTypeIncorrect(TutorTest_Constants.METHOD_TEST_MIX));
     }
 
     @Test
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     public void testParameterConstants(final TestCycle testCycle) {
-        var classH3 = TutorTest_Helper.getClass(className);
+        var classH3 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_TEST);
 
         var fields = classH3.getDeclaredFields();
         // at least three fields are found
-        assertTrue(fields.length >= 3, TutorTest_Messages.fieldNotFound("biPred/predU/fct"));
+        assertTrue(fields.length >= 3, TutorTest_Messages.fieldNotFound(TutorTest_Constants.ONE_OF_MIX));
 
         int found = 0;
         for (Field f : fields) {
@@ -264,8 +270,9 @@ public final class TutorTest_H3 {
 
             if (biPred) {
                 // one lambda is used
-                TutorTest_H3_Helper.assertLambdas(testCycle, classH3, "BI_PRED_MIXIN",
-                                                  "java.util.function.BiPredicate<java.lang.Number, java.lang.String>");
+                TutorTest_H3_Helper.assertLambdas(testCycle, classH3, TutorTest_Constants.FIELD_BI_PRED,
+                                                  TutorTest_Constants.BI_PRED +
+                                                  "<java.lang.Number, java.lang.String>");
 
                 // random inputs
                 Number[] nums = TutorTest_H3_Helper.generateManyNumbers();
@@ -289,8 +296,8 @@ public final class TutorTest_H3 {
                 }
             } else if (predU) {
                 // one lambda is used
-                TutorTest_H3_Helper.assertLambdas(testCycle, classH3, "PRED_U_MIXIN",
-                                                  "java.util.function.Predicate<java.lang.String>");
+                TutorTest_H3_Helper.assertLambdas(testCycle, classH3, TutorTest_Constants.FIELD_PRED,
+                                                  TutorTest_Constants.PRED + "<java.lang.String>");
 
                 // random inputs
                 String[] strings = TutorTest_H3_Helper.generateManyStrings();
@@ -318,8 +325,9 @@ public final class TutorTest_H3 {
                 }
             } else {
                 // one lambda is used
-                TutorTest_H3_Helper.assertLambdas(testCycle, classH3, "FCT_MIXIN",
-                                                  "java.util.function.Function<java.lang.String, java.lang.Number>");
+                TutorTest_H3_Helper.assertLambdas(testCycle, classH3, TutorTest_Constants.FIELD_FCT,
+                                                  TutorTest_Constants.FCT +
+                                                  "<java.lang.String, java.lang.Number>");
 
                 // random inputs
                 Number[] nums = TutorTest_H3_Helper.generateManyNumbers();
@@ -341,18 +349,18 @@ public final class TutorTest_H3 {
             }
         }
         // all three param constants are found
-        assertEquals(3, found, TutorTest_Messages.fieldNotFound("biPred/predU/fct"));
+        assertEquals(3, found, TutorTest_Messages.fieldNotFound(TutorTest_Constants.ONE_OF_MIX));
     }
 
     @Test
     public void testMixinTest() {
-        var classH3 = TutorTest_Helper.getClass(className);
+        var classH3 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_TEST);
         try {
             var object = classH3.getDeclaredConstructor().newInstance();
-            var method = TutorTest_Helper.getMethod("testMixin", classH3);
+            var method = TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_TEST_MIX, classH3);
             method.invoke(object);
         } catch (Exception e) {
-            fail(String.format("Cannot create an object of class %s", className));
+            fail(TutorTest_Messages.cannotCreateObject(TutorTest_Constants.CLASS_TEST));
         }
     }
 }

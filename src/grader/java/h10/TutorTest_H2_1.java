@@ -1,5 +1,6 @@
 package h10;
 
+import h10.utils.TutorTest_Constants;
 import h10.utils.TutorTest_Generators;
 import h10.utils.TutorTest_Helper;
 import h10.utils.TutorTest_Messages;
@@ -30,11 +31,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 @TestForSubmission("h10")
 @DisplayName("Criterion: H2.1")
 public final class TutorTest_H2_1 {
-    static final String className = "MyLinkedList";
-    static final String methodNameIt = "extractIteratively";
-    static final String methodNameRec = "extractRecursively";
-    static final String methodNameRecHelp = "extractRecursivelyHelper";
-    static final String classNameExc = "MyLinkedListException";
 
     /* *********************************************************************
      *                               H2.1                                  *
@@ -42,70 +38,76 @@ public final class TutorTest_H2_1 {
 
     @Test
     public void testExtractMethodsExist() {
-        var classH2 = TutorTest_Helper.getClass(className);
-        TutorTest_Helper.getMethod(methodNameIt, classH2, Predicate.class, Function.class, Predicate.class);
-        TutorTest_Helper.getMethod(methodNameRec, classH2, Predicate.class, Function.class, Predicate.class);
-        TutorTest_Helper.getMethod(methodNameRecHelp, classH2, Predicate.class, Function.class, Predicate.class,
-                                   ListItem.class, int.class);
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_IT, classH2, Predicate.class, Function.class,
+                                   Predicate.class);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_REC, classH2, Predicate.class, Function.class,
+                                   Predicate.class);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_HELP, classH2, Predicate.class, Function.class,
+                                   Predicate.class, ListItem.class, int.class);
     }
 
     @Test
     public void testExtractIterativelyMethodSignatures() {
-        var classH2 = TutorTest_Helper.getClass(className);
-        var method = TutorTest_Helper.getMethod(methodNameIt, classH2, Predicate.class, Function.class, Predicate.class);
-        TutorTest_H2_Helper.assertExtractMethodsSignatures(method, methodNameIt);
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        var method = TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_IT, classH2, Predicate.class,
+                                                Function.class, Predicate.class);
+        TutorTest_H2_Helper.assertExtractMethodsSignatures(method, TutorTest_Constants.METHOD_EXT_IT);
     }
 
     @Test
     public void testExtractRecursivelyMethodSignatures() {
-        var classH2 = TutorTest_Helper.getClass(className);
-        var method = TutorTest_Helper.getMethod(methodNameRec, classH2, Predicate.class, Function.class, Predicate.class);
-        TutorTest_H2_Helper.assertExtractMethodsSignatures(method, methodNameRec);
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        var method = TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_REC, classH2, Predicate.class,
+                                                Function.class, Predicate.class);
+        TutorTest_H2_Helper.assertExtractMethodsSignatures(method, TutorTest_Constants.METHOD_EXT_REC);
     }
 
     @Test
     public void testExtractHelperMethod() {
-        var classH2 = TutorTest_Helper.getClass(className);
-        var method = TutorTest_Helper.getMethod(methodNameRecHelp, classH2, Predicate.class, Function.class,
-                                                Predicate.class, ListItem.class, int.class);
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        var method = TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_HELP, classH2, Predicate.class,
+                                                Function.class, Predicate.class, ListItem.class, int.class);
 
         // is generic with type U
-        assertEquals(1, method.getTypeParameters().length, TutorTest_Messages.methodNotGeneric(methodNameRecHelp));
+        assertEquals(1, method.getTypeParameters().length,
+                     TutorTest_Messages.methodNotGeneric(TutorTest_Constants.METHOD_EXT_HELP));
         assertEquals("U", method.getTypeParameters()[0].getTypeName(),
-                     TutorTest_Messages.methodGenericTypeIncorrect(methodNameRecHelp));
+                     TutorTest_Messages.methodGenericTypeIncorrect(TutorTest_Constants.METHOD_EXT_HELP));
 
         // is private (Transformer changed this to public)
         // assertTrue(isPrivate(m.getModifiers()), TutorTest_Messages.methodModifierIncorrect(methodName));
 
         // all params are found
         var params = method.getParameters();
-        assertEquals(5, params.length, TutorTest_Messages.methodParamIncomplete(methodNameRecHelp));
+        assertEquals(5, params.length, TutorTest_Messages.methodParamIncomplete(TutorTest_Constants.METHOD_EXT_HELP));
 
         // param types are correct
         var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName())
             .collect(Collectors.toList());
-        assertTrue(paramTypes.contains("java.util.function.Predicate<? super T>")
-                   && (paramTypes.contains("java.util.function.Function<? super T, ? extends U>")
-                       || paramTypes.contains("java.util.function.Function<? super T,? extends U>"))
-                   && paramTypes.contains("java.util.function.Predicate<? super U>")
-                   && paramTypes.contains("h10.ListItem<T>")
+        assertTrue(paramTypes.contains(TutorTest_Constants.PRED + "<? super T>")
+                   && (paramTypes.contains(TutorTest_Constants.FCT + "<? super T, ? extends U>")
+                       || paramTypes.contains(TutorTest_Constants.FCT + "<? super T,? extends U>"))
+                   && paramTypes.contains(TutorTest_Constants.PRED + "<? super U>")
+                   && paramTypes.contains(TutorTest_Constants.CLASS_ITEM + "<T>")
                    && paramTypes.contains("int"),
-                   TutorTest_Messages.methodParamIncorrect(methodNameRecHelp));
+                   TutorTest_Messages.methodParamIncorrect(TutorTest_Constants.METHOD_EXT_HELP));
 
         // return type is correct
-        assertEquals("h10.MyLinkedList<U>", method.getGenericReturnType().getTypeName(),
-                     TutorTest_Messages.methodReturnTypeIncorrect(methodNameRecHelp));
+        assertEquals(TutorTest_Constants.CLASS_LIST + "<U>", method.getGenericReturnType().getTypeName(),
+                     TutorTest_Messages.methodReturnTypeIncorrect(TutorTest_Constants.METHOD_EXT_HELP));
 
         // thrown exception type is correct
-        assertEquals(classNameExc, method.getExceptionTypes()[0].getSimpleName(),
-                     TutorTest_Messages.methodExceptionTypeIncorrect(methodNameRecHelp));
+        assertEquals(TutorTest_Constants.CLASS_EXC.substring(4), method.getExceptionTypes()[0].getSimpleName(),
+                     TutorTest_Messages.methodExceptionTypeIncorrect(TutorTest_Constants.METHOD_EXT_HELP));
 
     }
 
     @Test
     public void testExtractIteratively() {
-        var classH2 = TutorTest_Helper.getClass(className);
-        TutorTest_Helper.getMethod(methodNameIt, classH2, Predicate.class, Function.class, Predicate.class);
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_IT, classH2, Predicate.class, Function.class,
+                                   Predicate.class);
 
         TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
         TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
@@ -123,9 +125,10 @@ public final class TutorTest_H2_1 {
 
     @Test
     public void testExtractIterativelyException() {
-        var classH2 = TutorTest_Helper.getClass(className);
-        TutorTest_Helper.getClass(classNameExc);
-        TutorTest_Helper.getMethod(methodNameIt, classH2, Predicate.class, Function.class, Predicate.class);
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getClass(TutorTest_Constants.CLASS_EXC);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_IT, classH2, Predicate.class, Function.class,
+                                   Predicate.class);
 
         TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
         TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
@@ -145,8 +148,9 @@ public final class TutorTest_H2_1 {
 
     @Test
     public void testExtractRecursively() {
-        var classH2 = TutorTest_Helper.getClass(className);
-        TutorTest_Helper.getMethod(methodNameRec, classH2, Predicate.class, Function.class, Predicate.class);
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_REC, classH2, Predicate.class, Function.class,
+                                   Predicate.class);
 
         TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
         TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
@@ -164,9 +168,9 @@ public final class TutorTest_H2_1 {
 
     @Test
     public void testExtractRecursivelyException() {
-        var classH2 = TutorTest_Helper.getClass(className);
-        TutorTest_Helper.getClass(classNameExc);
-        TutorTest_Helper.getMethod(methodNameRec, classH2, Predicate.class, Function.class, Predicate.class);
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getClass(TutorTest_Constants.CLASS_EXC);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_REC, classH2, Predicate.class, Function.class, Predicate.class);
 
         TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
         TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
@@ -187,66 +191,66 @@ public final class TutorTest_H2_1 {
     @Test
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     public void testExtractNoOtherMethods(final TestCycle testCycle) {
-        var classH2 = TutorTest_Helper.getClassDontFail(className);
+        var classH2 = TutorTest_Helper.getClassDontFail(TutorTest_Constants.CLASS_LIST);
         if (classH2 == null) {
             // do not take other points
             return;
         }
 
-        var method = TutorTest_Helper.getMethodDontFail(methodNameIt, classH2, Predicate.class, Function.class,
-                                                        Predicate.class);
+        var method = TutorTest_Helper.getMethodDontFail(TutorTest_Constants.METHOD_EXT_IT, classH2,
+                                                        Predicate.class, Function.class, Predicate.class);
         if (method != null) {
-            TutorTest_H2_Helper.assertNoOtherMethod(testCycle, classH2, methodNameIt);
+            TutorTest_H2_Helper.assertNoOtherMethod(testCycle, classH2, TutorTest_Constants.METHOD_EXT_IT);
         }
-        method = TutorTest_Helper.getMethodDontFail(methodNameRec, classH2, Predicate.class, Function.class,
-                                                    Predicate.class);
+        method = TutorTest_Helper.getMethodDontFail(TutorTest_Constants.METHOD_EXT_REC, classH2, Predicate.class,
+                                                    Function.class, Predicate.class);
         if (method != null) {
-            TutorTest_H2_Helper.assertNoOtherMethod(testCycle, classH2, methodNameRec);
+            TutorTest_H2_Helper.assertNoOtherMethod(testCycle, classH2, TutorTest_Constants.METHOD_EXT_REC);
         }
-        method = TutorTest_Helper.getMethodDontFail(methodNameRecHelp, classH2, Predicate.class, Function.class,
-                                                    Predicate.class, ListItem.class, int.class);
+        method = TutorTest_Helper.getMethodDontFail(TutorTest_Constants.METHOD_EXT_HELP, classH2, Predicate.class,
+                                                    Function.class, Predicate.class, ListItem.class, int.class);
         if (method != null) {
-            TutorTest_H2_Helper.assertNoOtherMethod(testCycle, classH2, methodNameRecHelp);
+            TutorTest_H2_Helper.assertNoOtherMethod(testCycle, classH2, TutorTest_Constants.METHOD_EXT_HELP);
         }
     }
 
     @Test
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     public void testExtractReallyIteratively(final TestCycle testCycle) {
-        var classH2 = TutorTest_Helper.getClassDontFail(className);
+        var classH2 = TutorTest_Helper.getClassDontFail(TutorTest_Constants.CLASS_LIST);
         if (classH2 == null) {
             // do not take other points
             return;
         }
 
-        var method = TutorTest_Helper.getMethodDontFail(methodNameIt, classH2, Predicate.class, Function.class,
-                                                        Predicate.class);
+        var method = TutorTest_Helper.getMethodDontFail(TutorTest_Constants.METHOD_EXT_IT, classH2, Predicate.class,
+                                                        Function.class, Predicate.class);
         if (method != null) {
-            TutorTest_H2_Helper.assertNumberOfLoop(testCycle, classH2, methodNameIt, 1);
+            TutorTest_H2_Helper.assertNumberOfLoop(testCycle, classH2, TutorTest_Constants.METHOD_EXT_IT, 1);
         }
     }
 
     @Test
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     public void testExtractReallyRecursively(final TestCycle testCycle) {
-        var classH2 = TutorTest_Helper.getClassDontFail(className);
+        var classH2 = TutorTest_Helper.getClassDontFail(TutorTest_Constants.CLASS_LIST);
         if (classH2 == null) {
             // do not take other points
             return;
         }
 
-        var methodRec = TutorTest_Helper.getMethodDontFail(methodNameRec, classH2, Predicate.class, Function.class,
-                                                           Predicate.class);
-        var methodRecHelp = TutorTest_Helper.getMethodDontFail(methodNameRecHelp, classH2, Predicate.class,
-                                                               Function.class, Predicate.class, ListItem.class,
-                                                               int.class);
+        var methodRec = TutorTest_Helper.getMethodDontFail(TutorTest_Constants.METHOD_EXT_REC, classH2,
+                                                           Predicate.class, Function.class, Predicate.class);
+        var methodRecHelp = TutorTest_Helper.getMethodDontFail(TutorTest_Constants.METHOD_EXT_HELP, classH2,
+                                                               Predicate.class, Function.class, Predicate.class,
+                                                               ListItem.class, int.class);
         if (methodRec == null || methodRecHelp == null) {
             // do not take other points
             return;
         }
 
         // not iterative
-        TutorTest_H2_Helper.assertNumberOfLoop(testCycle, classH2, methodNameRec, 0);
+        TutorTest_H2_Helper.assertNumberOfLoop(testCycle, classH2, TutorTest_Constants.METHOD_EXT_REC, 0);
 
         var thisList = TutorTest_Generators.generateThisListExtractMockito();
         ListItem<Integer> dummy = new ListItem<>();
@@ -267,7 +271,7 @@ public final class TutorTest_H2_1 {
                                           ArgumentMatchers.any(), Mockito.anyInt());
         } catch (Exception e) {
             // MyLinkedListException will never be thrown
-            fail(TutorTest_Messages.methodNoRecursion(methodNameRec));
+            fail(TutorTest_Messages.methodNoRecursion(TutorTest_Constants.METHOD_EXT_REC));
         }
     }
 }

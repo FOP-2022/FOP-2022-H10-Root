@@ -1,6 +1,7 @@
 package h10;
 
 import h10.utils.ExpectedMyLinkedListException;
+import h10.utils.TutorTest_Constants;
 import h10.utils.TutorTest_Messages;
 import h10.utils.spoon.LoopsMethodBodyProcessor;
 import h10.utils.spoon.MethodCallsProcessor;
@@ -280,18 +281,18 @@ public final class TutorTest_H2_Helper<T> {
 
         // param types are correct
         var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName()).collect(Collectors.toList());
-        assertTrue(paramTypes.contains("java.util.function.Predicate<? super T>")
-                   && (paramTypes.contains("java.util.function.Function<? super T, ? extends U>")
-                       || paramTypes.contains("java.util.function.Function<? super T,? extends U>"))
-                   && paramTypes.contains("java.util.function.Predicate<? super U>"),
+        assertTrue(paramTypes.contains(TutorTest_Constants.PRED + "<? super T>")
+                   && (paramTypes.contains(TutorTest_Constants.FCT + "<? super T, ? extends U>")
+                       || paramTypes.contains(TutorTest_Constants.FCT + "<? super T,? extends U>"))
+                   && paramTypes.contains(TutorTest_Constants.PRED + "<? super U>"),
                    TutorTest_Messages.methodParamIncorrect(methodName));
 
         // return type is correct
-        assertEquals("h10.MyLinkedList<U>", method.getGenericReturnType().getTypeName(),
+        assertEquals(TutorTest_Constants.CLASS_LIST + "<U>", method.getGenericReturnType().getTypeName(),
                      TutorTest_Messages.methodReturnTypeIncorrect(methodName));
 
         // thrown exception type is correct
-        assertEquals("MyLinkedListException", method.getExceptionTypes()[0].getSimpleName(),
+        assertEquals(TutorTest_Constants.CLASS_EXC.substring(4), method.getExceptionTypes()[0].getSimpleName(),
                      TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
     }
 
@@ -311,12 +312,12 @@ public final class TutorTest_H2_Helper<T> {
         // param types are correct
         var paramTypes = Arrays.stream(params).map(x -> x.getParameterizedType().getTypeName())
             .collect(Collectors.toList());
-        assertTrue(paramTypes.contains("h10.MyLinkedList<U>")
-                   && (paramTypes.contains("java.util.function.BiPredicate<? super T, ? super U>")
-                       || paramTypes.contains("java.util.function.BiPredicate<? super T,? super U>"))
-                   && (paramTypes.contains("java.util.function.Function<? super U, ? extends T>")
-                       || paramTypes.contains("java.util.function.Function<? super U,? extends T>"))
-                   && paramTypes.contains("java.util.function.Predicate<? super U>"),
+        assertTrue(paramTypes.contains(TutorTest_Constants.CLASS_LIST + "<U>")
+                   && (paramTypes.contains(TutorTest_Constants.BI_PRED + "<? super T, ? super U>")
+                       || paramTypes.contains(TutorTest_Constants.BI_PRED + "<? super T,? super U>"))
+                   && (paramTypes.contains(TutorTest_Constants.FCT + "<? super U, ? extends T>")
+                       || paramTypes.contains(TutorTest_Constants.FCT + "<? super U,? extends T>"))
+                   && paramTypes.contains(TutorTest_Constants.PRED + "<? super U>"),
                    TutorTest_Messages.methodParamIncorrect(methodName));
 
         // return type is correct
@@ -324,26 +325,26 @@ public final class TutorTest_H2_Helper<T> {
                      TutorTest_Messages.methodReturnTypeIncorrect(methodName));
 
         // thrown exception type is correct
-        assertEquals("MyLinkedListException", method.getExceptionTypes()[0].getSimpleName(),
+        assertEquals(TutorTest_Constants.CLASS_EXC.substring(4), method.getExceptionTypes()[0].getSimpleName(),
                      TutorTest_Messages.methodExceptionTypeIncorrect(methodName));
     }
 
     protected static <U> void assertLinkedList(MyLinkedList<U> expected, MyLinkedList<U> actual) {
         // one of the list is null
         if (expected.head == null || actual.head == null) {
-            assertEquals(expected.head, actual.head, "Assertion for MyLinkedList failed");
+            assertEquals(expected.head, actual.head, TutorTest_Messages.assertListFailed());
             return;
         }
 
         ListItem<U> actualCurrent = actual.head;
         for (ListItem<U> expectedCurrent = expected.head; expectedCurrent != null; expectedCurrent = expectedCurrent.next) {
             // actual mustn't end before expected
-            assertNotNull(actualCurrent, "Assertion for MyLinkedList failed");
+            assertNotNull(actualCurrent, TutorTest_Messages.assertListFailed());
 
             // if it is an array, check each item
             if (expectedCurrent.key.toString().startsWith("[")) {
                 // actual is also an array
-                assertTrue(actualCurrent.key.toString().startsWith("["), "Assertion for MyLinkedList failed");
+                assertTrue(actualCurrent.key.toString().startsWith("["), TutorTest_Messages.assertListFailed());
 
                 @SuppressWarnings("unchecked")
                 var expectedArray = (U[]) expectedCurrent.key;
@@ -351,10 +352,10 @@ public final class TutorTest_H2_Helper<T> {
                 var actualArray = (U[]) expectedCurrent.key;
 
                 // make sure both have the same lengths
-                assertEquals(expectedArray.length, actualArray.length, "Assertion for MyLinkedList failed");
+                assertEquals(expectedArray.length, actualArray.length, TutorTest_Messages.assertListFailed());
 
                 for (int i = 0; i < expectedArray.length; i++) {
-                    assertEquals(expectedArray[i], actualArray[i], "Assertion for MyLinkedList failed");
+                    assertEquals(expectedArray[i], actualArray[i], TutorTest_Messages.assertListFailed());
                 }
 
                 actualCurrent = actualCurrent.next;
@@ -362,11 +363,11 @@ public final class TutorTest_H2_Helper<T> {
             }
 
             // if it's not an array
-            assertEquals(expectedCurrent.key, actualCurrent.key, "Assertion for MyLinkedList failed");
+            assertEquals(expectedCurrent.key, actualCurrent.key, TutorTest_Messages.assertListFailed());
             actualCurrent = actualCurrent.next;
         }
         // actual must end when expected does
-        assertNull(actualCurrent, "Assertion for MyLinkedList failed");
+        assertNull(actualCurrent, TutorTest_Messages.assertListFailed());
     }
 
     protected static void assertExceptionMessage(ExpectedMyLinkedListException expected, Exception actual) {
@@ -389,13 +390,15 @@ public final class TutorTest_H2_Helper<T> {
         var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
         var processor = SpoonUtils.process(testCycle, path, new MethodCallsProcessor(methodName));
 
-        final Set<String> canBeCalled = Set.of("extractIteratively", "extractRecursively", "extractRecursivelyHelper",
-                                               "mixinIteratively", "mixinRecursively", "mixinRecursivelyHelper", "add",
-                                               "test", "apply");
+        final Set<String> canBeCalled = Set.of(TutorTest_Constants.METHOD_EXT_IT, TutorTest_Constants.METHOD_EXT_REC,
+                                               TutorTest_Constants.METHOD_EXT_HELP, TutorTest_Constants.METHOD_MIX_IT,
+                                               TutorTest_Constants.METHOD_MIX_REC, TutorTest_Constants.METHOD_MIX_HELP,
+                                               TutorTest_Constants.METHOD_ADD, TutorTest_Constants.METHOD_TEST,
+                                               TutorTest_Constants.METHOD_APPLY);
 
         for (var callee : processor.getCallees()) {
             var name = callee.getExecutable().getSimpleName();
-            assertTrue(canBeCalled.contains(name), String.format("Another newly implemented method %s is used", name));
+            assertTrue(canBeCalled.contains(name), TutorTest_Messages.methodUseOtherMethod(methodName, name));
         }
     }
 
@@ -417,7 +420,7 @@ public final class TutorTest_H2_Helper<T> {
                      + processor.getForLoops().size()
                      + processor.getWhileLoops().size()
                      + processor.getDoWhileLoops().size();
-        assertEquals(expected, actual, "Numbers of required loop do not match");
+        assertEquals(expected, actual, TutorTest_Messages.methodFalseNumberOfLoop(methodName));
     }
 
     /* *********************************************************************

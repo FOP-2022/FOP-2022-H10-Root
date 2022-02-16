@@ -1,13 +1,12 @@
 package h10;
 
+import h10.utils.TutorTest_Constants;
 import h10.utils.TutorTest_Helper;
 import h10.utils.TutorTest_Messages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
 import static java.lang.reflect.Modifier.isAbstract;
@@ -25,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 @TestForSubmission("h10")
 @DisplayName("Criterion: H1")
 public final class TutorTest_H1 {
-    static final String className = "MyLinkedListException";
 
     /* *********************************************************************
      *                                 H1                                  *
@@ -34,30 +32,33 @@ public final class TutorTest_H1 {
     @Test
     public void testClassSignatures() {
         // class is found
-        var classH1 = TutorTest_Helper.getClass(className);
+        var classH1 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_EXC);
         // is not abstract
-        assertFalse(isAbstract(classH1.getModifiers()), TutorTest_Messages.classModifierIncorrect(className));
+        assertFalse(isAbstract(classH1.getModifiers()),
+                    TutorTest_Messages.classModifierIncorrect(TutorTest_Constants.CLASS_EXC));
         // is public
-        assertTrue(isPublic(classH1.getModifiers()), TutorTest_Messages.classModifierIncorrect(className));
+        assertTrue(isPublic(classH1.getModifiers()),
+                   TutorTest_Messages.classModifierIncorrect(TutorTest_Constants.CLASS_EXC));
         // is a direct extension from Exception
         assertEquals(Exception.class, classH1.getSuperclass(),
-                     TutorTest_Messages.classExtendsIncorrect(className));
+                     TutorTest_Messages.classExtendsIncorrect(TutorTest_Constants.CLASS_EXC));
     }
 
     @Test
     public void testConstructor() {
         // class is found
-        Class<?> classH1 = TutorTest_Helper.getClass(className);
+        Class<?> classH1 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_EXC);
         var constructor = TutorTest_Helper.getMyLinkedListExceptionConstructor(classH1);
 
         // is public
-        assertTrue(isPublic(constructor.getModifiers()), TutorTest_Messages.methodModifierIncorrect(className));
+        assertTrue(isPublic(constructor.getModifiers()),
+                   TutorTest_Messages.methodModifierIncorrect(TutorTest_Constants.CLASS_EXC));
     }
 
     @Test
     public void testMessage() {
         // class is found
-        Class<?> classH1 = TutorTest_Helper.getClass(className);
+        Class<?> classH1 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_EXC);
 
         int numOfTests = 100;
         var nums = createManyRandomIntegers(numOfTests);
@@ -68,9 +69,9 @@ public final class TutorTest_H1 {
             try {
                 assertEquals(constructor.newInstance(nums[i], objs[i]).getMessage(),
                              createCorrectMessage(nums[i], objs[i]),
-                             String.format("Constructor %s returns wrong message", className));
+                             TutorTest_Messages.constructorWrongMessage(TutorTest_Constants.CLASS_EXC));
             } catch (Exception e) {
-                fail(String.format("Cannot create an object of class %s", className));
+                fail(TutorTest_Messages.cannotCreateObject(TutorTest_Constants.CLASS_EXC));
             }
         }
     }

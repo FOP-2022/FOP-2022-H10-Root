@@ -105,7 +105,7 @@ public class TutorTransformer implements ClassTransformer {
             if (isStatic && !forceStatic) {
                 var superMV = new MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
                 };
-                final int modifiedAccess = access ^ Modifier.STATIC;
+                final int modifiedAccess = access ^ Modifier.PUBLIC;
 
                 var mv = new MethodVisitor(Opcodes.ASM9, superMV) {
 

@@ -92,6 +92,7 @@ public final class TutorTest_Generators {
 
     /**
      * Generate random lists with type Integer for extract*-methods, so that it does not throw any exception.
+     *
      * @return the generated lists
      */
     public static MyLinkedList<Integer>[] generateThisListExtract1WithoutExc() {
@@ -113,6 +114,7 @@ public final class TutorTest_Generators {
 
     /**
      * Generate random lists with type Integer for extract*-methods, so that it throws exception.
+     *
      * @return the generated lists
      */
     public static MyLinkedList<Integer>[] generateThisListExtract1WithExc() {
@@ -140,6 +142,7 @@ public final class TutorTest_Generators {
 
     /**
      * Generate random lists with type String for extract*-methods, so that it does not throw any exception.
+     *
      * @return the generated lists
      */
     public static MyLinkedList<String>[] generateThisListExtract2WithoutExc() {
@@ -167,6 +170,7 @@ public final class TutorTest_Generators {
 
     /**
      * Generate random lists with type String for extract*-methods, so that it throws exception.
+     *
      * @return the generated lists
      */
     public static MyLinkedList<String>[] generateThisListExtract2WithExc() {
@@ -195,6 +199,7 @@ public final class TutorTest_Generators {
     /**
      * Generate a random list with type Integer as an input while spying extractRecursively, so that it does not throw
      * any exception.
+     *
      * @return the generated list
      */
     public static MyLinkedList<Integer> generateThisListExtractMockito() {
@@ -212,6 +217,7 @@ public final class TutorTest_Generators {
 
     /**
      * Generate random lists with type Integer as thisList for mixin*-methods, so that it does not throw any exception.
+     *
      * @return the generated lists
      */
     public static MyLinkedList<Integer>[] generateThisListMixin1() {
@@ -231,6 +237,7 @@ public final class TutorTest_Generators {
 
     /**
      * Generate random lists with type String as thisList for mixin*-methods, so that it does not throw any exception.
+     *
      * @return the generated lists
      */
     public static MyLinkedList<String>[] generateThisListMixin2() {
@@ -250,6 +257,7 @@ public final class TutorTest_Generators {
 
     /**
      * Generate random lists with type Integer[] as otherList for mixin*-methods, so that it does not throw any exception.
+     *
      * @return the generated lists
      */
     public static MyLinkedList<Integer[]>[] generateOtherListMixin1WithoutExc() {
@@ -277,6 +285,7 @@ public final class TutorTest_Generators {
 
     /**
      * Generate random lists with type Integer[] as otherList for mixin*-methods, so that it throws exception.
+     *
      * @return the generated lists
      */
     public static MyLinkedList<Integer[]>[] generateOtherListMixin1WithExc() {
@@ -310,6 +319,7 @@ public final class TutorTest_Generators {
 
     /**
      * Generate random lists with type Double as otherList for mixin*-methods, so that it does not throw any exception.
+     *
      * @return the generated lists
      */
     public static MyLinkedList<Double>[] generateOtherListMixin2WithoutExc() {
@@ -329,6 +339,7 @@ public final class TutorTest_Generators {
 
     /**
      * Generate random lists with type Double as otherList for mixin*-methods, so that it throws exception.
+     *
      * @return the generated lists
      */
     public static MyLinkedList<Double>[] generateOtherListMixin2WithExc() {
@@ -350,6 +361,7 @@ public final class TutorTest_Generators {
     /**
      * Generate a random list with type Integer as an input for thisList while spying extractRecursively, so that it
      * does not throw any exception.
+     *
      * @return the generated list
      */
     public static MyLinkedList<Integer> generateThisListMixinMockito() {
@@ -364,6 +376,7 @@ public final class TutorTest_Generators {
     /**
      * Generate a random list with type Integer[] as an input for otherList while spying extractRecursively, so that it
      * does not throw any exception.
+     *
      * @return the generated list
      */
     public static MyLinkedList<Integer[]> generateOtherListMixinMockito() {

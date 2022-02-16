@@ -49,8 +49,8 @@ public class LambdaExpressionsMethodBodyProcessor extends AbstractProcessor<CtMe
         references.addAll(
             method.getElements(
                 (CtExecutableReferenceExpression<?, ?> methodReference) -> method.getSimpleName().equals(methodName)
-                             )
-                         );
+            )
+        );
     }
 
     /**

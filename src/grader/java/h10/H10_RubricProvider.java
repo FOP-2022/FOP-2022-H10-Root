@@ -71,7 +71,8 @@ public final class H10_RubricProvider implements RubricProvider {
         .shortDescription("Die Signatur der extractIteratively-Methode ist vollständig und korrekt.")
         .grader(
             Grader.testAwareBuilder()
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractIterativelyMethodSignatures")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class
+                    .getMethod("testExtractIterativelyMethodSignatures")))
                 .pointsPassedMax()
                 .pointsFailedMin()
                 .build())
@@ -81,7 +82,8 @@ public final class H10_RubricProvider implements RubricProvider {
         .shortDescription("Die Signatur der extractRecursively-Methode ist vollständig und korrekt.")
         .grader(
             Grader.testAwareBuilder()
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractRecursivelyMethodSignatures")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class
+                    .getMethod("testExtractRecursivelyMethodSignatures")))
                 .pointsPassedMax()
                 .pointsFailedMin()
                 .build())
@@ -199,8 +201,10 @@ public final class H10_RubricProvider implements RubricProvider {
         .grader(
             Grader.testAwareBuilder()
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractMethodsExist")))
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractIterativelyMethodSignatures")))
-                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractRecursivelyMethodSignatures")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class
+                    .getMethod("testExtractIterativelyMethodSignatures")))
+                .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class
+                    .getMethod("testExtractRecursivelyMethodSignatures")))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractHelperMethod")))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractIteratively")))
                 .requirePass(JUnitTestRef.ofMethod(() -> TutorTest_H2_1.class.getMethod("testExtractIterativelyException")))

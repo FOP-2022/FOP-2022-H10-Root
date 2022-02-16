@@ -1,6 +1,11 @@
 package h10.utils.transformer;
 
-import org.objectweb.asm.*;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
 
 import java.lang.reflect.Modifier;
@@ -12,6 +17,9 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static org.objectweb.asm.Type.getArgumentTypes;
 
+/**
+ * The transformer class.
+ */
 public class TutorTransformer implements ClassTransformer {
 
     @Override
@@ -35,7 +43,8 @@ public class TutorTransformer implements ClassTransformer {
             types = new ArrayList<>(types);
             Collections.reverse(types);
             for (Type type : types) {
-                if (type == Type.BOOLEAN_TYPE || type == Type.BYTE_TYPE || type == Type.CHAR_TYPE || type == Type.SHORT_TYPE || type == Type.INT_TYPE) {
+                if (type == Type.BOOLEAN_TYPE || type == Type.BYTE_TYPE || type == Type.CHAR_TYPE
+                    || type == Type.SHORT_TYPE || type == Type.INT_TYPE) {
                     visitor.visitVarInsn(Opcodes.ISTORE, start++);
                 } else if (type == Type.LONG_TYPE) {
                     visitor.visitVarInsn(Opcodes.LSTORE, start++);
@@ -55,7 +64,8 @@ public class TutorTransformer implements ClassTransformer {
         @SuppressWarnings("UnusedReturnValue")
         static int load(MethodVisitor visitor, List<Type> types, int start) {
             for (Type type : types) {
-                if (type == Type.BOOLEAN_TYPE || type == Type.BYTE_TYPE || type == Type.CHAR_TYPE || type == Type.SHORT_TYPE || type == Type.INT_TYPE) {
+                if (type == Type.BOOLEAN_TYPE || type == Type.BYTE_TYPE || type == Type.CHAR_TYPE
+                    || type == Type.SHORT_TYPE || type == Type.INT_TYPE) {
                     visitor.visitVarInsn(Opcodes.ILOAD, start--);
                 } else if (type == Type.LONG_TYPE) {
                     visitor.visitVarInsn(Opcodes.LLOAD, start--);
@@ -86,24 +96,27 @@ public class TutorTransformer implements ClassTransformer {
         }
 
         @Override
-        public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+        public void visit(int version, int access, String name, String signature, String superName,
+                          String[] interfaces) {
             this.className = name;
             super.visit(version, access, name, signature, superName, interfaces);
         }
 
         @Override
-        public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+        public MethodVisitor visitMethod(int access, String name, String descriptor, String signature,
+                                         String[] exceptions) {
 
             boolean isStatic = Modifier.isStatic(access);
             boolean isSynthetic = name.startsWith("lambda$");
 
-            boolean forceStatic = isStatic && (name.equals("main") || name.equals("<clinit>") || isSynthetic);
+            final boolean forceStatic = isStatic && (name.equals("main") || name.equals("<clinit>") || isSynthetic);
             access &= ~Modifier.PRIVATE;
             access &= ~Modifier.PROTECTED;
             access |= Modifier.PUBLIC;
 
             if (isStatic && !forceStatic) {
-                var superMV = new MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
+                var superMV = new MethodVisitor(Opcodes.ASM9,
+                                                super.visitMethod(access, name, descriptor, signature, exceptions)) {
                 };
                 final int modifiedAccess = access ^ Modifier.PUBLIC;
 
@@ -124,7 +137,8 @@ public class TutorTransformer implements ClassTransformer {
                     }
 
                     @Override
-                    public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
+                    public void visitMethodInsn(int opcode, String owner, String name, String descriptor,
+                                                boolean isInterface) {
                         List<Type> types = stream(getArgumentTypes(descriptor)).collect(toList());
                         if (opcode == Opcodes.INVOKESTATIC && className.equals(owner)) {
                             int n = ByteUtils.store(this, types, maxVar);

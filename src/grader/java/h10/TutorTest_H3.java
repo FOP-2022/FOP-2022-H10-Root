@@ -271,8 +271,8 @@ public final class TutorTest_H3 {
             if (biPred) {
                 // one lambda is used
                 TutorTest_H3_Helper.assertLambdas(testCycle, classH3, TutorTest_Constants.FIELD_BI_PRED,
-                                                  TutorTest_Constants.BI_PRED +
-                                                  "<java.lang.Number, java.lang.String>");
+                                                  TutorTest_Constants.BI_PRED
+                                                  + "<java.lang.Number, java.lang.String>");
 
                 // random inputs
                 Number[] nums = TutorTest_H3_Helper.generateManyNumbers();
@@ -326,8 +326,8 @@ public final class TutorTest_H3 {
             } else {
                 // one lambda is used
                 TutorTest_H3_Helper.assertLambdas(testCycle, classH3, TutorTest_Constants.FIELD_FCT,
-                                                  TutorTest_Constants.FCT +
-                                                  "<java.lang.String, java.lang.Number>");
+                                                  TutorTest_Constants.FCT
+                                                  + "<java.lang.String, java.lang.Number>");
 
                 // random inputs
                 Number[] nums = TutorTest_H3_Helper.generateManyNumbers();

@@ -1,7 +1,7 @@
 package h10.utils;
 
 /**
- * Define some fail messages for task H2.
+ * Define some fail messages for the whole test.
  *
  * @author Arianne Roselina Prananto
  */

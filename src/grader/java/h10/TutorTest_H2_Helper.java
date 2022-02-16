@@ -1,8 +1,6 @@
 package h10;
 
-import h10.utils.ExpectedMyLinkedListException;
-import h10.utils.TutorTest_Constants;
-import h10.utils.TutorTest_Messages;
+import h10.utils.*;
 import h10.utils.spoon.LoopsMethodBodyProcessor;
 import h10.utils.spoon.MethodCallsProcessor;
 import h10.utils.spoon.SpoonUtils;
@@ -33,11 +31,27 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public final class TutorTest_H2_Helper<T> {
 
     /**
+     * Decide if we want to check the normal/exception execution.
+     */
+    protected enum ExecutionType {
+        NORMAL,
+        EXCEPTION
+    }
+
+    /**
      * Decide which type of extract/mixin method is used.
      */
     protected enum MethodType {
         ITERATIVE,
         RECURSIVE
+    }
+
+    /**
+     * Decide which list (source/target) is checked.
+     */
+    protected enum ListType {
+        SOURCE,
+        TARGET
     }
 
     /* *********************************************************************
@@ -132,9 +146,36 @@ public final class TutorTest_H2_Helper<T> {
      *                   General extract and mixin tests                   *
      **********************************************************************/
 
-    protected <U> void testGeneralExtract(MyLinkedList<T>[] thisLists, MethodType type,
-                                          Predicate<? super T> predT, Function<? super T, ? extends U> fct,
-                                          Predicate<? super U> predU) {
+    protected static void testExtract(ExecutionType executionType, MethodType methodType, ListType listType) {
+        TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
+        TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
+
+        if (executionType == ExecutionType.NORMAL) {
+            var thisLists1 = TutorTest_Generators.generateThisListExtract1WithoutExc();
+            var thisLists2 = TutorTest_Generators.generateThisListExtract2WithoutExc();
+
+            // call test for the first list type (Integer, Integer[])
+            helper1.testExtractNormal(thisLists1, methodType, TutorTest_Generators.predT1,
+                                      TutorTest_Generators.fctExtract1, TutorTest_Generators.predU1, listType);
+            // call test for the second list type (String, Double)
+            helper2.testExtractNormal(thisLists2, methodType, TutorTest_Generators.predT2,
+                                      TutorTest_Generators.fctExtract2, TutorTest_Generators.predU2, listType);
+        } else {
+            var thisLists1 = TutorTest_Generators.generateThisListExtract1WithExc();
+            var thisLists2 = TutorTest_Generators.generateThisListExtract2WithExc();
+
+            // call test for the first list type (Integer, Integer[])
+            helper1.testExtractException(thisLists1, methodType, TutorTest_Generators.predT1,
+                                         TutorTest_Generators.fctExtract1, TutorTest_Generators.predU1, listType);
+            // call test for the second list type (String, Double)
+            helper2.testExtractException(thisLists2, methodType, TutorTest_Generators.predT2,
+                                         TutorTest_Generators.fctExtract2, TutorTest_Generators.predU2, listType);
+        }
+    }
+
+    protected <U> void testExtractNormal(MyLinkedList<T>[] thisLists, MethodType methodType,
+                                         Predicate<? super T> predT, Function<? super T, ? extends U> fct,
+                                         Predicate<? super U> predU, ListType listType) {
         MyLinkedList<U> otherList = new MyLinkedList<>();
         MyLinkedList<U> expectedOtherList = new MyLinkedList<>();
 
@@ -142,7 +183,7 @@ public final class TutorTest_H2_Helper<T> {
             var expectedThisList = copyList(thisList);
             // check actual values
             try {
-                if (type == MethodType.ITERATIVE) {
+                if (methodType == MethodType.ITERATIVE) {
                     otherList = thisList.extractIteratively(predT, fct, predU);
                 } else {
                     otherList = thisList.extractRecursively(predT, fct, predU);
@@ -158,15 +199,18 @@ public final class TutorTest_H2_Helper<T> {
                 // will never happen
             }
 
-            // assert both lists
-            assertLinkedList(expectedOtherList, otherList);
-            assertLinkedList(expectedThisList, thisList);
+            // assert lists
+            if (listType == ListType.SOURCE) {
+                assertLinkedList(expectedThisList, thisList);
+            } else {
+                assertLinkedList(expectedOtherList, otherList);
+            }
         }
     }
 
-    protected <U> void testGeneralExtractException(MyLinkedList<T>[] thisLists, MethodType type,
-                                                   Predicate<? super T> predT, Function<? super T, ? extends U> fct,
-                                                   Predicate<? super U> predU) {
+    protected <U> void testExtractException(MyLinkedList<T>[] thisLists, MethodType methodType,
+                                            Predicate<? super T> predT, Function<? super T, ? extends U> fct,
+                                            Predicate<? super U> predU, ListType listType) {
         MyLinkedList<U> otherList = new MyLinkedList<>();
         MyLinkedList<U> expectedOtherList = new MyLinkedList<>();
         Exception actualExc = null;
@@ -175,7 +219,7 @@ public final class TutorTest_H2_Helper<T> {
             var expectedThisList = copyList(thisList);
             // check actual values
             try {
-                if (type == MethodType.ITERATIVE) {
+                if (methodType == MethodType.ITERATIVE) {
                     otherList = thisList.extractIteratively(predT, fct, predU);
                 } else {
                     otherList = thisList.extractRecursively(predT, fct, predU);
@@ -192,22 +236,56 @@ public final class TutorTest_H2_Helper<T> {
                 assertExceptionMessage(expectedExc, actualExc);
             }
 
-            // assert both lists
-            assertLinkedList(expectedOtherList, otherList);
-            assertLinkedList(expectedThisList, thisList);
+            // assert lists
+            if (listType == ListType.SOURCE) {
+                assertLinkedList(expectedThisList, thisList);
+            } else {
+                assertLinkedList(expectedOtherList, otherList);
+            }
         }
     }
 
-    protected <U> void testGeneralMixin(MyLinkedList<T>[] thisLists, MyLinkedList<U>[] otherLists,
-                                        MethodType type, BiPredicate<? super T, ? super U> biPred,
-                                        Function<? super U, ? extends T> fct, Predicate<? super U> predU) {
+    protected static void testMixin(ExecutionType executionType, MethodType methodType, ListType listType) {
+        TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
+        TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
+
+        if (executionType == ExecutionType.NORMAL) {
+            var thisLists1 = TutorTest_Generators.generateThisListMixin1();
+            var otherLists1 = TutorTest_Generators.generateOtherListMixin1WithoutExc();
+            var thisLists2 = TutorTest_Generators.generateThisListMixin2();
+            var otherLists2 = TutorTest_Generators.generateOtherListMixin2WithoutExc();
+
+            // call test for the first list type (Integer, Integer[])
+            helper1.testMixinNormal(thisLists1, otherLists1, methodType, TutorTest_Generators.biPred1,
+                                    TutorTest_Generators.fctMixin1, TutorTest_Generators.predU1, listType);
+            // call test for the second list type (String, Double)
+            helper2.testMixinNormal(thisLists2, otherLists2, methodType, TutorTest_Generators.biPred2,
+                                    TutorTest_Generators.fctMixin2, TutorTest_Generators.predU2, listType);
+        } else {
+            var thisLists1 = TutorTest_Generators.generateThisListMixin1();
+            var otherLists1 = TutorTest_Generators.generateOtherListMixin1WithExc();
+            var thisLists2 = TutorTest_Generators.generateThisListMixin2();
+            var otherLists2 = TutorTest_Generators.generateOtherListMixin2WithExc();
+
+            // call test for the first list type (Integer, Integer[])
+            helper1.testMixinException(thisLists1, otherLists1, methodType, TutorTest_Generators.biPred1,
+                                       TutorTest_Generators.fctMixin1, TutorTest_Generators.predU1, listType);
+            // call test for the second list type (String, Double)
+            helper2.testMixinException(thisLists2, otherLists2, methodType, TutorTest_Generators.biPred2,
+                                       TutorTest_Generators.fctMixin2, TutorTest_Generators.predU2, listType);
+        }
+    }
+
+    protected <U> void testMixinNormal(MyLinkedList<T>[] thisLists, MyLinkedList<U>[] otherLists, MethodType methodType,
+                                       BiPredicate<? super T, ? super U> biPred, Function<? super U, ? extends T> fct,
+                                       Predicate<? super U> predU, ListType listType) {
         // first list
         for (int i = 0; i < thisLists.length; i++) {
             var expectedThisList = copyList(thisLists[i]);
             var expectedOtherList = copyList(otherLists[i]);
             // check actual values
             try {
-                if (type == MethodType.ITERATIVE) {
+                if (methodType == MethodType.ITERATIVE) {
                     thisLists[i].mixinIteratively(otherLists[i], biPred, fct, predU);
                 } else {
                     thisLists[i].mixinRecursively(otherLists[i], biPred, fct, predU);
@@ -223,15 +301,19 @@ public final class TutorTest_H2_Helper<T> {
                 // will never happen
             }
 
-            // assert both lists
-            assertLinkedList(expectedOtherList, otherLists[i]);
-            assertLinkedList(expectedThisList, thisLists[i]);
+            // assert lists
+            if (listType == ListType.SOURCE) {
+                assertLinkedList(expectedThisList, thisLists[i]);
+            } else {
+                assertLinkedList(expectedOtherList, otherLists[i]);
+            }
         }
     }
 
-    protected <U> void testGeneralMixinException(MyLinkedList<T>[] thisLists, MyLinkedList<U>[] otherLists,
-                                                 MethodType type, BiPredicate<? super T, ? super U> biPred,
-                                                 Function<? super U, ? extends T> fct, Predicate<? super U> predU) {
+    protected <U> void testMixinException(MyLinkedList<T>[] thisLists, MyLinkedList<U>[] otherLists,
+                                          MethodType methodType, BiPredicate<? super T, ? super U> biPred,
+                                          Function<? super U, ? extends T> fct, Predicate<? super U> predU,
+                                          ListType listType) {
         Exception actualExc = null;
 
         // first list
@@ -240,7 +322,7 @@ public final class TutorTest_H2_Helper<T> {
             var expectedOtherList = copyList(otherLists[i]);
             // check actual values
             try {
-                if (type == MethodType.ITERATIVE) {
+                if (methodType == MethodType.ITERATIVE) {
                     thisLists[i].mixinIteratively(otherLists[i], biPred, fct, predU);
                 } else {
                     thisLists[i].mixinRecursively(otherLists[i], biPred, fct, predU);
@@ -257,9 +339,12 @@ public final class TutorTest_H2_Helper<T> {
                 assertExceptionMessage(expectedExc, actualExc);
             }
 
-            // assert both lists
-            assertLinkedList(expectedOtherList, otherLists[i]);
-            assertLinkedList(expectedThisList, thisLists[i]);
+            // assert lists
+            if (listType == ListType.SOURCE) {
+                assertLinkedList(expectedThisList, thisLists[i]);
+            } else {
+                assertLinkedList(expectedOtherList, otherLists[i]);
+            }
         }
     }
 

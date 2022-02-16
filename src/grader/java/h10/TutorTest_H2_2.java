@@ -107,101 +107,79 @@ public final class TutorTest_H2_2 {
     }
 
     @Test
-    public void testMixinIteratively() {
+    public void testMixinIterativelySource() {
         var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
         TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_MIX_IT, classH2, classH2, BiPredicate.class,
                                    Function.class, Predicate.class);
-
-        TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
-        TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
-
-        var thisLists1 = TutorTest_Generators.generateThisListMixin1();
-        var otherLists1 = TutorTest_Generators.generateOtherListMixin1WithoutExc();
-        var thisLists2 = TutorTest_Generators.generateThisListMixin2();
-        var otherLists2 = TutorTest_Generators.generateOtherListMixin2WithoutExc();
-
-        // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralMixin(thisLists1, otherLists1, TutorTest_H2_Helper.MethodType.ITERATIVE,
-                                 TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
-                                 TutorTest_Generators.predU1);
-        // call test for the second list type (String, Double)
-        helper2.testGeneralMixin(thisLists2, otherLists2, TutorTest_H2_Helper.MethodType.ITERATIVE,
-                                 TutorTest_Generators.biPred2, TutorTest_Generators.fctMixin2,
-                                 TutorTest_Generators.predU2);
+        TutorTest_H2_Helper.testMixin(TutorTest_H2_Helper.ExecutionType.NORMAL,
+                                      TutorTest_H2_Helper.MethodType.ITERATIVE, TutorTest_H2_Helper.ListType.SOURCE);
     }
 
     @Test
-    public void testMixinIterativelyException() {
+    public void testMixinIterativelyTarget() {
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_MIX_IT, classH2, classH2, BiPredicate.class,
+                                   Function.class, Predicate.class);
+        TutorTest_H2_Helper.testMixin(TutorTest_H2_Helper.ExecutionType.NORMAL,
+                                      TutorTest_H2_Helper.MethodType.ITERATIVE, TutorTest_H2_Helper.ListType.TARGET);
+    }
+
+    @Test
+    public void testMixinIterativelyExceptionSource() {
         var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
         TutorTest_Helper.getClass(TutorTest_Constants.CLASS_EXC);
         TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_MIX_IT, classH2, classH2, BiPredicate.class,
                                    Function.class, Predicate.class);
-
-        TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
-        TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
-
-        var thisLists1 = TutorTest_Generators.generateThisListMixin1();
-        var otherLists1 = TutorTest_Generators.generateOtherListMixin1WithExc();
-        var thisLists2 = TutorTest_Generators.generateThisListMixin2();
-        var otherLists2 = TutorTest_Generators.generateOtherListMixin2WithExc();
-
-        // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralMixinException(thisLists1, otherLists1, TutorTest_H2_Helper.MethodType.ITERATIVE,
-                                          TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
-                                          TutorTest_Generators.predU1);
-        // call test for the second list type (String, Double)
-        helper2.testGeneralMixinException(thisLists2, otherLists2, TutorTest_H2_Helper.MethodType.ITERATIVE,
-                                          TutorTest_Generators.biPred2, TutorTest_Generators.fctMixin2,
-                                          TutorTest_Generators.predU2);
+        TutorTest_H2_Helper.testMixin(TutorTest_H2_Helper.ExecutionType.EXCEPTION,
+                                      TutorTest_H2_Helper.MethodType.ITERATIVE, TutorTest_H2_Helper.ListType.SOURCE);
     }
 
     @Test
-    public void testMixinRecursively() {
+    public void testMixinIterativelyExceptionTarget() {
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getClass(TutorTest_Constants.CLASS_EXC);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_MIX_IT, classH2, classH2, BiPredicate.class,
+                                   Function.class, Predicate.class);
+        TutorTest_H2_Helper.testMixin(TutorTest_H2_Helper.ExecutionType.EXCEPTION,
+                                      TutorTest_H2_Helper.MethodType.ITERATIVE, TutorTest_H2_Helper.ListType.TARGET);
+    }
+
+    @Test
+    public void testMixinRecursivelySource() {
         var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
         TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_MIX_REC, classH2, classH2, BiPredicate.class,
                                    Function.class, Predicate.class);
-
-        TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
-        TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
-
-        var thisLists1 = TutorTest_Generators.generateThisListMixin1();
-        var otherLists1 = TutorTest_Generators.generateOtherListMixin1WithoutExc();
-        var thisLists2 = TutorTest_Generators.generateThisListMixin2();
-        var otherLists2 = TutorTest_Generators.generateOtherListMixin2WithoutExc();
-
-        // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralMixin(thisLists1, otherLists1, TutorTest_H2_Helper.MethodType.RECURSIVE,
-                                 TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
-                                 TutorTest_Generators.predU1);
-        // call test for the second list type (String, Double)
-        helper2.testGeneralMixin(thisLists2, otherLists2, TutorTest_H2_Helper.MethodType.RECURSIVE,
-                                 TutorTest_Generators.biPred2, TutorTest_Generators.fctMixin2,
-                                 TutorTest_Generators.predU2);
+        TutorTest_H2_Helper.testMixin(TutorTest_H2_Helper.ExecutionType.NORMAL,
+                                      TutorTest_H2_Helper.MethodType.RECURSIVE, TutorTest_H2_Helper.ListType.SOURCE);
     }
 
     @Test
-    public void testMixinRecursivelyException() {
+    public void testMixinRecursivelyTarget() {
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_MIX_REC, classH2, classH2, BiPredicate.class,
+                                   Function.class, Predicate.class);
+        TutorTest_H2_Helper.testMixin(TutorTest_H2_Helper.ExecutionType.NORMAL,
+                                      TutorTest_H2_Helper.MethodType.RECURSIVE, TutorTest_H2_Helper.ListType.TARGET);
+    }
+
+    @Test
+    public void testMixinRecursivelyExceptionSource() {
         var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
         TutorTest_Helper.getClass(TutorTest_Constants.CLASS_EXC);
         TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_MIX_REC, classH2, classH2, BiPredicate.class,
                                    Function.class, Predicate.class);
+        TutorTest_H2_Helper.testMixin(TutorTest_H2_Helper.ExecutionType.EXCEPTION,
+                                      TutorTest_H2_Helper.MethodType.RECURSIVE, TutorTest_H2_Helper.ListType.SOURCE);
+    }
 
-        TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
-        TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
-
-        var thisLists1 = TutorTest_Generators.generateThisListMixin1();
-        var otherLists1 = TutorTest_Generators.generateOtherListMixin1WithExc();
-        var thisLists2 = TutorTest_Generators.generateThisListMixin2();
-        var otherLists2 = TutorTest_Generators.generateOtherListMixin2WithExc();
-
-        // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralMixinException(thisLists1, otherLists1, TutorTest_H2_Helper.MethodType.RECURSIVE,
-                                          TutorTest_Generators.biPred1, TutorTest_Generators.fctMixin1,
-                                          TutorTest_Generators.predU1);
-        // call test for the second list type (String, Double)
-        helper2.testGeneralMixinException(thisLists2, otherLists2, TutorTest_H2_Helper.MethodType.RECURSIVE,
-                                          TutorTest_Generators.biPred2, TutorTest_Generators.fctMixin2,
-                                          TutorTest_Generators.predU2);
+    @Test
+    public void testMixinRecursivelyExceptionTarget() {
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getClass(TutorTest_Constants.CLASS_EXC);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_MIX_REC, classH2, classH2, BiPredicate.class,
+                                   Function.class, Predicate.class);
+        TutorTest_H2_Helper.testMixin(TutorTest_H2_Helper.ExecutionType.EXCEPTION,
+                                      TutorTest_H2_Helper.MethodType.RECURSIVE, TutorTest_H2_Helper.ListType.TARGET);
     }
 
     @Test

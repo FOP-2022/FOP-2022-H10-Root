@@ -104,88 +104,79 @@ public final class TutorTest_H2_1 {
     }
 
     @Test
-    public void testExtractIteratively() {
+    public void testExtractIterativelySource() {
         var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
         TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_IT, classH2, Predicate.class, Function.class,
                                    Predicate.class);
-
-        TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
-        TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
-
-        var thisLists1 = TutorTest_Generators.generateThisListExtract1WithoutExc();
-        var thisLists2 = TutorTest_Generators.generateThisListExtract2WithoutExc();
-
-        // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralExtract(thisLists1, TutorTest_H2_Helper.MethodType.ITERATIVE, TutorTest_Generators.predT1,
-                                   TutorTest_Generators.fctExtract1, TutorTest_Generators.predU1);
-        // call test for the second list type (String, Double)
-        helper2.testGeneralExtract(thisLists2, TutorTest_H2_Helper.MethodType.ITERATIVE, TutorTest_Generators.predT2,
-                                   TutorTest_Generators.fctExtract2, TutorTest_Generators.predU2);
+        TutorTest_H2_Helper.testExtract(TutorTest_H2_Helper.ExecutionType.NORMAL,
+                                        TutorTest_H2_Helper.MethodType.ITERATIVE, TutorTest_H2_Helper.ListType.SOURCE);
     }
 
     @Test
-    public void testExtractIterativelyException() {
+    public void testExtractIterativelyTarget() {
         var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_IT, classH2, Predicate.class, Function.class,
+                                   Predicate.class);
+        TutorTest_H2_Helper.testExtract(TutorTest_H2_Helper.ExecutionType.NORMAL,
+                                        TutorTest_H2_Helper.MethodType.ITERATIVE, TutorTest_H2_Helper.ListType.TARGET);
+    }
+
+    @Test
+    public void testExtractIterativelyExceptionSource() {
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_IT, classH2, Predicate.class, Function.class,
+                                   Predicate.class);
         TutorTest_Helper.getClass(TutorTest_Constants.CLASS_EXC);
-        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_IT, classH2, Predicate.class, Function.class,
-                                   Predicate.class);
-
-        TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
-        TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
-
-        var thisLists1 = TutorTest_Generators.generateThisListExtract1WithExc();
-        var thisLists2 = TutorTest_Generators.generateThisListExtract2WithExc();
-
-        // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralExtractException(thisLists1, TutorTest_H2_Helper.MethodType.ITERATIVE,
-                                            TutorTest_Generators.predT1, TutorTest_Generators.fctExtract1,
-                                            TutorTest_Generators.predU1);
-        // call test for the second list type (String, Double)
-        helper2.testGeneralExtractException(thisLists2, TutorTest_H2_Helper.MethodType.ITERATIVE,
-                                            TutorTest_Generators.predT2, TutorTest_Generators.fctExtract2,
-                                            TutorTest_Generators.predU2);
+        TutorTest_H2_Helper.testExtract(TutorTest_H2_Helper.ExecutionType.EXCEPTION,
+                                        TutorTest_H2_Helper.MethodType.ITERATIVE, TutorTest_H2_Helper.ListType.SOURCE);
     }
 
     @Test
-    public void testExtractRecursively() {
+    public void testExtractIterativelyExceptionTarget() {
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_IT, classH2, Predicate.class, Function.class,
+                                   Predicate.class);
+        TutorTest_Helper.getClass(TutorTest_Constants.CLASS_EXC);
+        TutorTest_H2_Helper.testExtract(TutorTest_H2_Helper.ExecutionType.EXCEPTION,
+                                        TutorTest_H2_Helper.MethodType.ITERATIVE, TutorTest_H2_Helper.ListType.TARGET);
+    }
+
+    @Test
+    public void testExtractRecursivelySource() {
         var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
         TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_REC, classH2, Predicate.class, Function.class,
                                    Predicate.class);
-
-        TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
-        TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
-
-        var thisLists1 = TutorTest_Generators.generateThisListExtract1WithoutExc();
-        var thisLists2 = TutorTest_Generators.generateThisListExtract2WithoutExc();
-
-        // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralExtract(thisLists1, TutorTest_H2_Helper.MethodType.RECURSIVE, TutorTest_Generators.predT1,
-                                   TutorTest_Generators.fctExtract1, TutorTest_Generators.predU1);
-        // call test for the second list type (String, Double)
-        helper2.testGeneralExtract(thisLists2, TutorTest_H2_Helper.MethodType.RECURSIVE, TutorTest_Generators.predT2,
-                                   TutorTest_Generators.fctExtract2, TutorTest_Generators.predU2);
+        TutorTest_H2_Helper.testExtract(TutorTest_H2_Helper.ExecutionType.NORMAL,
+                                        TutorTest_H2_Helper.MethodType.RECURSIVE, TutorTest_H2_Helper.ListType.SOURCE);
     }
 
     @Test
-    public void testExtractRecursivelyException() {
+    public void testExtractRecursivelyTarget() {
         var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_REC, classH2, Predicate.class, Function.class,
+                                   Predicate.class);
+        TutorTest_H2_Helper.testExtract(TutorTest_H2_Helper.ExecutionType.NORMAL,
+                                        TutorTest_H2_Helper.MethodType.RECURSIVE, TutorTest_H2_Helper.ListType.TARGET);
+    }
+
+    @Test
+    public void testExtractRecursivelyExceptionSource() {
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_REC, classH2, Predicate.class, Function.class,
+                                   Predicate.class);
         TutorTest_Helper.getClass(TutorTest_Constants.CLASS_EXC);
-        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_REC, classH2, Predicate.class, Function.class, Predicate.class);
+        TutorTest_H2_Helper.testExtract(TutorTest_H2_Helper.ExecutionType.EXCEPTION,
+                                        TutorTest_H2_Helper.MethodType.RECURSIVE, TutorTest_H2_Helper.ListType.SOURCE);
+    }
 
-        TutorTest_H2_Helper<Integer> helper1 = new TutorTest_H2_Helper<>();
-        TutorTest_H2_Helper<String> helper2 = new TutorTest_H2_Helper<>();
-
-        var thisLists1 = TutorTest_Generators.generateThisListExtract1WithExc();
-        var thisLists2 = TutorTest_Generators.generateThisListExtract2WithExc();
-
-        // call test for the first list type (Integer, Integer[])
-        helper1.testGeneralExtractException(thisLists1, TutorTest_H2_Helper.MethodType.RECURSIVE,
-                                            TutorTest_Generators.predT1, TutorTest_Generators.fctExtract1,
-                                            TutorTest_Generators.predU1);
-        // call test for the second list type (String, Double)
-        helper2.testGeneralExtractException(thisLists2, TutorTest_H2_Helper.MethodType.RECURSIVE,
-                                            TutorTest_Generators.predT2, TutorTest_Generators.fctExtract2,
-                                            TutorTest_Generators.predU2);
+    @Test
+    public void testExtractRecursivelyExceptionTarget() {
+        var classH2 = TutorTest_Helper.getClass(TutorTest_Constants.CLASS_LIST);
+        TutorTest_Helper.getMethod(TutorTest_Constants.METHOD_EXT_REC, classH2, Predicate.class, Function.class,
+                                   Predicate.class);
+        TutorTest_Helper.getClass(TutorTest_Constants.CLASS_EXC);
+        TutorTest_H2_Helper.testExtract(TutorTest_H2_Helper.ExecutionType.EXCEPTION,
+                                        TutorTest_H2_Helper.MethodType.RECURSIVE, TutorTest_H2_Helper.ListType.TARGET);
     }
 
     @Test

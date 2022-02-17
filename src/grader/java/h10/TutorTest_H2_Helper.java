@@ -1,6 +1,9 @@
 package h10;
 
-import h10.utils.*;
+import h10.utils.ExpectedMyLinkedListException;
+import h10.utils.TutorTest_Constants;
+import h10.utils.TutorTest_Generators;
+import h10.utils.TutorTest_Messages;
 import h10.utils.spoon.LoopsMethodBodyProcessor;
 import h10.utils.spoon.MethodCallsProcessor;
 import h10.utils.spoon.SpoonUtils;
@@ -166,10 +169,10 @@ public final class TutorTest_H2_Helper<T> {
 
             // call test for the first list type (Integer, Integer[])
             helper1.testExtractException(thisLists1, methodType, TutorTest_Generators.predT1,
-                                         TutorTest_Generators.fctExtract1, TutorTest_Generators.predU1, listType);
+                                         TutorTest_Generators.fctExtract1, TutorTest_Generators.predU1);
             // call test for the second list type (String, Double)
             helper2.testExtractException(thisLists2, methodType, TutorTest_Generators.predT2,
-                                         TutorTest_Generators.fctExtract2, TutorTest_Generators.predU2, listType);
+                                         TutorTest_Generators.fctExtract2, TutorTest_Generators.predU2);
         }
     }
 
@@ -210,9 +213,7 @@ public final class TutorTest_H2_Helper<T> {
 
     protected <U> void testExtractException(MyLinkedList<T>[] thisLists, MethodType methodType,
                                             Predicate<? super T> predT, Function<? super T, ? extends U> fct,
-                                            Predicate<? super U> predU, ListType listType) {
-        MyLinkedList<U> otherList = new MyLinkedList<>();
-        MyLinkedList<U> expectedOtherList = new MyLinkedList<>();
+                                            Predicate<? super U> predU) {
         Exception actualExc = null;
 
         for (var thisList : thisLists) {
@@ -220,9 +221,9 @@ public final class TutorTest_H2_Helper<T> {
             // check actual values
             try {
                 if (methodType == MethodType.ITERATIVE) {
-                    otherList = thisList.extractIteratively(predT, fct, predU);
+                    thisList.extractIteratively(predT, fct, predU);
                 } else {
-                    otherList = thisList.extractRecursively(predT, fct, predU);
+                    thisList.extractRecursively(predT, fct, predU);
                 }
             } catch (Exception e) {
                 actualExc = e;
@@ -230,17 +231,10 @@ public final class TutorTest_H2_Helper<T> {
 
             // check expected values
             try {
-                expectedOtherList = expectedExtract(expectedThisList, predT, fct, predU);
+                expectedExtract(expectedThisList, predT, fct, predU);
             } catch (ExpectedMyLinkedListException expectedExc) {
                 assertNotNull(actualExc, TutorTest_Messages.exceptionMessageIncorrect());
                 assertExceptionMessage(expectedExc, actualExc);
-            }
-
-            // assert lists
-            if (listType == ListType.SOURCE) {
-                assertLinkedList(expectedThisList, thisList);
-            } else {
-                assertLinkedList(expectedOtherList, otherList);
             }
         }
     }
@@ -269,10 +263,10 @@ public final class TutorTest_H2_Helper<T> {
 
             // call test for the first list type (Integer, Integer[])
             helper1.testMixinException(thisLists1, otherLists1, methodType, TutorTest_Generators.biPred1,
-                                       TutorTest_Generators.fctMixin1, TutorTest_Generators.predU1, listType);
+                                       TutorTest_Generators.fctMixin1, TutorTest_Generators.predU1);
             // call test for the second list type (String, Double)
             helper2.testMixinException(thisLists2, otherLists2, methodType, TutorTest_Generators.biPred2,
-                                       TutorTest_Generators.fctMixin2, TutorTest_Generators.predU2, listType);
+                                       TutorTest_Generators.fctMixin2, TutorTest_Generators.predU2);
         }
     }
 
@@ -312,8 +306,7 @@ public final class TutorTest_H2_Helper<T> {
 
     protected <U> void testMixinException(MyLinkedList<T>[] thisLists, MyLinkedList<U>[] otherLists,
                                           MethodType methodType, BiPredicate<? super T, ? super U> biPred,
-                                          Function<? super U, ? extends T> fct, Predicate<? super U> predU,
-                                          ListType listType) {
+                                          Function<? super U, ? extends T> fct, Predicate<? super U> predU) {
         Exception actualExc = null;
 
         // first list
@@ -337,13 +330,6 @@ public final class TutorTest_H2_Helper<T> {
             } catch (ExpectedMyLinkedListException expectedExc) {
                 assertNotNull(actualExc, TutorTest_Messages.exceptionMessageIncorrect());
                 assertExceptionMessage(expectedExc, actualExc);
-            }
-
-            // assert lists
-            if (listType == ListType.SOURCE) {
-                assertLinkedList(expectedThisList, thisLists[i]);
-            } else {
-                assertLinkedList(expectedOtherList, otherLists[i]);
             }
         }
     }
@@ -417,6 +403,12 @@ public final class TutorTest_H2_Helper<T> {
 
     protected static <U> void assertLinkedList(MyLinkedList<U> expected, MyLinkedList<U> actual) {
         // one of the list is null
+        if (expected == null || actual == null) {
+            assertEquals(expected, actual, TutorTest_Messages.assertListFailed());
+            return;
+        }
+
+        // if one of the head is null
         if (expected.head == null || actual.head == null) {
             assertEquals(expected.head, actual.head, TutorTest_Messages.assertListFailed());
             return;

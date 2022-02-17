@@ -104,8 +104,10 @@ public final class TutorTest_Generators {
             MyLinkedList<Integer> list = new MyLinkedList<>();
             for (int j = 0; j < 10; j++) {
                 // make sure there will be at least 3 elements greater than 10 after all operations despite the choice
-                // of numElems (12, 14, 16)
-                list.add(j + 16);
+                // of numElems (12, 14, 16), and that it is an even number.
+                int elem = new Random().nextInt(100) + ((j % 3 == 0) ? 0 : 16);
+                elem += ((j % 3 == 0) && (elem % 2 != 0)) ? 0 : 1;
+                list.add(elem);
             }
             sourceLists[i] = list;
         }

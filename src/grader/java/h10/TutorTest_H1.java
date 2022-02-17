@@ -67,8 +67,8 @@ public final class TutorTest_H1 {
         for (int i = 0; i < numOfTests; i++) {
             var constructor = TutorTest_Helper.getMyLinkedListExceptionConstructor(classH1);
             try {
-                assertEquals(constructor.newInstance(nums[i], objs[i]).getMessage(),
-                             createCorrectMessage(nums[i], objs[i]),
+                assertEquals(createCorrectMessage(nums[i], objs[i]),
+                             constructor.newInstance(nums[i], objs[i]).getMessage(),
                              TutorTest_Messages.constructorWrongMessage(TutorTest_Constants.CLASS_EXC));
             } catch (Exception e) {
                 fail(TutorTest_Messages.cannotCreateObject(TutorTest_Constants.CLASS_EXC));

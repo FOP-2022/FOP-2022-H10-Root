@@ -99,7 +99,18 @@ public class TutorTransformer implements ClassTransformer {
         public void visit(int version, int access, String name, String signature, String superName,
                           String[] interfaces) {
             this.className = name;
+            access &= ~Modifier.PRIVATE;
+            access &= ~Modifier.PROTECTED;
+            access |= Modifier.PUBLIC;
             super.visit(version, access, name, signature, superName, interfaces);
+        }
+
+        @Override
+        public void visitInnerClass(String name, String outerName, String innerName, int access) {
+            access &= ~Modifier.PRIVATE;
+            access &= ~Modifier.PROTECTED;
+            access |= Modifier.PUBLIC;
+            super.visitInnerClass(name, outerName, innerName, access);
         }
 
         @Override
@@ -116,7 +127,7 @@ public class TutorTransformer implements ClassTransformer {
 
             if (isStatic && !forceStatic) {
                 var superMV = new MethodVisitor(Opcodes.ASM9,
-                                                super.visitMethod(access, name, descriptor, signature, exceptions)) {
+                    super.visitMethod(access, name, descriptor, signature, exceptions)) {
                 };
                 final int modifiedAccess = access ^ Modifier.PUBLIC;
 

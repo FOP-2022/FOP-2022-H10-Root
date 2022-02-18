@@ -265,8 +265,7 @@ public final class TutorTest_H3 {
             found++;
 
             // is a constant
-            assertTrue(isStatic(f.getModifiers()) && isFinal(f.getModifiers()),
-                       TutorTest_Messages.fieldNotConstant(f.getName()));
+            assertTrue(isFinal(f.getModifiers()), TutorTest_Messages.fieldNotConstant(f.getName()));
 
             if (biPred) {
                 // one lambda is used

@@ -7,6 +7,7 @@ import h10.utils.TutorTest_Messages;
 import h10.utils.spoon.LoopsMethodBodyProcessor;
 import h10.utils.spoon.MethodCallsProcessor;
 import h10.utils.spoon.SpoonUtils;
+import h10.utils.spoon.StatementsMethodBodyProcessor;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.sourcegrade.jagr.api.testing.TestCycle;
 import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
@@ -449,6 +450,14 @@ public final class TutorTest_H2_Helper<T> {
     }
 
     protected static void assertExceptionMessage(ExpectedMyLinkedListException expected, Exception actual) {
+        if (expected == null) {
+            assertNull(actual, TutorTest_Messages.exceptionMessageIncorrect());
+            return;
+        } else {
+            assertNotNull(actual, TutorTest_Messages.exceptionMessageIncorrect());
+            assertNotNull(actual.getMessage(), TutorTest_Messages.exceptionMessageIncorrect());
+        }
+
         // ignore the object's name
         int indexObject = expected.getMessage().indexOf('@');
         int maxIndex = (indexObject == -1) ? expected.getMessage().length() : indexObject;
@@ -465,6 +474,11 @@ public final class TutorTest_H2_Helper<T> {
      */
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     protected static void assertNoOtherMethod(final TestCycle testCycle, Class<?> classType, String methodName) {
+        if (methodIsEmpty(testCycle, classType, methodName)) {
+            // do not take other points
+            return;
+        }
+
         var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
         var processor = SpoonUtils.process(testCycle, path, new MethodCallsProcessor(methodName));
 
@@ -490,6 +504,11 @@ public final class TutorTest_H2_Helper<T> {
      */
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     protected static void assertNumberOfLoop(final TestCycle testCycle, Class<?> classType, String methodName, int expected) {
+        if (methodIsEmpty(testCycle, classType, methodName)) {
+            // do not take other points
+            return;
+        }
+
         var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
         var processor = SpoonUtils.process(testCycle, path,
                                            new LoopsMethodBodyProcessor(methodName));
@@ -499,6 +518,21 @@ public final class TutorTest_H2_Helper<T> {
                      + processor.getWhileLoops().size()
                      + processor.getDoWhileLoops().size();
         assertEquals(expected, actual, TutorTest_Messages.methodFalseNumberOfLoop(methodName));
+    }
+
+    /**
+     * check whether the method is empty.
+     *
+     * @param testCycle  the test cycle
+     * @param classType  the class to be checked
+     * @param methodName the method to be checked
+     */
+    @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
+    protected static boolean methodIsEmpty(final TestCycle testCycle, Class<?> classType, String methodName) {
+        var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
+        var processor = SpoonUtils.process(testCycle, path,
+                                           new StatementsMethodBodyProcessor(methodName));
+        return processor.getStatements().get(0).toString().length() <= 10;
     }
 
     /* *********************************************************************

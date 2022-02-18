@@ -16,6 +16,7 @@
         "h10/TutorTest_H3.java",
         "h10/TutorTest_H3_Helper.java",
         "h10/utils/ExpectedMyLinkedListException.java",
+        "h10/utils/MyLinkedListAdd.java",
         "h10/utils/State.java",
         "h10/utils/TutorTest_Constants.java",
         "h10/utils/TutorTest_Generators.java",
@@ -26,6 +27,7 @@
         "h10/utils/spoon/LoopsMethodBodyProcessor.java",
         "h10/utils/spoon/MethodCallsProcessor.java",
         "h10/utils/spoon/SpoonUtils.java",
+        "h10/utils/spoon/StatementsMethodBodyProcessor.java",
         "h10/utils/transformer/TutorTransformer.java"
       ]
     },

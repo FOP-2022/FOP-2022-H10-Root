@@ -243,6 +243,12 @@ public final class TutorTest_H2_1 {
         // not iterative
         TutorTest_H2_Helper.assertNumberOfLoop(testCycle, classH2, TutorTest_Constants.METHOD_EXT_REC, 0);
 
+        if (TutorTest_H2_Helper.methodIsEmpty(testCycle, classH2, TutorTest_Constants.METHOD_EXT_REC)
+            || TutorTest_H2_Helper.methodIsEmpty(testCycle, classH2, TutorTest_Constants.METHOD_EXT_HELP)) {
+            // do not take other points
+            return;
+        }
+
         var thisList = TutorTest_Generators.generateThisListExtractMockito();
         ListItem<Integer> dummy = new ListItem<>();
         dummy.next = thisList.head;

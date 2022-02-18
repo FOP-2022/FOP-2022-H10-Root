@@ -98,6 +98,8 @@ public final class TutorTest_Generators {
     public static MyLinkedList<Integer>[] generateThisListExtract1WithoutExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer>[] sourceLists = new MyLinkedList[10];
+        MyLinkedListAdd<Integer> add = new MyLinkedListAdd<>();
+
         sourceLists[0] = new MyLinkedList<>(); // null list
 
         for (int i = 1; i < 10; i++) {
@@ -107,7 +109,7 @@ public final class TutorTest_Generators {
                 // of numElems (12, 14, 16), and that it is an even number.
                 int elem = new Random().nextInt(100) + ((j % 3 == 0) ? 0 : 16);
                 elem += ((j % 3 == 0) && (elem % 2 != 0)) ? 0 : 1;
-                list.add(elem);
+                add.add(list, elem);
             }
             sourceLists[i] = list;
         }
@@ -122,21 +124,22 @@ public final class TutorTest_Generators {
     public static MyLinkedList<Integer>[] generateThisListExtract1WithExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer>[] sourceLists = new MyLinkedList[3];
+        MyLinkedListAdd<Integer> add = new MyLinkedListAdd<>();
 
         // make sure there are no 3 elements greater than 10 after all operations
         MyLinkedList<Integer> list = new MyLinkedList<>();
-        list.add(0);
+        add.add(list, 0);
         sourceLists[0] = list; // {0 -> null}
 
         list = new MyLinkedList<>();
         for (int i = 0; i < 10; i++) {
-            list.add(0);
+            add.add(list, 0);
         }
         sourceLists[1] = list; // {0 -> 0 -> ... -> null}
 
         list = new MyLinkedList<>();
         for (int j = 0; j < 10; j++) {
-            list.add(j);
+            add.add(list, j);
         }
         sourceLists[2] = list;
         return sourceLists;
@@ -150,6 +153,7 @@ public final class TutorTest_Generators {
     public static MyLinkedList<String>[] generateThisListExtract2WithoutExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<String>[] sourceLists = new MyLinkedList[10];
+        MyLinkedListAdd<String> add = new MyLinkedListAdd<>();
 
         for (int i = 0; i < 10; i++) {
             MyLinkedList<String> list = new MyLinkedList<>();
@@ -162,8 +166,8 @@ public final class TutorTest_Generators {
                 str += Integer.toString(new Random().nextInt(1000));
 
                 // make sure it is a multiple of 3
-                list.add((Double.parseDouble(str) % 3 != 0)
-                             ? String.valueOf(Double.parseDouble(str) * 3) : str);
+                add.add(list, (Double.parseDouble(str) % 3 != 0)
+                    ? String.valueOf(Double.parseDouble(str) * 3) : str);
             }
             sourceLists[i] = list;
         }
@@ -178,6 +182,7 @@ public final class TutorTest_Generators {
     public static MyLinkedList<String>[] generateThisListExtract2WithExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<String>[] sourceLists = new MyLinkedList[10];
+        MyLinkedListAdd<String> add = new MyLinkedListAdd<>();
 
         for (int i = 0; i < 10; i++) {
             MyLinkedList<String> list = new MyLinkedList<>();
@@ -191,7 +196,7 @@ public final class TutorTest_Generators {
                 // make sure there are some elements that are not multiples of 3
                 var rn = new Random().nextInt(1000);
                 str += Integer.toString((j % 4 == 0 && rn % 3 == 0) ? ++rn : rn);
-                list.add(str);
+                add.add(list, str);
             }
             sourceLists[i] = list;
         }
@@ -207,8 +212,9 @@ public final class TutorTest_Generators {
     public static MyLinkedList<Integer> generateThisListExtractMockito() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer> list = Mockito.spy(MyLinkedList.class);
+        MyLinkedListAdd<Integer> add = new MyLinkedListAdd<>();
         for (int j = 0; j < 10; j++) {
-            list.add(new Random().nextInt(100) + 10);
+            add.add(list, new Random().nextInt(100) + 10);
         }
         return list;
     }
@@ -225,12 +231,14 @@ public final class TutorTest_Generators {
     public static MyLinkedList<Integer>[] generateThisListMixin1() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer>[] targetLists = new MyLinkedList[10];
+        MyLinkedListAdd<Integer> add = new MyLinkedListAdd<>();
+
         targetLists[0] = new MyLinkedList<>(); // null list
 
         for (int i = 1; i < 10; i++) {
             MyLinkedList<Integer> list = new MyLinkedList<>();
             for (int j = 0; j < 10; j++) {
-                list.add(new Random().nextInt(100));
+                add.add(list, new Random().nextInt(100));
             }
             targetLists[i] = list;
         }
@@ -245,12 +253,14 @@ public final class TutorTest_Generators {
     public static MyLinkedList<String>[] generateThisListMixin2() {
         @SuppressWarnings("unchecked")
         MyLinkedList<String>[] targetLists = new MyLinkedList[10];
+        MyLinkedListAdd<String> add = new MyLinkedListAdd<>();
+
         targetLists[0] = new MyLinkedList<>(); // null list
 
         for (int i = 1; i < 10; i++) {
             MyLinkedList<String> list = new MyLinkedList<>();
             for (int j = 0; j < 10; j++) {
-                list.add(String.valueOf(new Random().nextDouble() * 1000));
+                add.add(list, String.valueOf(new Random().nextDouble() * 1000));
             }
             targetLists[i] = list;
         }
@@ -265,6 +275,8 @@ public final class TutorTest_Generators {
     public static MyLinkedList<Integer[]>[] generateOtherListMixin1WithoutExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer[]>[] sourceLists = new MyLinkedList[10];
+        MyLinkedListAdd<Integer[]> add = new MyLinkedListAdd<>();
+
         sourceLists[0] = new MyLinkedList<>(); // null list
 
         for (int i = 1; i < 10; i++) {
@@ -278,7 +290,7 @@ public final class TutorTest_Generators {
                         listElem[k] += 11;
                     }
                 }
-                list.add(listElem);
+                add.add(list, listElem);
             }
             sourceLists[i] = list;
         }
@@ -293,15 +305,16 @@ public final class TutorTest_Generators {
     public static MyLinkedList<Integer[]>[] generateOtherListMixin1WithExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer[]>[] sourceLists = new MyLinkedList[10];
+        MyLinkedListAdd<Integer[]> add = new MyLinkedListAdd<>();
 
         // make sure there are no 3 elements greater than 10 after all operations
         MyLinkedList<Integer[]> list = new MyLinkedList<>();
-        list.add(new Integer[]{0, 0, 0});
+        add.add(list, new Integer[]{0, 0, 0});
         sourceLists[0] = list; // {{0,0,0} -> null}
 
         list = new MyLinkedList<>();
         for (int i = 0; i < 10; i++) {
-            list.add(new Integer[]{0, 0, 0});
+            add.add(list, new Integer[]{0, 0, 0});
         }
         sourceLists[1] = list; // {{0,0,0} -> {0,0,0} -> ... -> null}
 
@@ -312,7 +325,7 @@ public final class TutorTest_Generators {
                 for (int k = 0; k < 10; k++) {
                     listElem[k] = new Random().nextInt(10);
                 }
-                list.add(listElem);
+                add.add(list, listElem);
             }
             sourceLists[i] = list;
         }
@@ -327,12 +340,13 @@ public final class TutorTest_Generators {
     public static MyLinkedList<Double>[] generateOtherListMixin2WithoutExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Double>[] sourceLists = new MyLinkedList[10];
+        MyLinkedListAdd<Double> add = new MyLinkedListAdd<>();
 
         for (int i = 0; i < 10; i++) {
             MyLinkedList<Double> list = new MyLinkedList<>();
             for (int j = 0; j < 10; j++) {
                 // make sure it is a multiple of 3
-                list.add((double) new Random().nextInt(1000) * 3);
+                add.add(list, (double) new Random().nextInt(1000) * 3);
             }
             sourceLists[i] = list;
         }
@@ -347,13 +361,14 @@ public final class TutorTest_Generators {
     public static MyLinkedList<Double>[] generateOtherListMixin2WithExc() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Double>[] sourceLists = new MyLinkedList[10];
+        MyLinkedListAdd<Double> add = new MyLinkedListAdd<>();
 
         for (int i = 0; i < 10; i++) {
             MyLinkedList<Double> list = new MyLinkedList<>();
             for (int j = 0; j < 10; j++) {
                 // make sure there are some elements that are not multiples of 3
                 var rn = (double) new Random().nextInt(1000);
-                list.add((j % 4 == 0 && rn % 3 == 0) ? ++rn : rn);
+                add.add(list, (j % 4 == 0 && rn % 3 == 0) ? ++rn : rn);
             }
             sourceLists[i] = list;
         }
@@ -369,8 +384,10 @@ public final class TutorTest_Generators {
     public static MyLinkedList<Integer> generateThisListMixinMockito() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer> list = Mockito.spy(MyLinkedList.class);
+        MyLinkedListAdd<Integer> add = new MyLinkedListAdd<>();
+
         for (int j = 0; j < 10; j++) {
-            list.add(new Random().nextInt(100));
+            add.add(list, new Random().nextInt(100));
         }
         return list;
     }
@@ -384,6 +401,8 @@ public final class TutorTest_Generators {
     public static MyLinkedList<Integer[]> generateOtherListMixinMockito() {
         @SuppressWarnings("unchecked")
         MyLinkedList<Integer[]> list = Mockito.spy(MyLinkedList.class);
+        MyLinkedListAdd<Integer[]> add = new MyLinkedListAdd<>();
+
         for (int j = 0; j < 10; j++) {
             Integer[] listElem = new Integer[10];
             for (int k = 0; k < 10; k++) {
@@ -392,7 +411,7 @@ public final class TutorTest_Generators {
                     listElem[k] += 11;
                 }
             }
-            list.add(listElem);
+            add.add(list, listElem);
         }
         return list;
     }

@@ -248,6 +248,12 @@ public final class TutorTest_H2_2 {
         // not iterative
         TutorTest_H2_Helper.assertNumberOfLoop(testCycle, classH2, TutorTest_Constants.METHOD_MIX_REC, 0);
 
+        if (TutorTest_H2_Helper.methodIsEmpty(testCycle, classH2, TutorTest_Constants.METHOD_MIX_REC)
+            || TutorTest_H2_Helper.methodIsEmpty(testCycle, classH2, TutorTest_Constants.METHOD_MIX_HELP)) {
+            // do not take other points
+            return;
+        }
+
         var thisList = TutorTest_Generators.generateThisListMixinMockito();
         var otherList = TutorTest_Generators.generateOtherListMixinMockito();
 

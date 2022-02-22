@@ -11,6 +11,7 @@ import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 import spoon.reflect.declaration.CtTypedElement;
 
 import java.util.Random;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -113,7 +114,11 @@ public final class TutorTest_H3_Helper {
 
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     protected static void assertNoLambda(final TestCycle testCycle, Class<?> classType, String methodName) {
-        var path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
+        // var path = String.format("%s", classType.getTypeName().replaceAll("\\.", "/"));
+        var matcher = Pattern.compile("(?<c>.*?)\\$+(?<s>.*)").matcher(classType.getTypeName());
+        //noinspection ResultOfMethodCallIgnored
+        matcher.matches();
+        var path = String.format("%s.java", matcher.group("c").replaceAll("\\.", "/"));
         var processor = SpoonUtils.process(testCycle, path,
                                            new LambdaExpressionsMethodBodyProcessor(methodName));
         var allLambdas = processor.getLambdas();

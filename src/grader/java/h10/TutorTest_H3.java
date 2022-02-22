@@ -18,14 +18,12 @@ import java.util.Arrays;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static java.lang.reflect.Modifier.isFinal;
 import static java.lang.reflect.Modifier.isPublic;
-import static java.lang.reflect.Modifier.isStatic;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.mock;
 
 /**
  * Defines the JUnit test cases related to the class defined in the task H3.
@@ -76,10 +74,9 @@ public final class TutorTest_H3 {
         var allClassesNamesSet = testCycle.getSubmission().getClassNames();
         var allClassesNames = allClassesNamesSet.stream()
             .filter(x -> !(x.equals(TutorTest_Constants.CLASS_LIST)
-                           || x.equals(TutorTest_Constants.CLASS_ITEM)
-                           || x.equals(TutorTest_Constants.CLASS_EXC)
-                           || x.equals(TutorTest_Constants.CLASS_TEST)))
-            .collect(Collectors.toList());
+                || x.equals(TutorTest_Constants.CLASS_ITEM)
+                || x.equals(TutorTest_Constants.CLASS_EXC)
+                || x.equals(TutorTest_Constants.CLASS_TEST))).toList();
 
         // at least three other classes are found
         assertTrue(allClassesNames.size() >= 3,
@@ -95,7 +92,7 @@ public final class TutorTest_H3 {
             }
 
             // check if this class implements one of the interfaces
-            var interfaces = Arrays.stream(interfacesArray).map(Type::getTypeName).collect(Collectors.toList());
+            var interfaces = Arrays.stream(interfacesArray).map(Type::getTypeName).toList();
             boolean fct = interfaces.contains(TutorTest_Constants.FCT + "<java.lang.Integer[], java.lang.Integer>")
                           || interfaces.contains(TutorTest_Constants.FCT + "<java.lang.Integer[],java.lang.Integer>");
             boolean predT = interfaces.contains(TutorTest_Constants.PRED + "<java.lang.Integer[]>");
@@ -126,8 +123,8 @@ public final class TutorTest_H3 {
                             Integer expected = TutorTest_H3_Helper.expectedFct(ints);
                             Integer actual = null;
                             try {
-                                var object = classH3.getDeclaredConstructor().newInstance();
-                                actual = (Integer) m.invoke(object, new Object[]{ints});
+                                var object = mock(classH3, CALLS_REAL_METHODS);
+                                actual = (Integer) m.invoke(object, (Object) ints);
                             } catch (Exception e) {
                                 fail(TutorTest_Messages.testingPredicates(className));
                             }
@@ -154,8 +151,8 @@ public final class TutorTest_H3 {
                             boolean expected = TutorTest_H3_Helper.expectedPredT(ints);
                             boolean actual = false;
                             try {
-                                var object = classH3.getDeclaredConstructor().newInstance();
-                                actual = (boolean) m.invoke(object, new Object[]{ints});
+                                var object = mock(classH3, CALLS_REAL_METHODS);
+                                actual = (boolean) m.invoke(object, (Object) ints);
                             } catch (Exception e) {
                                 fail(TutorTest_Messages.testingPredicates(className));
                             }
@@ -182,10 +179,10 @@ public final class TutorTest_H3 {
                             boolean expected = TutorTest_H3_Helper.expectedPredU((Integer) i);
                             boolean actual = false;
                             try {
-                                var object = classH3.getDeclaredConstructor().newInstance();
+                                var object = mock(classH3, CALLS_REAL_METHODS);
                                 actual = (boolean) m.invoke(object, i);
                             } catch (Exception e) {
-                                fail(TutorTest_Messages.testingPredicates(className));
+                                fail("3" + TutorTest_Messages.testingPredicates(className));
                             }
                             TutorTest_H3_Helper.assertObjects(expected, actual);
                         }

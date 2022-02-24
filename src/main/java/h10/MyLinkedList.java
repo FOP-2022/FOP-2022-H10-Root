@@ -25,7 +25,8 @@ public class MyLinkedList<T> {
      * @param fct   The function that maps from type T to U potential candidates
      * @param predU the predicate, which checks whether the mapped element is valid
      * @param <U>   the type of the list containing the removed mapped elements
-     * @return a list that contains the removed mapped elements from this list that satisfy the predicate
+     * @return a list that contains the removed mapped elements from this list that satisfy the
+     * predicate
      * @throws MyLinkedListException if the mapped element is invalid for removal
      */
     public <U> MyLinkedList<U> extractIteratively(Predicate<? super T> predT,
@@ -88,7 +89,8 @@ public class MyLinkedList<T> {
      * @param fct   The function that maps from type T to U potential candidates
      * @param predU the predicate, which checks whether the mapped element is valid
      * @param <U>   the type of the list containing the removed mapped elements
-     * @return a list that contains the removed mapped elements from this list that satisfy the predicate
+     * @return a list that contains the removed mapped elements from this list that satisfy the
+     * predicate
      * @throws MyLinkedListException if the mapped element is invalid for removal
      */
     public <U> MyLinkedList<U> extractRecursively(Predicate<? super T> predT,
@@ -114,7 +116,8 @@ public class MyLinkedList<T> {
      * @param pSrc  the pointer to the current element of the list
      * @param index the current index of the element of the list
      * @param <U>   the type of the list containing the removed mapped elements
-     * @return a list that contains the removed mapped elements from this list that satisfy the predicate
+     * @return a list that contains the removed mapped elements from this list that satisfy the
+     * predicate
      * @throws MyLinkedListException if the mapped element is invalid for removal
      */
     // set to public for testExtractReallyRecursively in TutorTest_H2_1
@@ -153,14 +156,17 @@ public class MyLinkedList<T> {
     }
 
     /**
-     * Merges this (target) list with the specified (source) list with the criterion that the position of the insertion
-     * point of the elements from the source list depends on the predicate. If the predicate is met, the element is
-     * added before the element of the target list.
+     * Merges this (target) list with the specified (source) list with the criterion that the
+     * position of the insertion point of the elements from the source list depends on the
+     * predicate. If the predicate is met, the element is added before the element of the target
+     * list.
      *
      * @param otherList the source list to be merged with the destination list
      * @param biPred    the predicate, which decides where to insert the element
-     * @param fct       the function that maps an element from the source list to a matching type of the target list
-     * @param predU     the predicate, which checks whether the source element is valid for insertion
+     * @param fct       the function that maps an element from the source list to a matching type of
+     *                  the target list
+     * @param predU     the predicate, which checks whether the source element is valid for
+     *                  insertion
      * @param <U>       the type of the list which should be merged to this list
      * @throws MyLinkedListException if the source element is invalid for insertion
      */
@@ -202,16 +208,18 @@ public class MyLinkedList<T> {
                     // Update pointer since we added an element from the other list to this list
                     others = others.next;
                     current = current.next;
+                    // Only increase index if we iterate through the target list
+                    index++;
                 }
             } else {
                 // Case current == null only occurs if we reached the tail of the list (last element of the list)
                 T mapped = fct.apply(key);
                 current.next = new ListItem<>(mapped);
                 others = others.next;
+                index++;
             }
 
             // Update
-            index++;
             current = current.next;
         }
 
@@ -220,14 +228,17 @@ public class MyLinkedList<T> {
     }
 
     /**
-     * Merges this (target) list with the specified (source) list with the criterion that the position of the insertion
-     * point of the elements from the source list depends on the predicate. If the predicate is met, the element is
-     * added before the element of the target list.
+     * Merges this (target) list with the specified (source) list with the criterion that the
+     * position of the insertion point of the elements from the source list depends on the
+     * predicate. If the predicate is met, the element is added before the element of the target
+     * list.
      *
      * @param otherList the source list to be merged with the destination list
      * @param biPred    the predicate, which decides where to insert the element
-     * @param fct       the function that maps an element from the source list to a matching type of the target list
-     * @param predU     the predicate, which checks whether the source element is valid for insertion
+     * @param fct       the function that maps an element from the source list to a matching type of
+     *                  the target list
+     * @param predU     the predicate, which checks whether the source element is valid for
+     *                  insertion
      * @param <U>       the type of the list which should be merged to this list
      * @throws MyLinkedListException if the source element is invalid for insertion
      */
@@ -248,14 +259,17 @@ public class MyLinkedList<T> {
     }
 
     /**
-     * Merges this (target) list with the specified (source) list with the criterion that the position of the insertion
-     * point of the elements from the source list depends on the predicate. If the predicate is met, the element is
-     * added before the element of the target list.
+     * Merges this (target) list with the specified (source) list with the criterion that the
+     * position of the insertion point of the elements from the source list depends on the
+     * predicate. If the predicate is met, the element is added before the element of the target
+     * list.
      *
      * @param otherList the source list to be merged with the destination list
      * @param biPred    the predicate, which decides where to insert the element
-     * @param fct       the function that maps an element from the source list to a matching type of the target list
-     * @param predU     the predicate, which checks whether the source element is valid for insertion
+     * @param fct       the function that maps an element from the source list to a matching type of
+     *                  the target list
+     * @param predU     the predicate, which checks whether the source element is valid for
+     *                  insertion
      * @param pSrc      the pointer to the current element of the (source) list
      * @param pDest     the pointer to the current element of the (target) list
      * @param index     the current index of the element of the list
@@ -291,15 +305,17 @@ public class MyLinkedList<T> {
                 // Update pointer since we added an element from the other list to this list
                 pSrc = pSrc.next;
                 pDest = pDest.next;
+                index++;
             }
         } else {
             // Case current == null only occurs if we reached the tail of the list
             T mapped = fct.apply(key);
             pDest.next = new ListItem<>(mapped);
             pSrc = pSrc.next;
+            index++;
         }
         // Iterate over the next elements
-        mixinRecursivelyHelper(otherList, biPred, fct, predU, pSrc, pDest.next, index + 1);
+        mixinRecursivelyHelper(otherList, biPred, fct, predU, pSrc, pDest.next, index);
     }
 
     /**

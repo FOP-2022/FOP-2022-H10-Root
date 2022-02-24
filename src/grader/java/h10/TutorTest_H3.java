@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static java.lang.reflect.Modifier.isFinal;
 import static java.lang.reflect.Modifier.isPublic;
@@ -74,9 +75,9 @@ public final class TutorTest_H3 {
         var allClassesNamesSet = testCycle.getSubmission().getClassNames();
         var allClassesNames = allClassesNamesSet.stream()
             .filter(x -> !(x.equals(TutorTest_Constants.CLASS_LIST)
-                || x.equals(TutorTest_Constants.CLASS_ITEM)
-                || x.equals(TutorTest_Constants.CLASS_EXC)
-                || x.equals(TutorTest_Constants.CLASS_TEST))).toList();
+                           || x.equals(TutorTest_Constants.CLASS_ITEM)
+                           || x.equals(TutorTest_Constants.CLASS_EXC)
+                           || x.equals(TutorTest_Constants.CLASS_TEST))).collect(Collectors.toList());
 
         // at least three other classes are found
         assertTrue(allClassesNames.size() >= 3,
@@ -92,7 +93,7 @@ public final class TutorTest_H3 {
             }
 
             // check if this class implements one of the interfaces
-            var interfaces = Arrays.stream(interfacesArray).map(Type::getTypeName).toList();
+            var interfaces = Arrays.stream(interfacesArray).map(Type::getTypeName).collect(Collectors.toList());
             boolean fct = interfaces.contains(TutorTest_Constants.FCT + "<java.lang.Integer[], java.lang.Integer>")
                           || interfaces.contains(TutorTest_Constants.FCT + "<java.lang.Integer[],java.lang.Integer>");
             boolean predT = interfaces.contains(TutorTest_Constants.PRED + "<java.lang.Integer[]>");

@@ -114,11 +114,17 @@ public final class TutorTest_H3_Helper {
 
     @ExtendWith({TestCycleResolver.class, JagrExecutionCondition.class})
     protected static void assertNoLambda(final TestCycle testCycle, Class<?> classType, String methodName) {
-        // var path = String.format("%s", classType.getTypeName().replaceAll("\\.", "/"));
-        var matcher = Pattern.compile("(?<c>.*?)\\$+(?<s>.*)").matcher(classType.getTypeName());
-        //noinspection ResultOfMethodCallIgnored
-        matcher.matches();
-        var path = String.format("%s.java", matcher.group("c").replaceAll("\\.", "/"));
+        String path;
+        // differentiate between inner and outer class
+        if (classType.getEnclosingClass() == null) {
+            path = String.format("%s.java", classType.getCanonicalName().replaceAll("\\.", "/"));
+        } else {
+            var matcher = Pattern.compile("(?<c>.*?)\\$+(?<s>.*)").matcher(classType.getTypeName());
+            //noinspection ResultOfMethodCallIgnored
+            matcher.matches();
+            path = String.format("%s.java", matcher.group("c").replaceAll("\\.", "/"));
+        }
+
         var processor = SpoonUtils.process(testCycle, path,
                                            new LambdaExpressionsMethodBodyProcessor(methodName));
         var allLambdas = processor.getLambdas();

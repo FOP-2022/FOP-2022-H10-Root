@@ -25,8 +25,7 @@ public class MyLinkedList<T> {
      * @param fct   The function that maps from type T to U potential candidates
      * @param predU the predicate, which checks whether the mapped element is valid
      * @param <U>   the type of the list containing the removed mapped elements
-     * @return a list that contains the removed mapped elements from this list that satisfy the
-     * predicate
+     * @return a list that contains the removed mapped elements from this list that satisfy the predicate
      * @throws MyLinkedListException if the mapped element is invalid for removal
      */
     public <U> MyLinkedList<U> extractIteratively(Predicate<? super T> predT,
@@ -89,8 +88,7 @@ public class MyLinkedList<T> {
      * @param fct   The function that maps from type T to U potential candidates
      * @param predU the predicate, which checks whether the mapped element is valid
      * @param <U>   the type of the list containing the removed mapped elements
-     * @return a list that contains the removed mapped elements from this list that satisfy the
-     * predicate
+     * @return a list that contains the removed mapped elements from this list that satisfy the predicate
      * @throws MyLinkedListException if the mapped element is invalid for removal
      */
     public <U> MyLinkedList<U> extractRecursively(Predicate<? super T> predT,
@@ -116,15 +114,16 @@ public class MyLinkedList<T> {
      * @param pSrc  the pointer to the current element of the list
      * @param index the current index of the element of the list
      * @param <U>   the type of the list containing the removed mapped elements
-     * @return a list that contains the removed mapped elements from this list that satisfy the
-     * predicate
+     * @return a list that contains the removed mapped elements from this list that satisfy the predicate
      * @throws MyLinkedListException if the mapped element is invalid for removal
      */
     // set to public for testExtractReallyRecursively in TutorTest_H2_1
-    public <U> MyLinkedList<U> extractRecursivelyHelper(Predicate<? super T> predT,
-                                                           Function<? super T, ? extends U> fct,
-                                                           Predicate<? super U> predU,
-                                                           ListItem<T> pSrc, int index) throws MyLinkedListException {
+    public <U> MyLinkedList<U> extractRecursivelyHelper(
+        Predicate<? super T> predT,
+        Function<? super T, ? extends U> fct,
+        Predicate<? super U> predU,
+        ListItem<T> pSrc, int index
+    ) throws MyLinkedListException {
         if (pSrc.next == null) {
             return new MyLinkedList<>();
         }
@@ -278,12 +277,12 @@ public class MyLinkedList<T> {
      */
     // set to public for testMixinReallyRecursively in TutorTest_H2_2
     public <U> void mixinRecursivelyHelper(MyLinkedList<U> otherList,
-                                              BiPredicate<? super T, ? super U> biPred,
-                                              Function<? super U, ? extends T> fct,
-                                              Predicate<? super U> predU,
-                                              ListItem<U> pSrc,
-                                              ListItem<T> pDest,
-                                              int index) throws MyLinkedListException {
+                                           BiPredicate<? super T, ? super U> biPred,
+                                           Function<? super U, ? extends T> fct,
+                                           Predicate<? super U> predU,
+                                           ListItem<U> pSrc,
+                                           ListItem<T> pDest,
+                                           int index) throws MyLinkedListException {
         // We have to insert all elements from the other list until there are no elements left
         if (pSrc == null) {
             return;

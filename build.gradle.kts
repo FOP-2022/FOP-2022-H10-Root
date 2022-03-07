@@ -19,6 +19,7 @@ submit {
     studentId = "ab12cdef"
     firstName = "sol_first"
     lastName = "sol_last"
+    requireTests = false
 }
 
 // It is (for now) important to create the grader sourceSet AFTER the "submit" task has been configured.
@@ -32,7 +33,11 @@ val grader: SourceSet by sourceSets.creating {
 
 dependencies {
     implementation("org.jetbrains:annotations:23.0.0")
-    "graderImplementation"("org.sourcegrade:jagr-launcher:0.4.0-SNAPSHOT")
+    "graderCompileOnly"("org.sourcegrade:jagr-launcher:0.4.0-SNAPSHOT")
+    "graderImplementation"("fr.inria.gforge.spoon:spoon-core:10.0.0")
+    "graderImplementation"("org.sourcegrade:docwatcher-api:0.1")
+    "graderImplementation"("org.reflections:reflections:0.10.2")
+    "graderImplementation"("org.mockito:mockito-core:4.3.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
 }
 
@@ -81,7 +86,7 @@ tasks {
         group = "build"
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         val runtimeDeps = grader.runtimeClasspath.mapNotNull {
-            if (it.path.toLowerCase().contains("h08")) {
+            if (it.path.toLowerCase().contains("h10")) {
                 null
             } else if (it.isDirectory) {
                 it
@@ -90,7 +95,7 @@ tasks {
             }
         }
         from(runtimeDeps)
-        archiveFileName.set("FOP-2022-H08-${project.version}-libs.jar")
+        archiveFileName.set("FOP-2022-H10-${project.version}-libs.jar")
     }
     create("graderAll") {
         group = "build"

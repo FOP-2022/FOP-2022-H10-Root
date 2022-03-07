@@ -7,13 +7,40 @@
     {
       "name": "grader",
       "files": [
-        "grader_files_here"
+        "h10/Global.java",
+        "h10/H10_RubricProvider.java",
+        "h10/TutorTest_H1.java",
+        "h10/TutorTest_H2_1.java",
+        "h10/TutorTest_H2_2.java",
+        "h10/TutorTest_H2_Helper.java",
+        "h10/TutorTest_H3.java",
+        "h10/TutorTest_H3_Helper.java",
+        "h10/utils/ExpectedMyLinkedListException.java",
+        "h10/utils/MyLinkedListAdd.java",
+        "h10/utils/State.java",
+        "h10/utils/TutorTest_Constants.java",
+        "h10/utils/TutorTest_Generators.java",
+        "h10/utils/TutorTest_Helper.java",
+        "h10/utils/TutorTest_Messages.java",
+        "h10/utils/spoon/LambdaExpressionsFieldProcessor.java",
+        "h10/utils/spoon/LambdaExpressionsMethodBodyProcessor.java",
+        "h10/utils/spoon/LoopsMethodBodyProcessor.java",
+        "h10/utils/spoon/MethodCallsProcessor.java",
+        "h10/utils/spoon/SpoonUtils.java",
+        "h10/utils/spoon/StatementsMethodBodyProcessor.java",
+        "h10/utils/transformer/TutorTransformer.java"
       ]
     },
     {
       "name": "solution",
       "files": [
-        "solution_files_here"
+        "h10/ListItem.java",
+        "h10/MyLinkedList.java",
+        "h10/MyLinkedListException.java",
+        "h10/TestMyLinkedList.java",
+        "h10/TestFctExtract.java",
+        "h10/TestPredTExtract.java",
+        "h10/TestPredUExtract.java"
       ]
     }
   ]
